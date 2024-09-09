@@ -1,4 +1,4 @@
-import { appState, clearAuth } from "@/state";
+import { appState, clearAuth } from "@/state/app";
 import {
   Avatar,
   GetMeResult,

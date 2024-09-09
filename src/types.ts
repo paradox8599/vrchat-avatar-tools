@@ -79,6 +79,7 @@ export type UserInfo = {
 export type Avatar = {
   id: string;
   lastFetch?: string;
+  tag?: string;
   info?: {
     authorName: string;
     authorId: string;

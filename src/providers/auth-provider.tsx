@@ -1,10 +1,8 @@
 "use client";
-import { appState, loadAppState } from "@/state";
+import { appState } from "@/state/app";
 import { usePathname, useRouter } from "next/navigation";
 import React from "react";
 import { useSnapshot } from "valtio";
-import useSWR from "swr";
-import { vrchatLogin } from "@/lib/api";
 
 export default function AuthProvider({
   children,
@@ -14,20 +12,6 @@ export default function AuthProvider({
   const { auth, init } = useSnapshot(appState);
   const path = usePathname();
   const router = useRouter();
-
-  useSWR(
-    "appInit",
-    async () => {
-      await loadAppState();
-      if (!appState.auth?.credentials) return;
-      await vrchatLogin(appState.auth!.credentials);
-    },
-    {
-      revalidateIfStale: false,
-      revalidateOnFocus: true,
-      revalidateOnReconnect: false,
-    },
-  );
 
   React.useEffect(() => {
     if (!init) return;

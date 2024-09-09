@@ -1,6 +1,7 @@
-import { appState } from "@/state";
+import { appState } from "@/state/app";
 import React from "react";
 import { vrchatGetAvatarInfo } from "@/lib/api";
+import { avatarMapState } from "@/state/avatars";
 
 function hasOutdated(date?: Date | string) {
   return (
@@ -10,7 +11,7 @@ function hasOutdated(date?: Date | string) {
 }
 
 function getOutdatedAvatar() {
-  return appState.avatars.filter(
+  return Array.from(avatarMapState.values()).filter(
     (a) => !a.lastFetch || hasOutdated(a.lastFetch),
   )[0];
 }
@@ -22,6 +23,7 @@ export function useAvatarFetcher() {
       if (!avatar) return;
       avatar.info = await vrchatGetAvatarInfo(avatar.id);
       avatar.lastFetch = new Date().toISOString();
+      avatarMapState.set(avatar.id, avatar);
     }, appState.settings.avatarFetchInterval);
 
     return () => {

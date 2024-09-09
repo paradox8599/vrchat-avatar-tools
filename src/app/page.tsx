@@ -1,5 +1,5 @@
 "use client";
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { Avatar as AvatarIcon, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -11,8 +11,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useAvatarFetcher } from "@/hooks/useAvatarFetcher";
-import { appState, logout } from "@/state";
-import { Copy, Trash2 } from "lucide-react";
+import { appState } from "@/state/app";
+import { Check, ChevronRight, ChevronsUpDown, Copy, Trash2 } from "lucide-react";
 import React from "react";
 import { useSnapshot } from "valtio";
 import { writeText } from "@tauri-apps/plugin-clipboard-manager";
@@ -20,10 +20,74 @@ import { useToast } from "@/hooks/use-toast";
 import { open } from "@tauri-apps/plugin-shell";
 import { format } from "date-fns";
 import Link from "next/link";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { type Avatar } from "@/types";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { cn } from "@/lib/utils";
+import { avatarMapState } from "@/state/avatars";
+import useAvatars from "@/hooks/useAvatars";
+
+function TagSelector({ avatar }: { avatar: Avatar }) {
+  const [open, setOpen] = React.useState(false)
+  const [search, setSearch] = React.useState("");
+  const { tags } = useAvatars();
+
+  const mutAvatar = avatarMapState.get(avatar.id)!;
+
+  function setTag(tag: string) {
+    mutAvatar.tag = tag;
+    avatarMapState.set(avatar.id, mutAvatar);
+    setOpen(false)
+    setSearch("")
+  }
+
+  return <Popover open={open} onOpenChange={setOpen} >
+    <PopoverTrigger asChild>
+      <Button
+        variant="outline"
+        role="combobox"
+        aria-expanded={open}
+        className={cn("w-32 justify-between p-2 text-xs", avatar.tag ? "opacity-100" : "opacity-50")}
+      >
+        {avatar.tag ? avatar.tag : "选择标签"}
+        <ChevronsUpDown size={14} className="ml-2 shrink-0 opacity-50" />
+      </Button>
+    </PopoverTrigger>
+    <PopoverContent className="w-[200px] p-0" side="bottom" align="start">
+      <Command>
+        <CommandInput
+          placeholder="输入标签..."
+          value={search}
+          onValueChange={setSearch}
+          onKeyUp={(e) => e.key === "Enter" && setTag(search)}
+        />
+        <CommandList>
+          <CommandEmpty>
+            <div className="cursor-pointer flex items-center pl-4" onClick={() => setTag(search)}>
+              <ChevronRight size={14} /> {search}
+            </div>
+          </CommandEmpty>
+          <CommandGroup>
+            {tags.map((tag) => (<CommandItem key={`${tag ?? ""}`}
+              value={tag}
+              onSelect={(v) => setTag(v === avatar.tag ? "" : v)
+              }
+            >
+              <Check className={cn("mr-2 h-4 w-4", avatar.tag === tag ? "opacity-100" : "opacity-0")} />
+              {tag}
+            </CommandItem>))}
+          </CommandGroup>
+        </CommandList>
+      </Command>
+    </PopoverContent>
+  </Popover>
+
+}
 
 export default function Page() {
-  const { auth, avatars } = useSnapshot(appState);
+  const { auth } = useSnapshot(appState);
   const [addAvatarId, setAddAvatarId] = React.useState("");
+  const { sortedAvatars } = useAvatars();
   const { toast } = useToast();
 
   useAvatarFetcher();
@@ -40,8 +104,9 @@ export default function Page() {
         "https://vrchat.com/home/avatar/",
         "",
       );
-      if (!appState.avatars.find((a) => a.id === idToAdd)) {
-        appState.avatars.push({ id: idToAdd });
+
+      if (!avatarMapState.get(idToAdd)) {
+        avatarMapState.set(idToAdd, { id: idToAdd });
       }
       setAddAvatarId("");
     }
@@ -51,12 +116,12 @@ export default function Page() {
     <main className="p-4">
       <div className="flex flex-row items-center justify-between gap-4">
         <Link href="/settings">
-          <Avatar className="relative avatar-btn">
+          <AvatarIcon className="relative avatar-btn">
             <AvatarImage src={auth?.me?.currentAvatarThumbnailImageUrl} />
             <div className="avatar-tooltip absolute inset-auto h-full w-full flex-center text-white text-sm cursor-pointer bg-black bg-opacity-50">
               设置
             </div>
-          </Avatar>
+          </AvatarIcon>
         </Link>
 
         <form
@@ -81,6 +146,7 @@ export default function Page() {
           <TableHeader>
             <TableRow>
               <TableHead>状态</TableHead>
+              <TableHead>标签</TableHead>
               <TableHead>封面</TableHead>
               <TableHead>模型 ID</TableHead>
               <TableHead>上传者</TableHead>
@@ -92,20 +158,7 @@ export default function Page() {
           </TableHeader>
 
           <TableBody>
-            {Object.values(avatars)
-
-              .sort((a, b) => {
-                if (a.info?.releaseStatus) {
-                  return -1;
-                } else if (b.info?.releaseStatus) {
-                  return 1;
-                }
-                return (
-                  new Date(a.lastFetch ?? 0).getTime() -
-                  new Date(b.lastFetch ?? 0).getTime()
-                );
-              })
-
+            {sortedAvatars
               .map((avatar) => (
                 <TableRow key={avatar.id}>
                   {/* 状态 */}
@@ -113,16 +166,20 @@ export default function Page() {
                     {avatar.info?.releaseStatus}
                   </TableCell>
 
+                  <TableCell className="">
+                    <TagSelector avatar={avatar} />
+                  </TableCell>
+
                   {/* 封面 */}
                   <TableCell>
-                    <Avatar
+                    <AvatarIcon
                       className="cursor-pointer"
                       onClick={() =>
                         open(`https://vrchat.com/home/avatar/${avatar.id}`)
                       }
                     >
                       <AvatarImage src={avatar.info?.thumbnailImageUrl} />
-                    </Avatar>
+                    </AvatarIcon>
                   </TableCell>
 
                   {/* 模型 ID */}
@@ -180,11 +237,7 @@ export default function Page() {
                     <Button
                       variant="ghost"
                       size="icon"
-                      onClick={() => {
-                        appState.avatars = appState.avatars.filter(
-                          (a) => a.id !== avatar.id,
-                        );
-                      }}
+                      onClick={() => avatarMapState.delete(avatar.id)}
                     >
                       <Trash2 color="red" size="18" strokeWidth="1" />
                     </Button>
