@@ -8,15 +8,8 @@ import {
 } from "@/components/ui/input-otp";
 import { REGEXP_ONLY_DIGITS } from "input-otp";
 import React from "react";
-import { LoginStatus, UserInfo } from "../../types";
+import { LoginStatus } from "../../types";
 import { vrchatLogin, vrchatVerifyEmailOtp } from "@/lib/api";
-
-export type LoginSuccess = UserInfo;
-export type LoginNeedsVerify = { requiresTwoFactorAuth: string[] };
-export type GetMeResult = LoginSuccess | LoginNeedsVerify;
-export function isLoginSuccess(result: GetMeResult): result is LoginSuccess {
-  return "displayName" in result;
-}
 
 export default function Page() {
   const [loginResult, setLoginResult] = React.useState<LoginStatus>();

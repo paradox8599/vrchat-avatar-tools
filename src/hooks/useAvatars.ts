@@ -4,7 +4,7 @@ import { useSnapshot } from "valtio";
 
 export default function useAvatars() {
   const avatarMap = useSnapshot(avatarMapState);
-  const avatars = React.useMemo(() => Array.from(avatarMap.values()), [avatarMap]);
+  const avatars = Array.from(avatarMapState.values());
   const sortedAvatars = React.useMemo(() => avatars.sort((a, b) => {
     if (a.info?.releaseStatus) {
       return -1;

@@ -14,13 +14,13 @@ export default function AuthProvider({
   const router = useRouter();
 
   React.useEffect(() => {
-    if (!init) return;
+    if (!appState.init) return;
     if (path === "/login") {
       if (appState.auth?.me) router.replace("/");
     } else if (!appState.auth?.credentials) {
       router.replace("/login");
     }
-  }, [auth, path, router]);
+  }, [init, auth, path, router]);
 
   return <>{children}</>;
 }
