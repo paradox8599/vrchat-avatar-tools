@@ -2,7 +2,8 @@
 
 ## TODO
 
+- system tray
+- notification
 - avatar id & copy icon alignment
-- tagging / comments
 - search
 - settings
