@@ -19,11 +19,8 @@ export function useAvatarFetcher() {
     const timer = setInterval(async () => {
       const avatar = getOutdatedAvatar();
       if (!avatar) return;
-      try {
-        avatar.info = await vrchatGetAvatarInfo(avatar.id);
-      } finally {
-        avatar.lastFetch = new Date().toISOString();
-      }
+      avatar.info = await vrchatGetAvatarInfo(avatar.id);
+      avatar.lastFetch = new Date().toISOString();
     }, INTERVAL);
 
     return () => {

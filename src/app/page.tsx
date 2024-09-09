@@ -26,6 +26,25 @@ export default function Page() {
 
   useAvatarFetcher();
 
+  function onAvatarIdAdd() {
+    {
+      if (
+        !addAvatarId.startsWith("avtr_") &&
+        !addAvatarId.startsWith("https://vrchat.com/home/avatar/")
+      ) {
+        return;
+      }
+      const idToAdd = addAvatarId.replace(
+        "https://vrchat.com/home/avatar/",
+        "",
+      );
+      if (!appState.avatars.find((a) => a.id === idToAdd)) {
+        appState.avatars.push({ id: idToAdd });
+      }
+      setAddAvatarId("");
+    }
+  }
+
   return (
     <main className="p-4">
       <div className="flex flex-row items-center justify-between gap-4">
@@ -37,22 +56,7 @@ export default function Page() {
         </Avatar>
         <form
           className="w-full flex justify-between gap-2"
-          action={() => {
-            if (
-              !addAvatarId.startsWith("avtr_") &&
-              !addAvatarId.startsWith("https://vrchat.com/home/avatar/")
-            ) {
-              return;
-            }
-            const idToAdd = addAvatarId.replace(
-              "https://vrchat.com/home/avatar/",
-              "",
-            );
-            if (!appState.avatars.find((a) => a.id === idToAdd)) {
-              appState.avatars.push({ id: idToAdd });
-            }
-            setAddAvatarId("");
-          }}
+          action={onAvatarIdAdd}
         >
           <Input
             name="avatarId"

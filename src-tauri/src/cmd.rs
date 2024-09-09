@@ -60,9 +60,12 @@ pub async fn vrchat_get_avatar_info(
     let config = config.read().await;
     let avatar: Avatar = vrchatapi::apis::avatars_api::get_avatar(&config, &avatar_id)
         .await
-        .map_err(|e| {
-            println!("{}", e);
-            AppError::AuthFailed
+        .map_err(|e| match e {
+            vrchatapi::apis::Error::ResponseError(e) => match e.status {
+                reqwest::StatusCode::NOT_FOUND => AppError::AvatarIsPrivate,
+                _ => AppError::AuthFailed,
+            },
+            _ => AppError::UnknownError,
         })?;
     Ok(avatar)
 }

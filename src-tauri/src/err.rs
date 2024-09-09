@@ -8,4 +8,10 @@ pub enum AppError {
 
     #[error("verification failed")]
     VerificationFailed,
+
+    #[error("unknown error")]
+    UnknownError,
+
+    #[error("avatar is private")]
+    AvatarIsPrivate,
 }

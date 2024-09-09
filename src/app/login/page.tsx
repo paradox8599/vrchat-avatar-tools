@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/input-otp";
 import { REGEXP_ONLY_DIGITS } from "input-otp";
 import React from "react";
-import { LoginResult, UserInfo } from "../../types";
+import { LoginStatus, UserInfo } from "../../types";
 import { vrchatLogin, vrchatVerifyEmailOtp } from "@/lib/api";
 
 export type LoginSuccess = UserInfo;
@@ -19,7 +19,7 @@ export function isLoginSuccess(result: GetMeResult): result is LoginSuccess {
 }
 
 export default function Page() {
-  const [loginResult, setLoginResult] = React.useState<LoginResult>();
+  const [loginResult, setLoginResult] = React.useState<LoginStatus>();
   const [isLoading, setIsLoading] = React.useState(false);
   const [otpCode, setOtpCode] = React.useState("");
 
@@ -46,7 +46,7 @@ export default function Page() {
   return (
     <main className="h-full p-4 flex-col flex-center">
       {/* Login */}
-      {[undefined, LoginResult.Failed].includes(loginResult) && (
+      {[undefined, LoginStatus.Failed].includes(loginResult) && (
         <form
           className="max-w-sm w-full flex-col flex-center gap-2"
           action={onLogin}
@@ -76,7 +76,7 @@ export default function Page() {
       )}
 
       {/* Needs Verify */}
-      {loginResult === LoginResult.NeedsVerify && (
+      {loginResult === LoginStatus.NeedsVerify && (
         <div className="flex-center flex-col gap-4">
           <h1 className="font-semibold">输入验证码</h1>
           <InputOTP

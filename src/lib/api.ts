@@ -1,10 +1,10 @@
-import { appState } from "@/state";
+import { appState, clearAuth } from "@/state";
 import {
   Avatar,
   GetMeResult,
   isLoginSuccess,
   LoginCredentials,
-  LoginResult,
+  LoginStatus,
 } from "@/types";
 import {
   invoke as _invoke,
@@ -29,7 +29,9 @@ async function invoke<T>(
     return await _invoke<T>(cmd, args, options);
   } catch (e) {
     console.log(e);
-    appState.auth = undefined;
+    if (e === "AuthFailed") {
+      clearAuth();
+    }
     throw e;
   }
 }
@@ -53,63 +55,77 @@ export async function hasLoggedIn() {
 }
 
 export async function vrchatLogin(credentials: LoginCredentials) {
-  appState.auth = { credentials };
+  appState.auth.credentials = credentials;
   await invoke(API_NAMES.vrchatLogin, credentials);
   const me = await hasLoggedIn();
 
   // Needs verify
   if (me === undefined) {
-    return LoginResult.NeedsVerify;
+    appState.auth.status = LoginStatus.NeedsVerify;
+    return LoginStatus.NeedsVerify;
   }
 
   // Login failed
   else if (me === false) {
-    appState.auth = undefined;
-    return LoginResult.Failed;
+    clearAuth();
+    return LoginStatus.Failed;
   }
 
   // Login succeeded
   else {
-    appState.auth = { credentials, me };
-    return LoginResult.Success;
+    appState.auth = { status: LoginStatus.Success, credentials, me };
+    return LoginStatus.Success;
   }
 }
 
 export async function vrchatVerifyEmailOtp(code: string) {
   try {
     const res: boolean = await invoke(API_NAMES.vrchatVerifyEmailOtp, { code });
-    if (!res) false;
+    if (!res) {
+      clearAuth();
+      return LoginStatus.Failed;
+    }
 
     const me = await hasLoggedIn();
 
     // Needs verify
     if (me === undefined) {
-      return LoginResult.NeedsVerify;
+      appState.auth.status = LoginStatus.NeedsVerify;
+      return LoginStatus.NeedsVerify;
     }
 
     // Login failed
     else if (me === false) {
-      appState.auth = undefined;
-      return LoginResult.Failed;
+      clearAuth();
+      return LoginStatus.Failed;
     }
 
     // Login succeeded
     else {
-      if (!appState.auth) return LoginResult.Failed;
+      if (!appState.auth) {
+        clearAuth();
+        return LoginStatus.Failed;
+      }
       appState.auth.me = me;
-      return LoginResult.Success;
+      appState.auth.status = LoginStatus.Success;
+      return LoginStatus.Success;
     }
   } catch (e) {
     console.error("vrchatVerifyEmailOtp", e);
-    appState.auth = undefined;
-    return LoginResult.Failed;
+    clearAuth();
+    return LoginStatus.Failed;
   }
 }
 
 export async function vrchatGetAvatarInfo(avatarId: string) {
-  const avatarInfo: Avatar["info"] = await invoke(
-    API_NAMES.vrchatGetAvatarInfo,
-    { avatarId },
-  );
-  return avatarInfo;
+  try {
+    const avatarInfo: Avatar["info"] = await invoke(
+      API_NAMES.vrchatGetAvatarInfo,
+      { avatarId },
+    );
+    return avatarInfo;
+  } catch (e) {
+    console.log(e);
+    return undefined;
+  }
 }

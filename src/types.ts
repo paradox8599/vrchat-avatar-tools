@@ -99,7 +99,8 @@ export function isLoginSuccess(result: GetMeResult): result is LoginSuccess {
   return "displayName" in result;
 }
 
-export enum LoginResult {
+export enum LoginStatus {
+  NotLoggedIn,
   Success,
   NeedsVerify,
   Failed,
