@@ -6,6 +6,9 @@
     "main"
   ],
   "permissions": [
-    "core:default"
+    "core:app:default",
+    "store:default",
+    "shell:default",
+    "clipboard-manager:allow-write-text"
   ]
 }
