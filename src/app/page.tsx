@@ -1,101 +1,163 @@
-import Image from "next/image";
+"use client";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { useAvatarFetcher } from "@/hooks/useAvatarFetcher";
+import { appState, logout } from "@/state";
+import { Copy, Trash2 } from "lucide-react";
+import React from "react";
+import { useSnapshot } from "valtio";
+import { writeText } from "@tauri-apps/plugin-clipboard-manager";
+import { useToast } from "@/hooks/use-toast";
+import { open } from "@tauri-apps/plugin-shell";
 
-export default function Home() {
+export default function Page() {
+  const { auth, avatars } = useSnapshot(appState);
+  const [addAvatarId, setAddAvatarId] = React.useState("");
+  const { toast } = useToast();
+
+  useAvatarFetcher();
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+    <main className="p-4">
+      <div className="flex flex-row items-center justify-between gap-4">
+        <Avatar className="relative avatar-btn" onClick={() => logout()}>
+          <AvatarImage src={auth?.me?.currentAvatarThumbnailImageUrl} />
+          <div className="avatar-tooltip absolute inset-auto h-full w-full flex-center text-white text-sm cursor-pointer bg-black bg-opacity-50">
+            退出
+          </div>
+        </Avatar>
+        <form
+          className="w-full flex justify-between gap-2"
+          action={() => {
+            if (
+              !addAvatarId.startsWith("avtr_") &&
+              !addAvatarId.startsWith("https://vrchat.com/home/avatar/")
+            ) {
+              return;
+            }
+            const idToAdd = addAvatarId.replace(
+              "https://vrchat.com/home/avatar/",
+              "",
+            );
+            if (!appState.avatars.find((a) => a.id === idToAdd)) {
+              appState.avatars.push({ id: idToAdd });
+            }
+            setAddAvatarId("");
+          }}
         >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
+          <Input
+            name="avatarId"
+            value={addAvatarId}
+            onChange={(e) => setAddAvatarId(e.target.value.trim())}
+            placeholder="输入模型 ID..."
           />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+          <Button type="submit" className="w-full max-w-32">
+            添加
+          </Button>
+        </form>
+      </div>
+      <div>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>状态</TableHead>
+              <TableHead>封面</TableHead>
+              <TableHead>模型 ID</TableHead>
+              <TableHead>上传者</TableHead>
+              <TableHead>上传时间</TableHead>
+              <TableHead>修改时间</TableHead>
+              <TableHead>状态获取时间</TableHead>
+              <TableHead></TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {Object.values(avatars)
+              .sort((a, b) => {
+                if (a.info?.releaseStatus) {
+                  return -1;
+                } else if (b.info?.releaseStatus) {
+                  return 1;
+                }
+                return (
+                  new Date(a.lastFetch ?? 0).getTime() -
+                  new Date(b.lastFetch ?? 0).getTime()
+                );
+              })
+              .map((avatar) => {
+                return (
+                  <TableRow key={avatar.id}>
+                    <TableCell className="uppercase font-semibold text-red-500">
+                      {avatar.info?.releaseStatus}
+                    </TableCell>
+                    <TableCell>
+                      <Avatar
+                        className="cursor-pointer"
+                        onClick={() =>
+                          open(`https://vrchat.com/home/avatar/${avatar.id}`)
+                        }
+                      >
+                        <AvatarImage src={avatar.info?.thumbnailImageUrl} />
+                      </Avatar>
+                    </TableCell>
+                    <TableCell>
+                      <span
+                        className="cursor-pointer flex items-center gap-2"
+                        onClick={() => {
+                          writeText(avatar.id).then(() => {
+                            toast({
+                              title: "模型ID 已复制到剪切板",
+                              description: avatar.id,
+                            });
+                          });
+                        }}
+                      >
+                        {avatar.id}
+                        <Copy size={16} />
+                      </span>
+                    </TableCell>
+                    <TableCell>
+                      <span
+                        className="font-semibold cursor-pointer"
+                        onClick={() =>
+                          open(
+                            `https://vrchat.com/home/user/${avatar.info?.authorId}`,
+                          )
+                        }
+                      >
+                        {avatar.info?.authorName}
+                      </span>
+                    </TableCell>
+                    <TableCell>{avatar.info?.created_at}</TableCell>
+                    <TableCell>{avatar.info?.updated_at}</TableCell>
+                    <TableCell>{avatar.lastFetch}</TableCell>
+                    <TableCell>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => {
+                          appState.avatars = appState.avatars.filter(
+                            (a) => a.id !== avatar.id,
+                          );
+                        }}
+                      >
+                        <Trash2 color="red" size="18" strokeWidth="1" />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+          </TableBody>
+        </Table>
+      </div>
+    </main>
   );
 }
