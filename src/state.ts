@@ -15,11 +15,13 @@ export type AppState = {
     me?: UserInfo;
   };
   avatars: Avatar[];
+  settings: { avatarFetchInterval: number; avatarStatusExpiresHr: number };
 };
 
 export const appState: AppState = proxy({
   auth: { status: LoginStatus.NotLoggedIn },
   avatars: [],
+  settings: { avatarFetchInterval: 3000, avatarStatusExpiresHr: 1 },
 });
 
 subscribe(appState, async () => {

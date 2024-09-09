@@ -19,6 +19,7 @@ import { writeText } from "@tauri-apps/plugin-clipboard-manager";
 import { useToast } from "@/hooks/use-toast";
 import { open } from "@tauri-apps/plugin-shell";
 import { format } from "date-fns";
+import Link from "next/link";
 
 export default function Page() {
   const { auth, avatars } = useSnapshot(appState);
@@ -49,12 +50,14 @@ export default function Page() {
   return (
     <main className="p-4">
       <div className="flex flex-row items-center justify-between gap-4">
-        <Avatar className="relative avatar-btn" onClick={() => logout()}>
-          <AvatarImage src={auth?.me?.currentAvatarThumbnailImageUrl} />
-          <div className="avatar-tooltip absolute inset-auto h-full w-full flex-center text-white text-sm cursor-pointer bg-black bg-opacity-50">
-            退出
-          </div>
-        </Avatar>
+        <Link href="/settings">
+          <Avatar className="relative avatar-btn">
+            <AvatarImage src={auth?.me?.currentAvatarThumbnailImageUrl} />
+            <div className="avatar-tooltip absolute inset-auto h-full w-full flex-center text-white text-sm cursor-pointer bg-black bg-opacity-50">
+              设置
+            </div>
+          </Avatar>
+        </Link>
 
         <form
           className="w-full flex justify-between gap-2"

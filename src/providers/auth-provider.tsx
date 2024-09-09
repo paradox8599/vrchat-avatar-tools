@@ -11,7 +11,7 @@ export default function AuthProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const { auth } = useSnapshot(appState);
+  const { auth, init } = useSnapshot(appState);
   const path = usePathname();
   const router = useRouter();
 
@@ -30,6 +30,7 @@ export default function AuthProvider({
   );
 
   React.useEffect(() => {
+    if (!init) return;
     if (path === "/login") {
       if (appState.auth?.me) router.replace("/");
     } else if (!appState.auth?.credentials) {

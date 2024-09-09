@@ -1,5 +1,5 @@
 "use client";
-import { appState  } from "@/state";
+import { appState } from "@/state";
 import { usePathname, useRouter } from "next/navigation";
 import React from "react";
 import { useSnapshot } from "valtio";
@@ -17,7 +17,7 @@ export default function InitProvider({
     if (!appState.init) {
       router.replace("/splash");
     } else if (path === "/splash") {
-      router.push("/");
+      router.push("/settings");
     }
   }, [init, path, router]);
 
