@@ -4,6 +4,5 @@
 
 - avatar id & copy icon alignment
 - tagging / comments
-- user-friendly date time display
 - search
-- sort
+- settings

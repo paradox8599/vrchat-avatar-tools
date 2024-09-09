@@ -18,6 +18,7 @@ import { useSnapshot } from "valtio";
 import { writeText } from "@tauri-apps/plugin-clipboard-manager";
 import { useToast } from "@/hooks/use-toast";
 import { open } from "@tauri-apps/plugin-shell";
+import { format, formatRelative } from "date-fns";
 
 export default function Page() {
   const { auth, avatars } = useSnapshot(appState);
@@ -99,9 +100,11 @@ export default function Page() {
               .map((avatar) => {
                 return (
                   <TableRow key={avatar.id}>
+                    {/* 状态 */}
                     <TableCell className="uppercase font-semibold text-red-500">
                       {avatar.info?.releaseStatus}
                     </TableCell>
+                    {/* 封面 */}
                     <TableCell>
                       <Avatar
                         className="cursor-pointer"
@@ -112,6 +115,7 @@ export default function Page() {
                         <AvatarImage src={avatar.info?.thumbnailImageUrl} />
                       </Avatar>
                     </TableCell>
+                    {/* 模型 ID */}
                     <TableCell>
                       <span
                         className="cursor-pointer flex items-center gap-2"
@@ -128,6 +132,7 @@ export default function Page() {
                         <Copy size={16} />
                       </span>
                     </TableCell>
+                    {/* 上传者 */}
                     <TableCell>
                       <span
                         className="font-semibold cursor-pointer"
@@ -140,9 +145,22 @@ export default function Page() {
                         {avatar.info?.authorName}
                       </span>
                     </TableCell>
-                    <TableCell>{avatar.info?.created_at}</TableCell>
-                    <TableCell>{avatar.info?.updated_at}</TableCell>
-                    <TableCell>{avatar.lastFetch}</TableCell>
+                    {/* 上传时间 */}
+                    <TableCell>
+                      {avatar.info?.created_at &&
+                        format(avatar.info?.created_at, "yy-MM-dd HH:mm")}
+                    </TableCell>
+                    {/* 修改时间 */}
+                    <TableCell>
+                      {avatar.info?.updated_at &&
+                        format(avatar.info?.updated_at, "yy-MM-dd HH:mm")}
+                    </TableCell>
+                    {/* 状态获取时间 */}
+                    <TableCell>
+                      {avatar.lastFetch &&
+                        format(avatar.lastFetch, "yy-MM-dd HH:mm")}
+                    </TableCell>
+                    {/* 删除 */}
                     <TableCell>
                       <Button
                         variant="ghost"
