@@ -27,7 +27,7 @@ export default function InitProvider({
     },
     {
       revalidateIfStale: false,
-      revalidateOnFocus: true,
+      revalidateOnFocus: false,
       revalidateOnReconnect: false,
     },
   );

@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { appState } from "@/state/app";
+import { appState, logout } from "@/state/app";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { useSnapshot } from "valtio";
@@ -28,6 +28,13 @@ export default function Page() {
           </Button>
 
           <h1 className="font-semibold text-xl">设置</h1>
+
+          <Button
+            className="absolute right-0 top-0 bottom-0"
+            onClick={() => logout()}
+          >
+            退出登录
+          </Button>
         </div>
 
         {/* options */}

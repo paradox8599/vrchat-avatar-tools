@@ -28,7 +28,7 @@ async function invoke<T>(
   try {
     return await _invoke<T>(cmd, args, options);
   } catch (e) {
-    console.log(e);
+    console.error(e);
     if (e === "AuthFailed") {
       clearAuth();
     }
@@ -42,22 +42,22 @@ async function invoke<T>(
  *  - undefined if needsVerify
  *  - false if login failed
  */
-export async function hasLoggedIn() {
+async function vrchatGetMe() {
   if (!appState.auth?.credentials) return false;
   try {
     const me: GetMeResult = await invoke(API_NAMES.vrchatGetMe);
     if (isLoginSuccess(me)) return me;
     return me.requiresTwoFactorAuth.length > 0 ? undefined : false;
   } catch (e) {
-    throw e;
-    // TODO:
+    console.error("vrchatGetMe", e);
+    return false;
   }
 }
 
 export async function vrchatLogin(credentials: LoginCredentials) {
   appState.auth.credentials = credentials;
   await invoke(API_NAMES.vrchatLogin, credentials);
-  const me = await hasLoggedIn();
+  const me = await vrchatGetMe();
 
   // Needs verify
   if (me === undefined) {
@@ -86,7 +86,7 @@ export async function vrchatVerifyEmailOtp(code: string) {
       return LoginStatus.Failed;
     }
 
-    const me = await hasLoggedIn();
+    const me = await vrchatGetMe();
 
     // Needs verify
     if (me === undefined) {
@@ -125,7 +125,7 @@ export async function vrchatGetAvatarInfo(avatarId: string) {
     );
     return avatarInfo;
   } catch (e) {
-    console.log(e);
+    console.error("vrchatGetAvatarInfo", e);
     return undefined;
   }
 }

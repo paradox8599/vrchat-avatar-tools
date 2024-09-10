@@ -4,32 +4,44 @@ use vrchatapi::{
     models::{Avatar, EitherUserOrTwoFactor},
 };
 
-use crate::{err::AppError, Arw};
+use crate::{
+    cookies::{clear_cookies, save_cookies},
+    err::AppError,
+    Arw,
+};
 
 #[command]
 pub async fn vrchat_login(
+    app: tauri::AppHandle,
     config: tauri::State<'_, Arw<Configuration>>,
     username: String,
     password: String,
 ) -> Result<(), AppError> {
     let mut config = config.write().await;
+    clear_cookies(&app)?;
     config.basic_auth = Some((username, Some(password)));
+    save_cookies(&app)?;
     Ok(())
 }
 
 #[command]
 pub async fn vrchat_get_me(
+    app: tauri::AppHandle,
     config: tauri::State<'_, Arw<Configuration>>,
 ) -> Result<EitherUserOrTwoFactor, AppError> {
     let config = config.write().await;
     let me = vrchatapi::apis::authentication_api::get_current_user(&config)
         .await
         .map_err(|_e| AppError::AuthFailed)?;
+
+    save_cookies(&app)?;
+
     Ok(me)
 }
 
 #[command]
 pub async fn vrchat_verify_emailotp(
+    app: tauri::AppHandle,
     config: tauri::State<'_, Arw<Configuration>>,
     code: String,
 ) -> Result<bool, AppError> {
@@ -40,20 +52,29 @@ pub async fn vrchat_verify_emailotp(
     )
     .await;
     let verify_result = verify_result.map_err(|_e| AppError::VerificationFailed)?;
+
+    save_cookies(&app)?;
+
     Ok(verify_result.verified)
 }
 
 #[command]
-pub async fn vrchat_logout(config: tauri::State<'_, Arw<Configuration>>) -> Result<(), AppError> {
+pub async fn vrchat_logout(
+    app: tauri::AppHandle,
+    config: tauri::State<'_, Arw<Configuration>>,
+) -> Result<(), AppError> {
+    clear_cookies(&app)?;
     let config = config.write().await;
     vrchatapi::apis::authentication_api::logout(&config)
         .await
         .map_err(|_e| AppError::AuthFailed)?;
+
     Ok(())
 }
 
 #[command]
 pub async fn vrchat_get_avatar_info(
+    app: tauri::AppHandle,
     config: tauri::State<'_, Arw<Configuration>>,
     avatar_id: String,
 ) -> Result<Avatar, AppError> {
@@ -67,5 +88,8 @@ pub async fn vrchat_get_avatar_info(
             },
             _ => AppError::UnknownError,
         })?;
+
+    save_cookies(&app)?;
+
     Ok(avatar)
 }

@@ -10,6 +10,7 @@ import { REGEXP_ONLY_DIGITS } from "input-otp";
 import React from "react";
 import { LoginStatus } from "../../types";
 import { vrchatLogin, vrchatVerifyEmailOtp } from "@/lib/api";
+import { logout } from "@/state/app";
 
 export default function Page() {
   const [loginResult, setLoginResult] = React.useState<LoginStatus>();
@@ -22,7 +23,6 @@ export default function Page() {
     const password = formData.get("password") as string;
     const result = await vrchatLogin({ username, password });
     setLoginResult(result);
-    console.log("login result", result);
     setIsLoading(false);
   }
 
@@ -30,14 +30,14 @@ export default function Page() {
     setOtpCode(code);
     if (code.length !== 6) return;
     setIsLoading(true);
-    const result = await vrchatVerifyEmailOtp(code);
-    console.log("verify result", result);
+    await vrchatVerifyEmailOtp(code);
     setOtpCode("");
     setIsLoading(false);
   }
 
   return (
     <main className="h-full p-4 flex-col flex-center">
+      <Button onClick={() => logout()}>Logout</Button>
       {/* Login */}
       {[undefined, LoginStatus.Failed].includes(loginResult) && (
         <form

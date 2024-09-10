@@ -1,5 +1,8 @@
 pub mod cmd;
+pub mod cookies;
 pub mod err;
+
+use cookies::load_cookies;
 
 use cmd::{
     vrchat_get_avatar_info, vrchat_get_me, vrchat_login, vrchat_logout, vrchat_verify_emailotp,
@@ -12,15 +15,19 @@ use vrchatapi::apis::configuration::Configuration;
 pub type StdResult<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 pub type Arw<T> = Arc<RwLock<T>>;
 
-const UA: &str =  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36";
-const BASE_URL: &str = "https://vrchat.com/api/1";
+pub const UA: &str =  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36";
+pub const BASE_URL: &str = "https://vrchat.com/api/1";
 
 pub fn init(app: &mut tauri::App) -> StdResult<()> {
+    let cookies = load_cookies(app.handle())?;
+    app.manage(cookies.clone());
+
     let config = Configuration {
         base_path: BASE_URL.to_owned(),
         user_agent: Some(UA.to_owned()),
         client: reqwest::Client::builder()
-            .cookie_store(true)
+            // .cookie_store(true)
+            .cookie_provider(cookies)
             .build()
             .unwrap(),
         basic_auth: None,
