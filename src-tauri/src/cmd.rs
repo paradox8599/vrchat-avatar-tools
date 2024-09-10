@@ -10,6 +10,13 @@ use crate::{
     Arw,
 };
 
+const WHITELISTED: [&str; 2] = [
+    // uu
+    "usr_352b1ce8-bec0-4f64-a648-b611d23b0a6c",
+    // Brntm
+    "usr_1c4f1844-9467-4566-b8df-4fad78d647ba",
+];
+
 #[command]
 pub async fn vrchat_login(
     app: tauri::AppHandle,
@@ -33,6 +40,13 @@ pub async fn vrchat_get_me(
     let me = vrchatapi::apis::authentication_api::get_current_user(&config)
         .await
         .map_err(|_e| AppError::AuthFailed)?;
+
+    if let EitherUserOrTwoFactor::CurrentUser(me) = &me {
+        if !WHITELISTED.contains(&me.id.as_str()) {
+            clear_cookies(&app)?;
+            return Err(AppError::AuthFailed);
+        }
+    }
 
     save_cookies(&app)?;
 
