@@ -10,7 +10,6 @@ import { REGEXP_ONLY_DIGITS } from "input-otp";
 import React from "react";
 import { LoginStatus } from "../../types";
 import { vrchatLogin, vrchatVerifyEmailOtp } from "@/lib/api";
-import { logout } from "@/state/app";
 
 export default function Page() {
   const [loginResult, setLoginResult] = React.useState<LoginStatus>();
@@ -37,7 +36,6 @@ export default function Page() {
 
   return (
     <main className="h-full p-4 flex-col flex-center">
-      <Button onClick={() => logout()}>Logout</Button>
       {/* Login */}
       {[undefined, LoginStatus.Failed].includes(loginResult) && (
         <form
