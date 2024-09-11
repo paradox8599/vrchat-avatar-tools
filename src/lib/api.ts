@@ -20,6 +20,13 @@ export const API_NAMES = {
   vrchatGetAvatarInfo: "vrchat_get_avatar_info",
 };
 
+export interface IResult<T> {
+  inner: T;
+}
+export interface IOk<T> extends IResult<T> { }
+export interface IErr<T> extends IResult<T> { }
+
+
 async function invoke<T>(
   cmd: string,
   args?: InvokeArgs,
@@ -29,9 +36,9 @@ async function invoke<T>(
     return await _invoke<T>(cmd, args, options);
   } catch (e) {
     console.error(e);
-    if (e === "AuthFailed") {
-      clearAuth();
-    }
+    // if (e === "AuthFailed") {
+    //   clearAuth();
+    // }
     throw e;
   }
 }
@@ -42,7 +49,7 @@ async function invoke<T>(
  *  - undefined if needsVerify
  *  - false if login failed
  */
-async function vrchatGetMe() {
+export async function vrchatGetMe() {
   if (!appState.auth?.credentials) return false;
   try {
     const me: GetMeResult = await invoke(API_NAMES.vrchatGetMe);

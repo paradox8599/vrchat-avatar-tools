@@ -3,15 +3,19 @@ use thiserror::Error;
 
 #[derive(Error, Debug, Serialize, Deserialize)]
 pub enum AppError {
-    #[error("auth failed")]
-    AuthFailed,
+    #[error("id not in whitelist: {0}")]
+    NotInWhiteList(String),
 
-    #[error("verification failed")]
-    VerificationFailed,
+    #[error("auth failed: {0}")]
+    AuthFailed(String),
 
-    #[error("unknown error")]
-    UnknownError,
+    #[error("verification failed: {0}")]
+    VerificationFailed(String),
 
-    #[error("avatar is private")]
-    AvatarIsPrivate,
+
+    #[error("unknown error {0}")]
+    UnknownError(String),
+
+    #[error("avatar is private: {0}")]
+    AvatarIsPrivate(String),
 }

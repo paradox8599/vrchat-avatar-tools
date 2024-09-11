@@ -34,8 +34,8 @@ export async function loadAppState() {
 }
 
 export async function logout() {
-  await invoke("vrchat_logout");
   clearAuth();
+  await invoke("vrchat_logout");
 }
 
 export function clearAuth() {

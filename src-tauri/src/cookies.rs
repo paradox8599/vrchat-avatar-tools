@@ -36,7 +36,9 @@ pub fn load_cookies(app: &tauri::AppHandle) -> StdResult<Arc<CookieStoreMutex>> 
                 .parse(value.as_str().unwrap(), &url)?;
         }
     }
+
     // println!("load cookies: {:?}", cookies);
+
     Ok(cookies)
 }
 
@@ -56,7 +58,9 @@ pub fn save_cookies(app: &tauri::AppHandle) -> Result<(), AppError> {
         .map(|c| format!("{}={}", c.name(), c.value()))
         .collect::<Vec<String>>();
     let cookies_value = serde_json::json!(cookies_str);
+
     // println!("save cookies value: {:?}", cookies_value);
+
     let path = std::path::PathBuf::from(REQWEST_STORE_KEY);
     tauri_plugin_store::with_store(app.clone(), stores, path, |store| {
         store.insert(COOKIES_KEY.to_owned(), cookies_value)?;

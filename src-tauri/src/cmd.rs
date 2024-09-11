@@ -1,6 +1,11 @@
 use tauri::command;
 use vrchatapi::{
-    apis::configuration::Configuration,
+    apis::{
+        authentication_api::{GetCurrentUserError, LogoutError, Verify2FaEmailCodeError},
+        avatars_api::GetAvatarError,
+        configuration::Configuration,
+        Error,
+    },
     models::{Avatar, EitherUserOrTwoFactor},
 };
 
@@ -37,20 +42,37 @@ pub async fn vrchat_get_me(
     config: tauri::State<'_, Arw<Configuration>>,
 ) -> Result<EitherUserOrTwoFactor, AppError> {
     let config = config.write().await;
-    let me = vrchatapi::apis::authentication_api::get_current_user(&config)
-        .await
-        .map_err(|_e| AppError::AuthFailed)?;
-
-    if let EitherUserOrTwoFactor::CurrentUser(me) = &me {
-        if !WHITELISTED.contains(&me.id.as_str()) {
-            clear_cookies(&app)?;
-            return Err(AppError::AuthFailed);
-        }
-    }
+    let me = vrchatapi::apis::authentication_api::get_current_user(&config).await;
 
     save_cookies(&app)?;
 
-    Ok(me)
+    match me {
+        Ok(me) => {
+            if let EitherUserOrTwoFactor::CurrentUser(me) = &me {
+                if !WHITELISTED.contains(&me.id.as_str()) {
+                    eprintln!("{} not in whitelist", me.id);
+                    clear_cookies(&app)?;
+                    return Err(AppError::NotInWhiteList(me.id.to_owned()));
+                }
+            }
+            Ok(me)
+        }
+        Err(e) => Err(match &e {
+            Error::ResponseError(e) => match &e.entity {
+                Some(entity) => match entity {
+                    GetCurrentUserError::Status401(e) => AppError::AuthFailed(format!("{:?}", e)),
+                    GetCurrentUserError::UnknownValue(v) => AppError::UnknownError(v.to_string()),
+                },
+                None => AppError::UnknownError(
+                    serde_json::json!({
+                        "status": e.status.to_string(), "content": e.content
+                    })
+                    .to_string(),
+                ),
+            },
+            e => AppError::UnknownError(e.to_string()),
+        }),
+    }
 }
 
 #[command]
@@ -65,7 +87,24 @@ pub async fn vrchat_verify_emailotp(
         vrchatapi::models::TwoFactorEmailCode { code },
     )
     .await;
-    let verify_result = verify_result.map_err(|_e| AppError::VerificationFailed)?;
+    let verify_result = verify_result.map_err(|e| match &e {
+        Error::ResponseError(e) => match &e.entity {
+            Some(entity) => match entity {
+                //
+                // TODO: make auth error more specific for email verification?
+                //
+                Verify2FaEmailCodeError::Status401(e) => AppError::AuthFailed(format!("{:?}", e)),
+                Verify2FaEmailCodeError::UnknownValue(v) => AppError::UnknownError(v.to_string()),
+            },
+            None => AppError::UnknownError(
+                serde_json::json!({
+                    "status": e.status.to_string(), "content": e.content
+                })
+                .to_string(),
+            ),
+        },
+        e => AppError::UnknownError(e.to_string()),
+    })?;
 
     save_cookies(&app)?;
 
@@ -81,8 +120,21 @@ pub async fn vrchat_logout(
     let config = config.write().await;
     vrchatapi::apis::authentication_api::logout(&config)
         .await
-        .map_err(|_e| AppError::AuthFailed)?;
-
+        .map_err(|e| match &e {
+            Error::ResponseError(e) => match &e.entity {
+                Some(entity) => match entity {
+                    LogoutError::Status401(e) => AppError::AuthFailed(format!("{:?}", e)),
+                    LogoutError::UnknownValue(v) => AppError::UnknownError(v.to_string()),
+                },
+                None => AppError::UnknownError(
+                    serde_json::json!({
+                        "status": e.status.to_string(), "content": e.content
+                    })
+                    .to_string(),
+                ),
+            },
+            e => AppError::UnknownError(e.to_string()),
+        })?;
     Ok(())
 }
 
@@ -95,12 +147,21 @@ pub async fn vrchat_get_avatar_info(
     let config = config.read().await;
     let avatar: Avatar = vrchatapi::apis::avatars_api::get_avatar(&config, &avatar_id)
         .await
-        .map_err(|e| match e {
-            vrchatapi::apis::Error::ResponseError(e) => match e.status {
-                reqwest::StatusCode::NOT_FOUND => AppError::AvatarIsPrivate,
-                _ => AppError::AuthFailed,
+        .map_err(|e| match &e {
+            Error::ResponseError(e) => match &e.entity {
+                Some(entity) => match entity {
+                    GetAvatarError::Status401(e) => AppError::AuthFailed(format!("{:?}", e)),
+                    GetAvatarError::Status404(e) => AppError::AvatarIsPrivate(format!("{:?}", e)),
+                    GetAvatarError::UnknownValue(v) => AppError::UnknownError(v.to_string()),
+                },
+                None => AppError::UnknownError(
+                    serde_json::json!({
+                        "status": e.status.to_string(), "content": e.content
+                    })
+                    .to_string(),
+                ),
             },
-            _ => AppError::UnknownError,
+            e => AppError::UnknownError(e.to_string()),
         })?;
 
     save_cookies(&app)?;

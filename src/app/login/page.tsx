@@ -9,7 +9,7 @@ import {
 import { REGEXP_ONLY_DIGITS } from "input-otp";
 import React from "react";
 import { LoginStatus } from "../../types";
-import { vrchatLogin, vrchatVerifyEmailOtp } from "@/lib/api";
+import { vrchatGetAvatarInfo, vrchatGetMe, vrchatLogin, vrchatVerifyEmailOtp } from "@/lib/api";
 
 export default function Page() {
   const [loginResult, setLoginResult] = React.useState<LoginStatus>();
@@ -36,6 +36,20 @@ export default function Page() {
 
   return (
     <main className="h-full p-4 flex-col flex-center">
+      <div>
+        <Button onClick={async () => {
+          await vrchatGetMe()
+        }}>GetMe</Button>
+
+        <Button onClick={async () => {
+          await vrchatVerifyEmailOtp("123456")
+        }}>verify email</Button>
+
+        <Button onClick={async () => {
+          await vrchatGetAvatarInfo("usr_44e01fa9-5017-484e-bf91-3bb64bb2d2f9")
+        }}>get avatar info</Button>
+
+      </div>
       {/* Login */}
       {[undefined, LoginStatus.Failed].includes(loginResult) && (
         <form
