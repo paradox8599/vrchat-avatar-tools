@@ -2,7 +2,9 @@ use reqwest::StatusCode;
 use tauri::command;
 use vrchatapi::{
     apis::{
-        authentication_api::{GetCurrentUserError, LogoutError, Verify2FaEmailCodeError},
+        authentication_api::{
+            GetCurrentUserError, LogoutError, Verify2FaEmailCodeError, Verify2FaError,
+        },
         avatars_api::GetAvatarError,
         configuration::Configuration,
         Error, ResponseContent,
@@ -114,6 +116,34 @@ pub async fn vrchat_verify_emailotp(
             Some(entity) => match entity {
                 Verify2FaEmailCodeError::Status401(e) => auth_error(e),
                 Verify2FaEmailCodeError::UnknownValue(v) => AppError::UnknownError(v.to_string()),
+            },
+        },
+        e => AppError::UnknownError(e.to_string()),
+    })?;
+
+    save_cookies(&app)?;
+
+    Ok(verify_result.verified)
+}
+
+#[command]
+pub async fn vrchat_verify_otp(
+    app: tauri::AppHandle,
+    config: tauri::State<'_, Arw<Configuration>>,
+    code: String,
+) -> Result<bool, AppError> {
+    let config = config.read().await;
+    let verify_result = vrchatapi::apis::authentication_api::verify2_fa(
+        &config,
+        vrchatapi::models::TwoFactorAuthCode { code },
+    )
+    .await;
+    let verify_result = verify_result.map_err(|e| match &e {
+        Error::ResponseError(e) => match &e.entity {
+            None => unknown_error(e),
+            Some(entity) => match entity {
+                Verify2FaError::Status401(e) => auth_error(e),
+                Verify2FaError::UnknownValue(v) => AppError::UnknownError(v.to_string()),
             },
         },
         e => AppError::UnknownError(e.to_string()),

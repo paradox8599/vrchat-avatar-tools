@@ -102,7 +102,8 @@ export function isLoginSuccess(result: GetMeResult): result is LoginSuccess {
 
 export enum LoginStatus {
   NotLoggedIn,
+  NotInWhitelist,
   Success,
   NeedsVerify,
-  Failed,
+  NeedsEmailVerify,
 }

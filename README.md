@@ -5,5 +5,5 @@
 - system tray
 - notification
 - avatar id & copy icon alignment
-- search
-- settings
+- search / filter
+- import / export
