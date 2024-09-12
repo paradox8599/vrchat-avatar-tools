@@ -4,7 +4,7 @@ use vrchatapi::{
         authentication_api::{GetCurrentUserError, LogoutError, Verify2FaEmailCodeError},
         avatars_api::GetAvatarError,
         configuration::Configuration,
-        Error,
+        Error, ResponseContent,
     },
     models::{Avatar, EitherUserOrTwoFactor},
 };
@@ -21,6 +21,24 @@ const WHITELISTED: [&str; 2] = [
     // Brntm
     "usr_1c4f1844-9467-4566-b8df-4fad78d647ba",
 ];
+
+fn auth_error(e: &vrchatapi::models::error::Error) -> AppError {
+    AppError::AuthFailed(
+        e.clone()
+            .error
+            .map(|s| s.message)
+            .unwrap_or(Some("".to_owned()))
+            .unwrap_or("".to_owned()),
+    )
+}
+
+fn unknown_error<T>(e: &ResponseContent<T>) -> AppError
+where
+    T: serde::Serialize,
+{
+    let json = serde_json::json!({ "status": e.status.to_string(), "content": e.content });
+    AppError::UnknownError(json.to_string())
+}
 
 #[command]
 pub async fn vrchat_login(
@@ -59,16 +77,11 @@ pub async fn vrchat_get_me(
         }
         Err(e) => Err(match &e {
             Error::ResponseError(e) => match &e.entity {
+                None => unknown_error(e),
                 Some(entity) => match entity {
-                    GetCurrentUserError::Status401(e) => AppError::AuthFailed(format!("{:?}", e)),
+                    GetCurrentUserError::Status401(e) => auth_error(e),
                     GetCurrentUserError::UnknownValue(v) => AppError::UnknownError(v.to_string()),
                 },
-                None => AppError::UnknownError(
-                    serde_json::json!({
-                        "status": e.status.to_string(), "content": e.content
-                    })
-                    .to_string(),
-                ),
             },
             e => AppError::UnknownError(e.to_string()),
         }),
@@ -89,19 +102,11 @@ pub async fn vrchat_verify_emailotp(
     .await;
     let verify_result = verify_result.map_err(|e| match &e {
         Error::ResponseError(e) => match &e.entity {
+            None => unknown_error(e),
             Some(entity) => match entity {
-                //
-                // TODO: make auth error more specific for email verification?
-                //
-                Verify2FaEmailCodeError::Status401(e) => AppError::AuthFailed(format!("{:?}", e)),
+                Verify2FaEmailCodeError::Status401(e) => auth_error(e),
                 Verify2FaEmailCodeError::UnknownValue(v) => AppError::UnknownError(v.to_string()),
             },
-            None => AppError::UnknownError(
-                serde_json::json!({
-                    "status": e.status.to_string(), "content": e.content
-                })
-                .to_string(),
-            ),
         },
         e => AppError::UnknownError(e.to_string()),
     })?;
@@ -122,16 +127,11 @@ pub async fn vrchat_logout(
         .await
         .map_err(|e| match &e {
             Error::ResponseError(e) => match &e.entity {
+                None => unknown_error(e),
                 Some(entity) => match entity {
-                    LogoutError::Status401(e) => AppError::AuthFailed(format!("{:?}", e)),
+                    LogoutError::Status401(e) => auth_error(e),
                     LogoutError::UnknownValue(v) => AppError::UnknownError(v.to_string()),
                 },
-                None => AppError::UnknownError(
-                    serde_json::json!({
-                        "status": e.status.to_string(), "content": e.content
-                    })
-                    .to_string(),
-                ),
             },
             e => AppError::UnknownError(e.to_string()),
         })?;
@@ -149,17 +149,12 @@ pub async fn vrchat_get_avatar_info(
         .await
         .map_err(|e| match &e {
             Error::ResponseError(e) => match &e.entity {
+                None => unknown_error(e),
                 Some(entity) => match entity {
-                    GetAvatarError::Status401(e) => AppError::AuthFailed(format!("{:?}", e)),
+                    GetAvatarError::Status401(e) => auth_error(e),
                     GetAvatarError::Status404(e) => AppError::AvatarIsPrivate(format!("{:?}", e)),
                     GetAvatarError::UnknownValue(v) => AppError::UnknownError(v.to_string()),
                 },
-                None => AppError::UnknownError(
-                    serde_json::json!({
-                        "status": e.status.to_string(), "content": e.content
-                    })
-                    .to_string(),
-                ),
             },
             e => AppError::UnknownError(e.to_string()),
         })?;
