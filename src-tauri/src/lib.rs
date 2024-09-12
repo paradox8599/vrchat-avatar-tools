@@ -6,6 +6,7 @@ use cookies::load_cookies;
 
 use cmd::{
     vrchat_get_avatar_info, vrchat_get_me, vrchat_login, vrchat_logout, vrchat_verify_emailotp,
+    vrchat_verify_otp,
 };
 use std::sync::Arc;
 use tauri::Manager;
@@ -48,9 +49,10 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![
             vrchat_login,
             vrchat_verify_emailotp,
+            vrchat_verify_otp,
             vrchat_get_me,
             vrchat_logout,
-            vrchat_get_avatar_info
+            vrchat_get_avatar_info,
         ])
         .setup(init)
         .run(tauri::generate_context!())

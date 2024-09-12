@@ -9,9 +9,10 @@ import {
 import { REGEXP_ONLY_DIGITS } from "input-otp";
 import React from "react";
 import { LoginStatus } from "../../types";
-import { vrchatLogin, vrchatVerifyEmailOtp } from "@/lib/api";
+import { vrchatLogin, vrchatVerifyEmailOtp, vrchatVerifyOtp } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
 import { LoaderCircle } from "lucide-react";
+import { appState } from "@/state/app";
 
 export default function Page() {
   const [loginResult, setLoginResult] = React.useState<LoginStatus>(LoginStatus.NotLoggedIn);
@@ -49,12 +50,22 @@ export default function Page() {
 
   async function onOtpInput(code: string) {
     setOtpCode(code);
-
     if (code.length !== 6) return;
+
     setIsLoading(true);
     (async () => {
       try {
-        const result = await vrchatVerifyEmailOtp(code);
+        let result: LoginStatus;
+        switch (appState.auth.status) {
+          case LoginStatus.NeedsVerify:
+            result = await vrchatVerifyOtp(code);
+            break;
+          case LoginStatus.NeedsEmailVerify:
+            result = await vrchatVerifyEmailOtp(code);
+            break;
+          default:
+            throw "暂无支持的验证方式"
+        }
         switch (result) {
           case LoginStatus.Success:
             toast({ title: "登录成功" });
@@ -66,10 +77,14 @@ export default function Page() {
           case LoginStatus.NeedsEmailVerify:
             toast({ title: "验证码错误" });
             break;
+          case LoginStatus.NotInWhitelist:
+            toast({ title: "尝试登录的账号不在白名单内" });
+            break;
         }
       } catch (e) {
         toast({ title: e as string });
       }
+      setLoginResult(appState.auth.status);
       setOtpCode("");
       setIsLoading(false);
     })();
@@ -95,6 +110,7 @@ export default function Page() {
               required
               readOnly={isLoading}
               disabled={isLoading}
+              defaultValue={appState.auth.credentials?.username}
               name="username"
               type="text"
               placeholder="用户名"
@@ -103,6 +119,7 @@ export default function Page() {
               required
               readOnly={isLoading}
               disabled={isLoading}
+              defaultValue={appState.auth.credentials?.password}
               name="password"
               type="password"
               placeholder="密码"

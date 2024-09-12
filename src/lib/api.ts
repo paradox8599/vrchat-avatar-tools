@@ -84,7 +84,8 @@ export async function vrchatGetMe() {
         appState.auth.status = LoginStatus.NotInWhitelist;
         return appState.auth.status;
     }
-    return LoginStatus.NotLoggedIn;
+    appState.auth.status = LoginStatus.NotLoggedIn;
+    return appState.auth.status;
   }
 }
 
@@ -96,7 +97,6 @@ async function checkAuth() {
       clearAuth();
   }
   return me;
-
 }
 
 export async function vrchatLogin(credentials: LoginCredentials) {
@@ -107,35 +107,23 @@ export async function vrchatLogin(credentials: LoginCredentials) {
 
 export async function vrchatVerifyEmailOtp(code: string) {
   try {
-    const res: boolean = await invoke(API_NAMES.vrchatVerifyEmailOtp, { code });
-    if (!res) {
-      console.log("email otp verification failed, clear auth");
-      clearAuth();
-      return LoginStatus.NotLoggedIn;
-    }
+    await invoke(API_NAMES.vrchatVerifyEmailOtp, { code });
     return await checkAuth();
   } catch (e) {
-    console.error(`caught at vrchatVerifyEmailOtp ${e}`);
-    clearAuth();
-    return LoginStatus.NotLoggedIn;
+    console.error(`caught at vrchatVerifyEmailOtp ${JSON.stringify(e)}`);
+    appState.auth.status = LoginStatus.NotLoggedIn;
+    return appState.auth.status;
   }
 }
 
 export async function vrchatVerifyOtp(code: string) {
   try {
-    const res: boolean = await invoke(API_NAMES.vrchatVerifyOtp, { code });
-
-    if (!res) {
-      console.log("otp verification failed, clear auth");
-      clearAuth();
-      return LoginStatus.NotLoggedIn;
-    }
+    await invoke(API_NAMES.vrchatVerifyOtp, { code });
     return await checkAuth();
-
   } catch (e) {
-    console.error(`caught at vrchatVerifyOtp ${e}`);
-    clearAuth();
-    return LoginStatus.NotLoggedIn;
+    console.error(`caught at vrchatVerifyOtp ${JSON.stringify(e)}`);
+    appState.auth.status = LoginStatus.NotLoggedIn;
+    return appState.auth.status;
   }
 }
 
@@ -148,6 +136,7 @@ export async function vrchatGetAvatarInfo(avatarId: string) {
     return avatarInfo;
   } catch (e) {
     const err = parseError(e);
+    console.log(`caught at vrchatGetAvatarInfo ${JSON.stringify(err)}`);
     switch (err.name) {
       case "AvatarIsPrivate":
         return undefined;
