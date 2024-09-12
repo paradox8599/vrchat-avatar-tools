@@ -57,7 +57,7 @@ export async function vrchatGetMe() {
       return appState.auth.status;
     }
     // needs emailotp verify
-    else if (me.requiresTwoFactorAuth.includes("emailotp")) {
+    else if (me.requiresTwoFactorAuth.includes("emailOtp")) {
       appState.auth.status = LoginStatus.NeedsEmailVerify;
       return appState.auth.status;
     }
