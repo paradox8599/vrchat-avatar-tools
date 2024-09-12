@@ -9,18 +9,33 @@ import {
 import { REGEXP_ONLY_DIGITS } from "input-otp";
 import React from "react";
 import { LoginStatus } from "../../types";
-import { vrchatGetAvatarInfo, vrchatGetMe, vrchatLogin, vrchatVerifyEmailOtp } from "@/lib/api";
+import {
+  vrchatGetAvatarInfo,
+  vrchatGetMe,
+  vrchatLogin,
+  vrchatVerifyEmailOtp,
+} from "@/lib/api";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Page() {
   const [loginResult, setLoginResult] = React.useState<LoginStatus>();
   const [isLoading, setIsLoading] = React.useState(false);
   const [otpCode, setOtpCode] = React.useState("");
+  const { toast } = useToast();
 
   async function onLogin(formData: FormData) {
     setIsLoading(true);
     const username = formData.get("username") as string;
     const password = formData.get("password") as string;
     const result = await vrchatLogin({ username, password });
+    switch (result) {
+      case LoginStatus.Success:
+        toast({ title: "登录成功" });
+        break;
+      case LoginStatus.Failed:
+        toast({ title: "登录失败" });
+        break;
+    }
     setLoginResult(result);
     setIsLoading(false);
   }
@@ -29,7 +44,18 @@ export default function Page() {
     setOtpCode(code);
     if (code.length !== 6) return;
     setIsLoading(true);
-    await vrchatVerifyEmailOtp(code);
+    const result = await vrchatVerifyEmailOtp(code);
+    switch (result) {
+      case LoginStatus.Success:
+        toast({ title: "登录成功" });
+        break;
+      case LoginStatus.Failed:
+        toast({ title: "登录失败" });
+        break;
+      case LoginStatus.NeedsVerify:
+        toast({ title: "验证码错误" });
+        break;
+    }
     setOtpCode("");
     setIsLoading(false);
   }
@@ -37,18 +63,31 @@ export default function Page() {
   return (
     <main className="h-full p-4 flex-col flex-center">
       <div>
-        <Button onClick={async () => {
-          await vrchatGetMe()
-        }}>GetMe</Button>
+        <Button
+          onClick={async () => {
+            await vrchatGetMe();
+          }}
+        >
+          GetMe
+        </Button>
 
-        <Button onClick={async () => {
-          await vrchatVerifyEmailOtp("123456")
-        }}>verify email</Button>
+        <Button
+          onClick={async () => {
+            await vrchatVerifyEmailOtp("123456");
+          }}
+        >
+          verify email
+        </Button>
 
-        <Button onClick={async () => {
-          await vrchatGetAvatarInfo("usr_44e01fa9-5017-484e-bf91-3bb64bb2d2f9")
-        }}>get avatar info</Button>
-
+        <Button
+          onClick={async () => {
+            await vrchatGetAvatarInfo(
+              "usr_44e01fa9-5017-484e-bf91-3bb64bb2d2f9",
+            );
+          }}
+        >
+          get avatar info
+        </Button>
       </div>
       {/* Login */}
       {[undefined, LoginStatus.Failed].includes(loginResult) && (

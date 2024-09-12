@@ -1,3 +1,4 @@
+use reqwest::StatusCode;
 use tauri::command;
 use vrchatapi::{
     apis::{
@@ -76,11 +77,16 @@ pub async fn vrchat_get_me(
             Ok(me)
         }
         Err(e) => Err(match &e {
-            Error::ResponseError(e) => match &e.entity {
-                None => unknown_error(e),
-                Some(entity) => match entity {
-                    GetCurrentUserError::Status401(e) => auth_error(e),
-                    GetCurrentUserError::UnknownValue(v) => AppError::UnknownError(v.to_string()),
+            Error::ResponseError(e) => match e.status {
+                StatusCode::TOO_MANY_REQUESTS => AppError::TooManyRequests,
+                _ => match &e.entity {
+                    None => unknown_error(e),
+                    Some(entity) => match entity {
+                        GetCurrentUserError::Status401(e) => auth_error(e),
+                        GetCurrentUserError::UnknownValue(v) => {
+                            AppError::UnknownError(v.to_string())
+                        }
+                    },
                 },
             },
             e => AppError::UnknownError(e.to_string()),

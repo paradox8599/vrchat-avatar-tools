@@ -39,5 +39,6 @@ export async function logout() {
 }
 
 export function clearAuth() {
+  console.error("clear auth");
   appState.auth = { status: LoginStatus.NotLoggedIn };
 }
