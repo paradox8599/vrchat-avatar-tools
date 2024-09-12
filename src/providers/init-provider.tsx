@@ -16,9 +16,8 @@ export default function InitProvider({
   const path = usePathname();
   const router = useRouter();
 
-
   useSWR(
-    "appInit",
+    appState.init ? null : "appInit",
     async () => {
       await loadAvatarState();
       await loadAppState();
@@ -27,11 +26,10 @@ export default function InitProvider({
     },
     {
       revalidateIfStale: false,
-      revalidateOnFocus: true,
+      revalidateOnFocus: false,
       revalidateOnReconnect: false,
     },
   );
-
 
   React.useEffect(() => {
     if (!appState.init) {
