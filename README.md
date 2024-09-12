@@ -7,3 +7,4 @@
 - avatar id & copy icon alignment
 - search / filter
 - import / export
+- update check
