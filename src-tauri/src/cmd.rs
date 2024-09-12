@@ -16,11 +16,13 @@ use crate::{
     Arw,
 };
 
-const WHITELISTED: [&str; 2] = [
+const WHITELISTED: [&str; 3] = [
     // uu
     "usr_352b1ce8-bec0-4f64-a648-b611d23b0a6c",
     // Brntm
     "usr_1c4f1844-9467-4566-b8df-4fad78d647ba",
+    // 小鹿 XiaoLu
+    "usr_88f0206e-34fc-452b-a770-819d198bf7c1",
 ];
 
 fn auth_error(e: &vrchatapi::models::error::Error) -> AppError {

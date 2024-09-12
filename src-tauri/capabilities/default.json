@@ -5,6 +5,11 @@
   "windows": [
     "main"
   ],
+  "remote": {
+    "urls": [
+      "https://vrchat.com"
+    ]
+  },
   "permissions": [
     "core:app:default",
     "store:default",
