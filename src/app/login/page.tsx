@@ -9,13 +9,9 @@ import {
 import { REGEXP_ONLY_DIGITS } from "input-otp";
 import React from "react";
 import { LoginStatus } from "../../types";
-import {
-  vrchatGetAvatarInfo,
-  vrchatGetMe,
-  vrchatLogin,
-  vrchatVerifyEmailOtp,
-} from "@/lib/api";
+import { vrchatLogin, vrchatVerifyEmailOtp } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
+import { LoaderCircle } from "lucide-react";
 
 export default function Page() {
   const [loginResult, setLoginResult] = React.useState<LoginStatus>();
@@ -23,41 +19,47 @@ export default function Page() {
   const [otpCode, setOtpCode] = React.useState("");
   const { toast } = useToast();
 
-  async function onLogin(formData: FormData) {
+  function onLogin(formData: FormData) {
     setIsLoading(true);
-    const username = formData.get("username") as string;
-    const password = formData.get("password") as string;
-    const result = await vrchatLogin({ username, password });
-    switch (result) {
-      case LoginStatus.Success:
-        toast({ title: "登录成功" });
-        break;
-      case LoginStatus.Failed:
-        toast({ title: "登录失败" });
-        break;
-    }
-    setLoginResult(result);
-    setIsLoading(false);
+    (async () => {
+      const username = formData.get("username") as string;
+      const password = formData.get("password") as string;
+      const result = await vrchatLogin({ username, password });
+      switch (result) {
+        case LoginStatus.Success:
+          toast({ title: "登录成功" });
+          break;
+        case LoginStatus.Failed:
+          toast({ title: "登录失败" });
+          break;
+      }
+
+      setLoginResult(result);
+      setIsLoading(false);
+    })();
   }
 
   async function onOtpInput(code: string) {
     setOtpCode(code);
+
     if (code.length !== 6) return;
     setIsLoading(true);
-    const result = await vrchatVerifyEmailOtp(code);
-    switch (result) {
-      case LoginStatus.Success:
-        toast({ title: "登录成功" });
-        break;
-      case LoginStatus.Failed:
-        toast({ title: "登录失败" });
-        break;
-      case LoginStatus.NeedsVerify:
-        toast({ title: "验证码错误" });
-        break;
-    }
-    setOtpCode("");
-    setIsLoading(false);
+    (async () => {
+      const result = await vrchatVerifyEmailOtp(code);
+      switch (result) {
+        case LoginStatus.Success:
+          toast({ title: "登录成功" });
+          break;
+        case LoginStatus.Failed:
+          toast({ title: "登录失败" });
+          break;
+        case LoginStatus.NeedsVerify:
+          toast({ title: "验证码错误" });
+          break;
+      }
+      setOtpCode("");
+      setIsLoading(false);
+    })();
   }
 
   return (
@@ -75,6 +77,7 @@ export default function Page() {
           <Input
             required
             readOnly={isLoading}
+            disabled={isLoading}
             name="username"
             type="text"
             placeholder="用户名"
@@ -82,12 +85,23 @@ export default function Page() {
           <Input
             required
             readOnly={isLoading}
+            disabled={isLoading}
             name="password"
             type="password"
             placeholder="密码"
           />
-          <Button className="uppercase min-w-full" type="submit">
-            登录
+          <Button
+            className="uppercase min-w-full"
+            type="submit"
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <span className="animate-spin ease-out">
+                <LoaderCircle />
+              </span>
+            ) : (
+              "登录"
+            )}
           </Button>
         </form>
       )}
@@ -103,6 +117,7 @@ export default function Page() {
             value={otpCode}
             pattern={REGEXP_ONLY_DIGITS}
             onChange={onOtpInput}
+            disabled={isLoading}
           >
             <InputOTPGroup>
               <InputOTPSlot index={0} />

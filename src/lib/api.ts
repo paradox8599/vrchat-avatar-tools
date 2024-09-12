@@ -133,9 +133,8 @@ export async function vrchatGetAvatarInfo(avatarId: string) {
         return undefined;
       case "AuthFailed":
         clearAuth();
-        return undefined;
       default:
-        return err;
+        throw err;
     }
   }
 }
