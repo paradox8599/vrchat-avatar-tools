@@ -1,7 +1,7 @@
 export type ErrorName =
   | "NotInWhiteList"
   | "AuthFailed"
-  | "AvatarIsPrivate"
+  | "AvatarNotFound"
   | "TooManyRequests"
   | "Unknown";
 

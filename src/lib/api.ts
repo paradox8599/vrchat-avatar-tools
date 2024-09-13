@@ -42,7 +42,7 @@ export async function vrchatGetMe() {
   if (!appState.auth?.credentials) {
     appState.auth.status = LoginStatus.NotLoggedIn;
     return appState.auth.status;
-  };
+  }
   try {
     const me: GetMeResult = await invoke(API_NAMES.vrchatGetMe);
     // Login succeeded and got user info
@@ -138,7 +138,7 @@ export async function vrchatGetAvatarInfo(avatarId: string) {
     const err = parseError(e);
     console.log(`caught at vrchatGetAvatarInfo ${JSON.stringify(err)}`);
     switch (err.name) {
-      case "AvatarIsPrivate":
+      case "AvatarNotFound":
         return undefined;
       case "AuthFailed":
         clearAuth();

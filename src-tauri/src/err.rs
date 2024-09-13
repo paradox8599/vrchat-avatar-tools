@@ -15,6 +15,6 @@ pub enum AppError {
     #[error("unknown error {0}")]
     UnknownError(String),
 
-    #[error("avatar is private: {0}")]
-    AvatarIsPrivate(String),
+    #[error("avatar not found: {0}")]
+    AvatarNotFound(String),
 }

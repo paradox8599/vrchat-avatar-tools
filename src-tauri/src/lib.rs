@@ -27,7 +27,6 @@ pub fn init(app: &mut tauri::App) -> StdResult<()> {
         base_path: BASE_URL.to_owned(),
         user_agent: Some(UA.to_owned()),
         client: reqwest::Client::builder()
-            // .cookie_store(true)
             .cookie_provider(cookies)
             .build()
             .unwrap(),

@@ -47,6 +47,7 @@ import {
 import { cn } from "@/lib/utils";
 import { avatarMapState } from "@/state/avatars";
 import useAvatars from "@/hooks/useAvatars";
+import { Card, CardContent } from "@/components/ui/card";
 
 function TagSelector({ avatar }: { avatar: Avatar }) {
   const [open, setOpen] = React.useState(false);
@@ -171,23 +172,90 @@ export default function Page() {
             name="avatarId"
             value={addAvatarId}
             onChange={(e) => setAddAvatarId(e.target.value.trim())}
-            placeholder="输入模型 ID..."
+            placeholder="输入模型蓝图 ID ..."
           />
 
-          <Button type="submit" className="w-full max-w-32">
+          <Button type="submit" className="w-full max-w-14 md:max-w-32">
             添加
           </Button>
         </form>
       </div>
 
-      <div>
+      {/* NOTE: Mobile View */}
+
+      <div className="sm:hidden py-2 flex flex-col gap-2">
+        {sortedAvatars.map((avatar) => {
+          return (
+            <Card
+              key={avatar.id}
+              className={cn("py-2 px-2", avatar.info ? "bg-red-200" : "")}
+            >
+              <div className="flex items-center justify-start gap-2">
+                {/* thumbnail image */}
+
+                <AvatarIcon
+                  className="cursor-pointer"
+                  onClick={() =>
+                    open(`https://vrchat.com/home/avatar/${avatar.id}`)
+                  }
+                >
+                  <AvatarImage
+                    src={avatar.info?.thumbnailImageUrl}
+                    className="object-cover"
+                  />
+                  <AvatarFallback />
+                </AvatarIcon>
+
+                {/* info */}
+
+                <div className="w-full text-xs flex flex-col gap-1">
+                  {/* avatar id */}
+                  <p className="font-mono text-center px-1 rounded-full bg-black bg-opacity-10">
+                    {avatar.id}
+                  </p>
+
+                  <div className="flex items-center justify-between px-2">
+                    <p>
+                      {avatar.info?.created_at &&
+                        `上传: ${format(avatar.info?.created_at, "yy-MM-dd HH:mm")}`}
+                    </p>
+                    <p>
+                      {avatar.info?.updated_at &&
+                        `修改: ${format(avatar.info?.updated_at, "yy-MM-dd HH:mm")}`}
+                    </p>
+                  </div>
+
+                  <div className="flex items-center justify-between px-2">
+                    {/* avatar author name  */}
+                    <p className="font-bold">{avatar.info?.authorName ?? ""}</p>
+
+                    {/* avatar status */}
+                    <p
+                      className={cn(
+                        "uppercase w-16 flex justify-center rounded-full font-bold",
+                        avatar.info ? "text-white bg-red-600" : "bg-gray-300",
+                      )}
+                    >
+                      {avatar.info?.releaseStatus ?? "未知"}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </Card>
+          );
+        })}
+      </div>
+
+      {/* NOTE: Desktop View */}
+
+      <div className="hidden sm:block">
         <Table>
           <TableHeader>
             <TableRow>
               <TableHead>状态</TableHead>
               <TableHead>标签</TableHead>
               <TableHead>封面</TableHead>
-              <TableHead>模型 ID</TableHead>
+              <TableHead>模型ID</TableHead>
               <TableHead>上传者</TableHead>
               <TableHead>上传时间</TableHead>
               <TableHead>修改时间</TableHead>
