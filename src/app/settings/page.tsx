@@ -1,5 +1,15 @@
 "use client";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { appState, logout } from "@/state/app";
@@ -10,39 +20,26 @@ import { useSnapshot } from "valtio";
 export default function Page() {
   const { settings } = useSnapshot(appState);
   return (
-    <main className="w-full py-4 flex flex-col items-center">
-      <div className="max-w-lg w-full">
+    <main className="w-full sm:py-4 flex flex-col items-center">
+      <div className="max-w-lg w-full px-4">
         {/* header */}
         <div className="relative flex items-center justify-center">
-          <Button
-            asChild
-            variant="link"
-            className="absolute left-0 top-0 bottom-0"
-          >
-            <Link href="/">
-              <div className="flex justify-start items-center w-fit py-2">
-                <ChevronLeft />
-                返回
-              </div>
-            </Link>
-          </Button>
+          <Link href="/" className="absolute left-0 bottom-0">
+            <div className="flex justify-start items-center w-fit">
+              <ChevronLeft />
+              返回
+            </div>
+          </Link>
 
           <h1 className="font-semibold text-xl">设置</h1>
-
-          <Button
-            className="absolute right-0 top-0 bottom-0"
-            onClick={() => logout()}
-          >
-            退出登录
-          </Button>
         </div>
 
         {/* options */}
-        <div className="px-4 py-8 flex flex-col items-start justify-start gap-6">
+        <div className="py-4 flex flex-col items-start justify-start gap-4">
           {/* avatar fetch interval */}
           <div className="w-full">
             <Label htmlFor="avatar-fetch-interval" className="text-nowrap px-2">
-              单个请求间隔时间 (毫秒)
+              单次请求间隔时间 (毫秒)
             </Label>
             <Input
               name="avatar-fetch-interval"
@@ -59,7 +56,7 @@ export default function Page() {
           {/* avatar expires in */}
           <div className="w-full">
             <Label htmlFor="avatar-expires" className="text-nowrap px-2">
-              数据更新间隔 (小时)
+              模型数据更新间隔 (小时)
             </Label>
             <Input
               name="avatar-expires"
@@ -73,6 +70,29 @@ export default function Page() {
             />
           </div>
         </div>
+
+        {/* Logout button */}
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button variant="destructive" className="w-full bg-red-700">
+              退出登录
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="bg-white">
+            <DialogHeader>
+              <DialogTitle>退出登录</DialogTitle>
+              <DialogDescription>是否退出登录？</DialogDescription>
+              <DialogFooter>
+                <Button variant="outline" onClick={logout}>
+                  确认
+                </Button>
+                <DialogClose asChild>
+                  <Button variant="default">取消</Button>
+                </DialogClose>
+              </DialogFooter>
+            </DialogHeader>
+          </DialogContent>
+        </Dialog>
       </div>
     </main>
   );
