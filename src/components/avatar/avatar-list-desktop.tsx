@@ -45,7 +45,7 @@ export default function AvatarListDesktop() {
   useAvatarFetcher();
 
   return (
-    <div className="hidden sm:block">
+    <div className="hidden lg:block">
       <Table>
         <TableHeader>
           <TableRow>

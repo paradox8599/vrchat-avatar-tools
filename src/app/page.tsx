@@ -1,9 +1,5 @@
 "use client";
-import {
-  AvatarFallback,
-  Avatar as AvatarIcon,
-  AvatarImage,
-} from "@/components/ui/avatar";
+import { AvatarFallback, Avatar, AvatarImage } from "@/components/ui/avatar";
 import { appState } from "@/state/app";
 import React from "react";
 import { useSnapshot } from "valtio";
@@ -21,7 +17,7 @@ export default function Page() {
         {/* Avatar Icon & Settings button */}
 
         <Link href="/settings">
-          <AvatarIcon className="relative avatar-btn">
+          <Avatar className="relative avatar-btn">
             <AvatarImage
               src={auth?.me?.currentAvatarThumbnailImageUrl}
               className="object-cover"
@@ -30,7 +26,7 @@ export default function Page() {
             <div className="avatar-tooltip absolute inset-auto h-full w-full flex-center text-white text-sm cursor-pointer bg-black bg-opacity-50">
               设置
             </div>
-          </AvatarIcon>
+          </Avatar>
         </Link>
 
         <AvatarInput />

@@ -3,21 +3,19 @@ import React from "react";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 
-export default function AvatarInput() {
+const AVATAR_URL_PREFIX = "https://vrchat.com/home/avatar/";
 
+export default function AvatarInput() {
   const [addAvatarId, setAddAvatarId] = React.useState("");
   function onAvatarIdAdd() {
     {
       if (
         !addAvatarId.startsWith("avtr_") &&
-        !addAvatarId.startsWith("https://vrchat.com/home/avatar/")
+        !addAvatarId.startsWith(AVATAR_URL_PREFIX)
       ) {
         return;
       }
-      const idToAdd = addAvatarId.replace(
-        "https://vrchat.com/home/avatar/",
-        "",
-      );
+      const idToAdd = addAvatarId.replace(AVATAR_URL_PREFIX, "");
 
       if (!avatarMapState.get(idToAdd)) {
         avatarMapState.set(idToAdd, { id: idToAdd });
@@ -26,19 +24,22 @@ export default function AvatarInput() {
     }
   }
 
-  return <form
-    className="w-full flex justify-between gap-2"
-    action={onAvatarIdAdd}
-  >
-    <Input
-      name="avatarId"
-      value={addAvatarId}
-      onChange={(e) => setAddAvatarId(e.target.value.trim())}
-      placeholder="输入模型蓝图 ID ..."
-    />
+  return (
+    <form className="w-full flex justify-between gap-2" action={onAvatarIdAdd}>
+      <Input
+        className="rounded-full"
+        name="avatarId"
+        value={addAvatarId}
+        onChange={(e) => setAddAvatarId(e.target.value.trim())}
+        placeholder="输入模型蓝图 ID ..."
+      />
 
-    <Button type="submit" className="w-full max-w-14 md:max-w-32">
-      添加
-    </Button>
-  </form>
+      <Button
+        type="submit"
+        className="w-full max-w-14 md:max-w-32 rounded-full"
+      >
+        添加
+      </Button>
+    </form>
+  );
 }
