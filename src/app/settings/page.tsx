@@ -20,7 +20,7 @@ import { useSnapshot } from "valtio";
 export default function Page() {
   const { settings } = useSnapshot(appState);
   return (
-    <main className="w-full sm:py-4 flex flex-col items-center">
+    <main className="w-full pt-4 flex flex-col items-center">
       <div className="max-w-lg w-full px-4">
         {/* header */}
         <div className="relative flex items-center justify-center">

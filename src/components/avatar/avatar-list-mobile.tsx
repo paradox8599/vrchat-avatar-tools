@@ -71,7 +71,6 @@ export default function AvatarListMobile() {
                     >
                       {avatar.id}
                       <Copy size={16} />
-                      {/* </p> */}
                     </Button>
                   </div>
                 </div>
@@ -129,27 +128,6 @@ export default function AvatarListMobile() {
                     </p>
                   </div>
                 </div>
-
-                {/* actions */}
-                {/* {avatar.info && ( */}
-                {/*   <div */}
-                {/*     className={cn( */}
-                {/*       "w-full", */}
-                {/*       "flex justify-end gap-2", */}
-                {/*     )} */}
-                {/*   > */}
-                {/*     <Button */}
-                {/*       className="rounded-full" */}
-                {/*       onClick={() => */}
-                {/*         open( */}
-                {/*           `https://vrchat.com/home/user/${avatar.info?.authorId}`, */}
-                {/*         ) */}
-                {/*       } */}
-                {/*     > */}
-                {/*       查看作者 */}
-                {/*     </Button> */}
-                {/*   </div> */}
-                {/* )} */}
               </div>
             </Card>
           );

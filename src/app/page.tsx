@@ -12,7 +12,7 @@ export default function Page() {
   const { auth } = useSnapshot(appState);
 
   return (
-    <main className="p-4">
+    <main className="p-2">
       <div className="flex flex-row items-center justify-between gap-2">
         {/* Avatar Icon & Settings button */}
 
