@@ -1,4 +1,5 @@
 "use client";
+import { AvatarExport } from "@/components/settings/avatar-export";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,8 +15,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { appState, logout } from "@/state/app";
+import { avatarMapState } from "@/state/avatars";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
+import React from "react";
 import { useSnapshot } from "valtio";
 
 export default function Page() {
@@ -38,6 +41,12 @@ export default function Page() {
         {/* options */}
 
         <div className="py-4 flex flex-col items-start justify-start gap-4">
+          {/* export */}
+          <div>
+            <AvatarExport />
+          </div>
+
+          {/* dark mode */}
           <div className="w-full">
             <ThemeToggle />
           </div>
