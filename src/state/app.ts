@@ -14,17 +14,23 @@ export type AppState = {
     credentials?: { username: string; password: string };
     me?: UserInfo;
   };
-  settings: { avatarFetchInterval: number; avatarStatusExpiresHr: number };
-  filter?: string
+  settings: {
+    avatarFetchInterval: number;
+    avatarStatusExpiresHr: number;
+  };
+  filter?: string;
 };
 
 export const appState: AppState = proxy({
   auth: { status: LoginStatus.NotLoggedIn },
-  settings: { avatarFetchInterval: 3000, avatarStatusExpiresHr: 1 },
+  settings: {
+    avatarFetchInterval: 3000,
+    avatarStatusExpiresHr: 1,
+  },
 });
 
 subscribe(appState, async () => {
-  console.log(Object.values(LoginStatus)[appState.auth.status])
+  console.log(Object.values(LoginStatus)[appState.auth.status]);
   await appStore.set(APP_STORE_KEY, appState);
   await appStore.save();
 });

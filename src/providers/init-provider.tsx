@@ -1,4 +1,5 @@
 "use client";
+import { useAutoBodyTheme } from "@/components/theme-toggle";
 import { vrchatLogin } from "@/lib/api";
 import { appState, loadAppState } from "@/state/app";
 import { loadAvatarState } from "@/state/avatars";
@@ -30,6 +31,8 @@ export default function InitProvider({
       revalidateOnReconnect: false,
     },
   );
+
+  useAutoBodyTheme();
 
   React.useEffect(() => {
     if (!appState.init) {

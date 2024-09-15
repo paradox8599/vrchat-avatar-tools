@@ -136,7 +136,7 @@ export async function vrchatGetAvatarInfo(avatarId: string) {
     return avatarInfo;
   } catch (e) {
     const err = parseError(e);
-    console.log(`caught at vrchatGetAvatarInfo ${JSON.stringify(err)}`);
+    console.error(`caught at vrchatGetAvatarInfo ${JSON.stringify(err)}`);
     switch (err.name) {
       case "AvatarNotFound":
         return undefined;

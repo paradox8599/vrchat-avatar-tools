@@ -4,6 +4,7 @@ import "./globals.css";
 import AuthProvider from "@/providers/auth-provider";
 import { Toaster } from "@/components/ui/toaster";
 import InitProvider from "@/providers/init-provider";
+import { ThemeProvider } from "@/providers/theme-provider";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -28,16 +29,18 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <InitProvider>
-        <AuthProvider>
-          <body
-            className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-          >
-            {children}
-            <Toaster />
-          </body>
-        </AuthProvider>
-      </InitProvider>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased dark `}
+      >
+        <ThemeProvider>
+          <InitProvider>
+            <AuthProvider>
+              {children}
+              <Toaster />
+            </AuthProvider>
+          </InitProvider>
+        </ThemeProvider>
+      </body>
     </html>
   );
 }

@@ -1,4 +1,5 @@
 "use client";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -35,7 +36,12 @@ export default function Page() {
         </div>
 
         {/* options */}
+
         <div className="py-4 flex flex-col items-start justify-start gap-4">
+          <div className="w-full">
+            <ThemeToggle />
+          </div>
+
           {/* avatar fetch interval */}
           <div className="w-full">
             <Label htmlFor="avatar-fetch-interval" className="text-nowrap px-2">
