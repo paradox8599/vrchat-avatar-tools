@@ -23,7 +23,7 @@ export default function Page() {
               className="object-cover"
             />
             <AvatarFallback>{auth?.me?.displayName}</AvatarFallback>
-            <div className="avatar-tooltip absolute inset-auto h-full w-full flex-center text-white text-sm cursor-pointer bg-black bg-opacity-50">
+            <div className="avatar-tooltip absolute inset-auto h-full w-full flex-center text-foreground text-sm cursor-pointer bg-accent bg-opacity-50">
               设置
             </div>
           </Avatar>

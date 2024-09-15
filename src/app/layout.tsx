@@ -31,7 +31,7 @@ export default function RootLayout({
       <InitProvider>
         <AuthProvider>
           <body
-            className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+            className={`${geistSans.variable} ${geistMono.variable} antialiased dark`}
           >
             {children}
             <Toaster />

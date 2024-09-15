@@ -38,7 +38,7 @@ export default function AvatarListMobile() {
               key={avatar.id}
               className={cn(
                 "max-w-fit min-w-fit min-h-[8rem] py-2 px-2",
-                avatar.info ? "bg-red-200" : "",
+                avatar.info ? "bg-cardhl" : "bg-card",
               )}
             >
               <div className="flex flex-col gap-2">
@@ -58,7 +58,7 @@ export default function AvatarListMobile() {
                   <div className="w-full flex items-center justify-center">
                     <Button
                       className={cn(
-                        "rounded-full bg-white bg-opacity-25",
+                        "rounded-full bg-background",
                         "font-mono font-bold text-xs",
                         "flex gap-2",
                       )}
@@ -67,7 +67,7 @@ export default function AvatarListMobile() {
                       onClick={() =>
                         writeText(avatar.id).then(() =>
                           toast({
-                            title: "模型ID 已复制到剪切板",
+                            title: "已复制模型ID",
                             description: avatar.id,
                           }),
                         )
@@ -84,14 +84,13 @@ export default function AvatarListMobile() {
                 <div className="w-full text-sm flex flex-col gap-1">
                   <div className="flex items-center justify-between">
                     {/* vrchat urls */}
-                    <div className="flex items-center justify-start gap-1">
+                    <div className="flex items-center justify-start gap-4">
                       {/* avatar status */}
 
                       <Button
-                        variant="secondary"
                         className={cn(
                           "uppercase w-24 rounded-full font-bold flex gap-2",
-                          avatar.info ? "text-white bg-red-700" : "bg-gray-100",
+                          avatar.info ? "" : "bg-muted text-foreground",
                         )}
                         size="sm"
                         onClick={() =>
@@ -106,7 +105,7 @@ export default function AvatarListMobile() {
 
                       {avatar.info && (
                         <Button
-                          className="rounded-full text-md flex gap-1"
+                          className="rounded-full text-md flex gap-1 font-bold"
                           size="sm"
                           onClick={() =>
                             open(
@@ -121,6 +120,7 @@ export default function AvatarListMobile() {
                     </div>
 
                     {/* tag selector */}
+
                     <div className="flex-center">
                       <AvatarTagSelector avatar={avatar} />
                     </div>
@@ -130,13 +130,13 @@ export default function AvatarListMobile() {
                 {/* dates */}
 
                 <div className="font-mono flex items-center justify-between text-sm">
-                  <p className="flex-center gap-2 bg-zinc-50 bg-opacity-25 px-2 rounded-full">
+                  <p className="flex-center gap-2 bg-accent text-accent-foreground px-2 rounded-full">
                     <Box size={13} />
                     {avatar.info
                       ? format(avatar.info?.created_at, "yyyy/MM/dd HH:mm")
                       : "----/--/-- --:--"}
                   </p>
-                  <p className="flex-center gap-2 bg-zinc-50 bg-opacity-25 px-2 rounded-full">
+                  <p className="flex-center gap-2 bg-accent text-accent-foreground px-2 rounded-full">
                     <CloudUpload size={14} />
                     {avatar.info
                       ? format(avatar.info?.updated_at, "yyyy/MM/dd HH:mm")

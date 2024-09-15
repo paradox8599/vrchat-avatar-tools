@@ -53,6 +53,8 @@ body {
     --chart-4: #e8c468;
     --chart-5: #f4a462;
     --radius: 0.5rem;
+    --card-hl: #fec8c8;
+    --card-hl-foreground: #09090b;
   }
   .dark {
     --background: #09090b;
@@ -79,6 +81,8 @@ body {
     --chart-3: #e88c30;
     --chart-4: #af57db;
     --chart-5: #e23670;
+    --card-hl: #551d23;
+    --card-hl-foreground: #09090b;
   }
 }
 

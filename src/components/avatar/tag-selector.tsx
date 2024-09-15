@@ -73,7 +73,7 @@ export function TagSelector({
                 <div
                   className={cn(
                     "cursor-pointer rounded",
-                    "text-accent-foreground bg-accent bg-gray-100",
+                    "text-accent-foreground bg-accent",
                     "flex items-center pl-8 py-[0.375rem]",
                     "[line-height:1.25rem] text-[0.875rem]",
                   )}
@@ -114,5 +114,5 @@ export function AvatarTagSelector({ avatar }: { avatar: Avatar }) {
   function setTag(tag: string) {
     mutAvatar.tag = mutAvatar.tag === tag ? undefined : tag;
   }
-  return <TagSelector onSelect={setTag} value={mutAvatar?.tag}  align="end" />;
+  return <TagSelector onSelect={setTag} value={mutAvatar?.tag} align="end" />;
 }
