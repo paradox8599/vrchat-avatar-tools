@@ -7,6 +7,9 @@ import Link from "next/link";
 import AvatarGrid from "../components/avatar/avatar-grid";
 import AvatarInput from "@/components/avatar/avatar-input";
 import { TagFilter } from "@/components/avatar/tag-selector";
+import { Settings } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Tooltip } from "@/components/tooltip";
 
 export default function Page() {
   const { auth } = useSnapshot(appState);
@@ -16,18 +19,21 @@ export default function Page() {
       <div className="flex flex-row items-center justify-between gap-2 px-2">
         {/* Avatar Icon & Settings button */}
 
-        <Link href="/settings">
-          <Avatar className="relative avatar-btn">
-            <AvatarImage
-              src={auth?.me?.currentAvatarThumbnailImageUrl}
-              className="object-cover"
-            />
-            <AvatarFallback>{auth?.me?.displayName}</AvatarFallback>
-            <div className="avatar-tooltip absolute inset-auto h-full w-full flex-center text-foreground text-sm cursor-pointer bg-accent bg-opacity-50">
-              设置
-            </div>
-          </Avatar>
-        </Link>
+        <Tooltip tooltip="设置">
+          <Button asChild size="icon" variant="ghost">
+            <Link href="/settings">
+              <Settings />
+            </Link>
+          </Button>
+        </Tooltip>
+
+        <Avatar className="relative avatar-btn">
+          <AvatarImage
+            src={auth?.me?.currentAvatarThumbnailImageUrl}
+            className="object-cover"
+          />
+          <AvatarFallback>{auth?.me?.displayName}</AvatarFallback>
+        </Avatar>
 
         <TagFilter />
 

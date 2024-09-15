@@ -63,6 +63,7 @@ export function TagSelector({
       <PopoverContent className="w-[200px] p-0" side="bottom" align={align}>
         <Command>
           <CommandInput
+            className="text-xs"
             placeholder="输入标签..."
             value={search}
             onValueChange={setSearch}
@@ -78,7 +79,7 @@ export function TagSelector({
                 <div
                   className={cn(
                     "cursor-pointer rounded",
-                    "text-accent-foreground bg-accent",
+                    "text-accent-foreground bg-accent text-xs",
                     "flex items-center pl-8 py-[0.375rem]",
                     "[line-height:1.25rem] text-[0.875rem]",
                   )}

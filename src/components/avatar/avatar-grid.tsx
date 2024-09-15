@@ -21,6 +21,7 @@ import { writeText } from "@tauri-apps/plugin-clipboard-manager";
 import { toast } from "@/hooks/use-toast";
 import { AvatarTagSelector } from "./tag-selector";
 import { avatarMapState } from "@/state/avatars";
+import { Tooltip } from "../tooltip";
 
 export default function AvatarGrid() {
   const { sortedAvatars } = useAvatars();
@@ -95,35 +96,39 @@ export default function AvatarGrid() {
                   <div className="flex items-center justify-start gap-4">
                     {/* avatar status */}
 
-                    <Button
-                      className={cn(
-                        "uppercase w-24 rounded-full font-bold flex gap-2",
-                        avatar.info ? "" : "bg-muted text-foreground",
-                      )}
-                      size="sm"
-                      onClick={() =>
-                        open(`https://vrchat.com/home/avatar/${avatar.id}`)
-                      }
-                    >
-                      {avatar.info?.releaseStatus ? "已公开" : "未知"}
-                      <SquareArrowOutUpRight size={12} />
-                    </Button>
+                    <Tooltip tooltip="公开状态">
+                      <Button
+                        className={cn(
+                          "uppercase w-24 rounded-full font-bold flex gap-2",
+                          avatar.info ? "" : "bg-muted text-foreground",
+                        )}
+                        size="sm"
+                        onClick={() =>
+                          open(`https://vrchat.com/home/avatar/${avatar.id}`)
+                        }
+                      >
+                        {avatar.info?.releaseStatus ? "已公开" : "未知"}
+                        <SquareArrowOutUpRight size={12} />
+                      </Button>
+                    </Tooltip>
 
                     {/* avatar author name  */}
 
                     {avatar.info && (
-                      <Button
-                        className="rounded-full text-md flex gap-1 font-bold"
-                        size="sm"
-                        onClick={() =>
-                          open(
-                            `https://vrchat.com/home/user/${avatar.info?.authorId}`,
-                          )
-                        }
-                      >
-                        {avatar.info?.authorName}
-                        <SquareArrowOutUpRight size={12} />
-                      </Button>
+                      <Tooltip tooltip="上传者">
+                        <Button
+                          className="rounded-full text-md flex gap-1 font-bold"
+                          size="sm"
+                          onClick={() =>
+                            open(
+                              `https://vrchat.com/home/user/${avatar.info?.authorId}`,
+                            )
+                          }
+                        >
+                          {avatar.info?.authorName}
+                          <SquareArrowOutUpRight size={12} />
+                        </Button>
+                      </Tooltip>
                     )}
                   </div>
 
@@ -139,29 +144,36 @@ export default function AvatarGrid() {
                 {/* dates & delete row */}
 
                 <div className="font-mono flex items-center justify-between text-sm gap-2">
-                  <p className="flex-center gap-2 bg-accent text-accent-foreground px-2 rounded-full">
-                    <Box size={13} />
-                    {avatar.info
-                      ? format(avatar.info?.created_at, "yyyy/MM/dd HH:mm")
-                      : "----/--/-- --:--"}
-                  </p>
-                  <p className="flex-center gap-2 bg-accent text-accent-foreground px-2 rounded-full">
-                    <CloudUpload size={14} />
-                    {avatar.info
-                      ? format(avatar.info?.updated_at, "yyyy/MM/dd HH:mm")
-                      : "----/--/-- --:--"}
-                  </p>
+                  <Tooltip tooltip="首次上传时间">
+                    <p className="flex-center gap-2 bg-accent text-accent-foreground px-2 rounded-full">
+                      <Box size={13} />
+                      {avatar.info
+                        ? format(avatar.info?.created_at, "yyyy/MM/dd HH:mm")
+                        : "----/--/-- --:--"}
+                    </p>
+                  </Tooltip>
+
+                  <Tooltip tooltip="最后修改时间">
+                    <p className="flex-center gap-2 bg-accent text-accent-foreground px-2 rounded-full">
+                      <CloudUpload size={14} />
+                      {avatar.info
+                        ? format(avatar.info?.updated_at, "yyyy/MM/dd HH:mm")
+                        : "----/--/-- --:--"}
+                    </p>
+                  </Tooltip>
                 </div>
 
                 {/* delete button */}
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="flex-1 h-5"
-                  onClick={() => avatarMapState.delete(avatar.id)}
-                >
-                  <TrashIcon size={16} />
-                </Button>
+                <Tooltip tooltip="删除">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="flex-1 h-5"
+                    onClick={() => avatarMapState.delete(avatar.id)}
+                  >
+                    <TrashIcon size={16} />
+                  </Button>
+                </Tooltip>
               </div>
             </Card>
           );

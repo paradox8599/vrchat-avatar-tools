@@ -27,7 +27,7 @@ export default function AvatarInput() {
   return (
     <form className="w-full flex justify-between gap-2" action={onAvatarIdAdd}>
       <Input
-        className="rounded-full"
+        className="rounded-full text-xs"
         name="avatarId"
         value={addAvatarId}
         onChange={(e) => setAddAvatarId(e.target.value.trim())}
