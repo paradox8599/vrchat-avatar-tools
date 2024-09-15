@@ -47,7 +47,6 @@ export function TagSelector({
       <PopoverTrigger asChild>
         <Button
           variant="outline"
-          size="sm"
           role="combobox"
           aria-expanded={open}
           className={cn(
