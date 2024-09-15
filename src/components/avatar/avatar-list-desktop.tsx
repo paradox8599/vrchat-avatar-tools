@@ -9,10 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  Copy,
-  Trash2,
-} from "lucide-react";
+import { Copy, Trash2 } from "lucide-react";
 import React from "react";
 import { format } from "date-fns";
 import { avatarMapState } from "@/state/avatars";
@@ -20,7 +17,7 @@ import useAvatars from "@/hooks/useAvatars";
 import { toast } from "@/hooks/use-toast";
 import { writeText } from "@tauri-apps/plugin-clipboard-manager";
 import { useAvatarFetcher } from "@/hooks/useAvatarFetcher";
-import { TagSelector } from "./tag-selector";
+import { AvatarTagSelector } from "./tag-selector";
 
 export default function AvatarListDesktop() {
   const { sortedAvatars } = useAvatars();
@@ -53,7 +50,7 @@ export default function AvatarListDesktop() {
               </TableCell>
 
               <TableCell className="">
-                <TagSelector avatar={avatar} />
+                <AvatarTagSelector avatar={avatar} />
               </TableCell>
 
               {/* 封面 */}
@@ -137,4 +134,3 @@ export default function AvatarListDesktop() {
     </div>
   );
 }
-

@@ -13,7 +13,7 @@ import { Button } from "../ui/button";
 import { Copy, SquareArrowOutUpRight } from "lucide-react";
 import { writeText } from "@tauri-apps/plugin-clipboard-manager";
 import { toast } from "@/hooks/use-toast";
-import { TagSelector } from "./tag-selector";
+import { AvatarTagSelector, TagSelector } from "./tag-selector";
 
 export default function AvatarListMobile() {
   const { sortedAvatars } = useAvatars();
@@ -120,7 +120,7 @@ export default function AvatarListMobile() {
                     </div>
                     {/* tag selector */}
                     <div className="flex-center">
-                      <TagSelector avatar={avatar} />
+                      <AvatarTagSelector avatar={avatar} />
                     </div>
                   </div>
 

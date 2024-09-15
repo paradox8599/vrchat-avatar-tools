@@ -24,7 +24,7 @@ export default function useAvatars() {
     () =>
       Array.from(new Set(avatars.map((a) => a.tag))).filter(
         (t) => t && t.length > 0,
-      ),
+      ) as string[],
     [avatars],
   );
   return { avatarMap, avatars, sortedAvatars, tags };

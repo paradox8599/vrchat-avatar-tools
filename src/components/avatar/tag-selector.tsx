@@ -1,6 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { Check, ChevronRight, ChevronsUpDown } from "lucide-react";
+import { Check, ChevronsUpDown } from "lucide-react";
 import React from "react";
 import { avatarMapState } from "@/state/avatars";
 import { Avatar } from "@/types";
@@ -20,16 +20,20 @@ import {
 } from "@/components/ui/command";
 import useAvatars from "@/hooks/useAvatars";
 
-export function TagSelector({ avatar }: { avatar: Avatar }) {
+export function TagSelector({
+  onSelect,
+  value,
+}: {
+  onSelect?: (tag: string) => void;
+  value?: string;
+}) {
   const [open, setOpen] = React.useState(false);
   const [search, setSearch] = React.useState("");
   const { tags } = useAvatars();
 
-  const mutAvatar = avatarMapState.get(avatar.id)!;
-
   function setTag(tag: string) {
-    mutAvatar.tag = tag;
-    avatarMapState.set(avatar.id, mutAvatar);
+    tag = tag.trim();
+    onSelect?.(tag);
     setOpen(false);
     setSearch("");
   }
@@ -44,10 +48,10 @@ export function TagSelector({ avatar }: { avatar: Avatar }) {
           aria-expanded={open}
           className={cn(
             "w-32 justify-between p-2 text-xs rounded-full",
-            avatar.tag ? "opacity-100" : "opacity-50",
+            value ? "opacity-100" : "opacity-50",
           )}
         >
-          {avatar.tag ? avatar.tag : "选择标签"}
+          {value ? value : "选择标签"}
           <ChevronsUpDown size={14} className="ml-2 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -76,13 +80,13 @@ export function TagSelector({ avatar }: { avatar: Avatar }) {
                 <CommandItem
                   key={`${tag ?? ""}`}
                   value={tag}
-                  onSelect={(v) => setTag(v === avatar.tag ? "" : v)}
+                  onSelect={setTag}
                   className="cursor-pointer"
                 >
                   <Check
                     className={cn(
                       "mr-2 h-4 w-4",
-                      avatar.tag === tag ? "opacity-100" : "opacity-0",
+                      value === tag ? "opacity-100" : "opacity-0",
                     )}
                   />
                   {tag}
@@ -94,4 +98,12 @@ export function TagSelector({ avatar }: { avatar: Avatar }) {
       </PopoverContent>
     </Popover>
   );
+}
+
+export function AvatarTagSelector({ avatar }: { avatar: Avatar }) {
+  const mutAvatar = avatarMapState.get(avatar.id)!;
+  function setTag(tag: string) {
+    mutAvatar.tag = mutAvatar.tag === tag ? undefined : tag;
+  }
+  return <TagSelector onSelect={setTag} value={mutAvatar?.tag} />;
 }
