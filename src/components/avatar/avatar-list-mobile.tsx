@@ -10,16 +10,10 @@ import {
 import useAvatars from "@/hooks/useAvatars";
 import { useAvatarFetcher } from "@/hooks/useAvatarFetcher";
 import { Button } from "../ui/button";
-import {
-  Box,
-  CloudUpload,
-  Copy,
-  RefreshCw,
-  SquareArrowOutUpRight,
-} from "lucide-react";
+import { Box, CloudUpload, Copy, SquareArrowOutUpRight } from "lucide-react";
 import { writeText } from "@tauri-apps/plugin-clipboard-manager";
 import { toast } from "@/hooks/use-toast";
-import { AvatarTagSelector, TagSelector } from "./tag-selector";
+import { AvatarTagSelector } from "./tag-selector";
 
 export default function AvatarListMobile() {
   const { sortedAvatars } = useAvatars();
@@ -31,8 +25,11 @@ export default function AvatarListMobile() {
       <div
         className={cn(
           "flex flex-col items-center gap-2",
-          "md:grid md:grid-cols-2 md:gap-x-8",
-          "lg:hidden py-2",
+          "md:grid md:gap-y-4 md:gap-x-4",
+          "md:grid-cols-2",
+          "xl:grid-cols-3",
+          "2xl:grid-cols-4",
+          "py-2",
         )}
       >
         {sortedAvatars.map((avatar) => {

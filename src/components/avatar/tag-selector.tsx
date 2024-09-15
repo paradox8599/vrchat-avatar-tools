@@ -24,10 +24,12 @@ export function TagSelector({
   onSelect,
   value,
   hideOnEmpty = false,
+  align = "start",
 }: {
   onSelect?: (tag: string) => void;
   value?: string;
   hideOnEmpty?: boolean;
+  align?: "start" | "center" | "end";
 }) {
   const [open, setOpen] = React.useState(false);
   const [search, setSearch] = React.useState("");
@@ -57,7 +59,7 @@ export function TagSelector({
           <ChevronsUpDown size={14} className="ml-2 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0" side="bottom" align="end">
+      <PopoverContent className="w-[200px] p-0" side="bottom" align={align}>
         <Command>
           <CommandInput
             placeholder="输入标签..."
@@ -112,5 +114,5 @@ export function AvatarTagSelector({ avatar }: { avatar: Avatar }) {
   function setTag(tag: string) {
     mutAvatar.tag = mutAvatar.tag === tag ? undefined : tag;
   }
-  return <TagSelector onSelect={setTag} value={mutAvatar?.tag} />;
+  return <TagSelector onSelect={setTag} value={mutAvatar?.tag}  align="end" />;
 }
