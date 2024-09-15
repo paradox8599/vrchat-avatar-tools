@@ -10,7 +10,13 @@ import {
 import useAvatars from "@/hooks/useAvatars";
 import { useAvatarFetcher } from "@/hooks/useAvatarFetcher";
 import { Button } from "../ui/button";
-import { Copy, SquareArrowOutUpRight } from "lucide-react";
+import {
+  Box,
+  CloudUpload,
+  Copy,
+  RefreshCw,
+  SquareArrowOutUpRight,
+} from "lucide-react";
 import { writeText } from "@tauri-apps/plugin-clipboard-manager";
 import { toast } from "@/hooks/use-toast";
 import { AvatarTagSelector, TagSelector } from "./tag-selector";
@@ -96,12 +102,12 @@ export default function AvatarListMobile() {
                         }
                       >
                         {avatar.info?.releaseStatus ? "公开" : "未知"}
-                        <SquareArrowOutUpRight size={14} />
+                        <SquareArrowOutUpRight size={12} />
                       </Button>
 
                       {/* avatar author name  */}
 
-                      {avatar.info ? (
+                      {avatar.info && (
                         <Button
                           className="rounded-full text-md flex gap-1"
                           size="sm"
@@ -112,29 +118,33 @@ export default function AvatarListMobile() {
                           }
                         >
                           {avatar.info?.authorName}
-                          <SquareArrowOutUpRight size={14} />
+                          <SquareArrowOutUpRight size={12} />
                         </Button>
-                      ) : (
-                        <div />
                       )}
                     </div>
+
                     {/* tag selector */}
                     <div className="flex-center">
                       <AvatarTagSelector avatar={avatar} />
                     </div>
                   </div>
+                </div>
 
-                  {/* dates */}
-                  <div className="flex items-center justify-between px-2">
-                    <p>
-                      {avatar.info?.created_at &&
-                        `上传: ${format(avatar.info?.created_at, "yy-MM-dd HH:mm")}`}
-                    </p>
-                    <p>
-                      {avatar.info?.updated_at &&
-                        `修改: ${format(avatar.info?.updated_at, "yy-MM-dd HH:mm")}`}
-                    </p>
-                  </div>
+                {/* dates */}
+
+                <div className="font-mono flex items-center justify-between text-sm">
+                  <p className="flex-center gap-2 bg-zinc-50 bg-opacity-25 px-2 rounded-full">
+                    <Box size={13} />
+                    {avatar.info
+                      ? format(avatar.info?.created_at, "yyyy/MM/dd HH:mm")
+                      : "----/--/-- --:--"}
+                  </p>
+                  <p className="flex-center gap-2 bg-zinc-50 bg-opacity-25 px-2 rounded-full">
+                    <CloudUpload size={14} />
+                    {avatar.info
+                      ? format(avatar.info?.updated_at, "yyyy/MM/dd HH:mm")
+                      : "----/--/-- --:--"}
+                  </p>
                 </div>
               </div>
             </Card>
