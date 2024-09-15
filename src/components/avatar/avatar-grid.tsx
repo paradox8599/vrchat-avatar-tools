@@ -15,16 +15,16 @@ import { writeText } from "@tauri-apps/plugin-clipboard-manager";
 import { toast } from "@/hooks/use-toast";
 import { AvatarTagSelector } from "./tag-selector";
 
-export default function AvatarListMobile() {
+export default function AvatarGrid() {
   const { sortedAvatars } = useAvatars();
 
   useAvatarFetcher();
 
   return (
-    <div className="flex justify-center">
+    <div className="h-full flex justify-center overflow-y-scroll [scrollbar-width:thin]">
       <div
         className={cn(
-          "flex flex-col items-center gap-2",
+          "flex flex-col items-center justify-start gap-2",
           "md:grid md:gap-y-4 md:gap-x-4",
           "md:grid-cols-2",
           "xl:grid-cols-3",

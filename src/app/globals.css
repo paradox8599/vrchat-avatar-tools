@@ -92,7 +92,8 @@ body {
   }
 
   body {
-    @apply bg-background text-foreground h-screen unselectable overflow-hidden;
+    @apply bg-background text-foreground h-screen overflow-hidden;
+    scrollbar-color: var(--ring) var(--background);
   }
 }
 

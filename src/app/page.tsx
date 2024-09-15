@@ -4,7 +4,7 @@ import { appState } from "@/state/app";
 import React from "react";
 import { useSnapshot } from "valtio";
 import Link from "next/link";
-import AvatarListMobile from "../components/avatar/avatar-list-mobile";
+import AvatarGrid from "../components/avatar/avatar-grid";
 import AvatarInput from "@/components/avatar/avatar-input";
 import { TagSelector } from "@/components/avatar/tag-selector";
 
@@ -12,7 +12,7 @@ export default function Page() {
   const { auth } = useSnapshot(appState);
 
   return (
-    <main className="py-2">
+    <main className="py-2 h-full flex flex-col">
       <div className="flex flex-row items-center justify-between gap-2 px-2">
         {/* Avatar Icon & Settings button */}
 
@@ -34,9 +34,10 @@ export default function Page() {
         <AvatarInput />
       </div>
 
-      <AvatarListMobile />
+      <div className="flex-1 overflow-hidden">
+        <AvatarGrid />
+      </div>
 
-      {/* <AvatarListDesktop /> */}
     </main>
   );
 }
