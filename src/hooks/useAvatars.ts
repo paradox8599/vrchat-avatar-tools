@@ -21,7 +21,10 @@ export default function useAvatars() {
     [avatars],
   );
   const tags = React.useMemo(
-    () => Array.from(new Set(avatars.map((a) => a.tag))),
+    () =>
+      Array.from(new Set(avatars.map((a) => a.tag))).filter(
+        (t) => t && t.length > 0,
+      ),
     [avatars],
   );
   return { avatarMap, avatars, sortedAvatars, tags };

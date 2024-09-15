@@ -13,6 +13,7 @@ import { Button } from "../ui/button";
 import { Copy, SquareArrowOutUpRight } from "lucide-react";
 import { writeText } from "@tauri-apps/plugin-clipboard-manager";
 import { toast } from "@/hooks/use-toast";
+import { TagSelector } from "./tag-selector";
 
 export default function AvatarListMobile() {
   const { sortedAvatars } = useAvatars();
@@ -79,41 +80,48 @@ export default function AvatarListMobile() {
 
                 <div className="w-full text-sm flex flex-col gap-1">
                   <div className="flex items-center justify-between">
-                    {/* avatar status */}
+                    {/* vrchat urls */}
+                    <div className="flex items-center justify-start gap-1">
+                      {/* avatar status */}
 
-                    <Button
-                      variant="secondary"
-                      className={cn(
-                        "uppercase w-24 rounded-full font-bold flex gap-2",
-                        avatar.info ? "text-white bg-red-700" : "bg-gray-100",
-                      )}
-                      size="sm"
-                      onClick={() =>
-                        open(`https://vrchat.com/home/avatar/${avatar.id}`)
-                      }
-                    >
-                      {avatar.info?.releaseStatus ? "公开" : "未知"}
-                      <SquareArrowOutUpRight size={14} />
-                    </Button>
-
-                    {/* avatar author name  */}
-
-                    {avatar.info ? (
                       <Button
-                        className="rounded-full text-md flex gap-1"
+                        variant="secondary"
+                        className={cn(
+                          "uppercase w-24 rounded-full font-bold flex gap-2",
+                          avatar.info ? "text-white bg-red-700" : "bg-gray-100",
+                        )}
                         size="sm"
                         onClick={() =>
-                          open(
-                            `https://vrchat.com/home/user/${avatar.info?.authorId}`,
-                          )
+                          open(`https://vrchat.com/home/avatar/${avatar.id}`)
                         }
                       >
-                        {avatar.info?.authorName}
+                        {avatar.info?.releaseStatus ? "公开" : "未知"}
                         <SquareArrowOutUpRight size={14} />
                       </Button>
-                    ) : (
-                      <div></div>
-                    )}
+
+                      {/* avatar author name  */}
+
+                      {avatar.info ? (
+                        <Button
+                          className="rounded-full text-md flex gap-1"
+                          size="sm"
+                          onClick={() =>
+                            open(
+                              `https://vrchat.com/home/user/${avatar.info?.authorId}`,
+                            )
+                          }
+                        >
+                          {avatar.info?.authorName}
+                          <SquareArrowOutUpRight size={14} />
+                        </Button>
+                      ) : (
+                        <div />
+                      )}
+                    </div>
+                    {/* tag selector */}
+                    <div className="flex-center">
+                      <TagSelector avatar={avatar} />
+                    </div>
                   </div>
 
                   {/* dates */}
