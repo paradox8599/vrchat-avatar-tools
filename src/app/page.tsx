@@ -6,7 +6,7 @@ import { useSnapshot } from "valtio";
 import Link from "next/link";
 import AvatarGrid from "../components/avatar/avatar-grid";
 import AvatarInput from "@/components/avatar/avatar-input";
-import { TagSelector } from "@/components/avatar/tag-selector";
+import { TagFilter } from "@/components/avatar/tag-selector";
 
 export default function Page() {
   const { auth } = useSnapshot(appState);
@@ -29,7 +29,7 @@ export default function Page() {
           </Avatar>
         </Link>
 
-        <TagSelector hideOnEmpty />
+        <TagFilter />
 
         <AvatarInput />
       </div>
@@ -37,7 +37,6 @@ export default function Page() {
       <div className="flex-1 overflow-hidden">
         <AvatarGrid />
       </div>
-
     </main>
   );
 }

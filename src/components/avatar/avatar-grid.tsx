@@ -24,6 +24,7 @@ import { avatarMapState } from "@/state/avatars";
 
 export default function AvatarGrid() {
   const { sortedAvatars } = useAvatars();
+  console.log(sortedAvatars.length);
 
   useAvatarFetcher();
 

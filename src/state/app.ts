@@ -15,6 +15,7 @@ export type AppState = {
     me?: UserInfo;
   };
   settings: { avatarFetchInterval: number; avatarStatusExpiresHr: number };
+  filter?: string
 };
 
 export const appState: AppState = proxy({
