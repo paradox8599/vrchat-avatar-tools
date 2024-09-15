@@ -23,9 +23,11 @@ import useAvatars from "@/hooks/useAvatars";
 export function TagSelector({
   onSelect,
   value,
+  hideOnEmpty = false,
 }: {
   onSelect?: (tag: string) => void;
   value?: string;
+  hideOnEmpty?: boolean;
 }) {
   const [open, setOpen] = React.useState(false);
   const [search, setSearch] = React.useState("");
@@ -47,11 +49,11 @@ export function TagSelector({
           role="combobox"
           aria-expanded={open}
           className={cn(
-            "w-32 justify-between p-2 text-xs rounded-full",
+            "w-32 justify-between py-1 text-xs rounded-full",
             value ? "opacity-100" : "opacity-50",
           )}
         >
-          {value ? value : "选择标签"}
+          <span className="w-full">{value ? value : "选择标签"}</span>
           <ChevronsUpDown size={14} className="ml-2 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -64,10 +66,15 @@ export function TagSelector({
             onKeyUp={(e) => e.key === "Enter" && setTag(search)}
           />
           <CommandList>
-            {search?.trim() !== "" && (
-              <CommandEmpty>
+            {!hideOnEmpty && search?.trim() !== "" && (
+              <CommandEmpty className="p-1">
                 <div
-                  className="cursor-pointer flex items-center pl-8"
+                  className={cn(
+                    "cursor-pointer rounded",
+                    "text-accent-foreground bg-accent bg-gray-100",
+                    "flex items-center pl-8 py-[0.375rem]",
+                    "[line-height:1.25rem] text-[0.875rem]",
+                  )}
                   onClick={() => setTag(search.trim())}
                 >
                   {search.trim()}

@@ -7,6 +7,7 @@ import Link from "next/link";
 import AvatarListMobile from "../components/avatar/avatar-list-mobile";
 import AvatarListDesktop from "../components/avatar/avatar-list-desktop";
 import AvatarInput from "@/components/avatar/avatar-input";
+import { TagSelector } from "@/components/avatar/tag-selector";
 
 export default function Page() {
   const { auth } = useSnapshot(appState);
@@ -28,6 +29,8 @@ export default function Page() {
             </div>
           </Avatar>
         </Link>
+
+        <TagSelector hideOnEmpty />
 
         <AvatarInput />
       </div>
