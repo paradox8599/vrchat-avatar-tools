@@ -105,7 +105,7 @@ export default function AvatarGrid() {
                         open(`https://vrchat.com/home/avatar/${avatar.id}`)
                       }
                     >
-                      {avatar.info?.releaseStatus ? "公开" : "未知"}
+                      {avatar.info?.releaseStatus ? "已公开" : "未知"}
                       <SquareArrowOutUpRight size={12} />
                     </Button>
 
