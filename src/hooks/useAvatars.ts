@@ -23,7 +23,7 @@ export default function useAvatars() {
           );
         })
         .filter((a) => (filter ? a.tag === filter : true)),
-    [avatars],
+    [avatars, filter],
   );
 
   const tags = React.useMemo(
