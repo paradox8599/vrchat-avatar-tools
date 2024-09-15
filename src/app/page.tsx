@@ -16,7 +16,7 @@ export default function Page() {
 
   return (
     <main className="py-2 h-full flex flex-col">
-      <div className="flex flex-row items-center justify-between gap-2 px-2">
+      <div className="flex flex-row items-center justify-between gap-2 px-2 pb-2 shadow">
         {/* Avatar Icon & Settings button */}
 
         <Tooltip tooltip="设置">

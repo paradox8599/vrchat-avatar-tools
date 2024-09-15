@@ -61,11 +61,11 @@ export function ThemeToggle() {
           <DropdownMenuItem onClick={() => setTheme("system")}>
             跟随系统
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setTheme("light")}>
-            总是关闭
-          </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setTheme("dark")}>
             总是开启
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setTheme("light")}>
+            总是关闭
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
