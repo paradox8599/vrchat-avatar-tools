@@ -85,22 +85,28 @@ export function TagSelector({
             )}
 
             <CommandGroup>
-              {tags.map((tag) => (
-                <CommandItem
-                  key={`${tag ?? ""}`}
-                  value={tag}
-                  onSelect={setTag}
-                  className="cursor-pointer"
-                >
-                  <Check
-                    className={cn(
-                      "mr-2 h-4 w-4",
-                      value === tag ? "opacity-100" : "opacity-0",
-                    )}
-                  />
-                  {tag}
-                </CommandItem>
-              ))}
+              {tags
+                .sort((a, b) => {
+                  if (a === value) return -1;
+                  if (b === value) return 1;
+                  return a.localeCompare(b);
+                })
+                .map((tag) => (
+                  <CommandItem
+                    key={`${tag ?? ""}`}
+                    value={tag}
+                    onSelect={setTag}
+                    className="cursor-pointer"
+                  >
+                    <Check
+                      className={cn(
+                        "mr-2 h-4 w-4",
+                        value === tag ? "opacity-100" : "opacity-0",
+                      )}
+                    />
+                    {tag}
+                  </CommandItem>
+                ))}
             </CommandGroup>
           </CommandList>
         </Command>
