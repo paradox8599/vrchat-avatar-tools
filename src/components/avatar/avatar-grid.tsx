@@ -33,10 +33,10 @@ export default function AvatarGrid() {
       <div
         className={cn(
           "flex flex-col items-center justify-start gap-2 h-fit",
-          "md:grid md:gap-y-4 md:gap-x-4",
-          "md:grid-cols-2",
-          "xl:grid-cols-3",
-          "2xl:grid-cols-4",
+          "sm:grid md:gap-y-4 md:gap-x-4",
+          "sm:grid-cols-2",
+          "md:grid-cols-3",
+          "lg:grid-cols-4",
           "py-2",
         )}
       >

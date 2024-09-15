@@ -4,6 +4,11 @@ const config: Config = {
     darkMode: ["class"],
     content: ["./src/**/*.{js,ts,jsx,tsx,mdx}"],
     theme: {
+        screens: {
+            sm: "820px",
+            md: "1280px",
+            lg: '1640px'
+        },
         extend: {
             colors: {
                 background: "var(--background)",
