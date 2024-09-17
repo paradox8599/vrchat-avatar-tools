@@ -1,5 +1,6 @@
 "use client";
 import { AvatarExport } from "@/components/settings/avatar-export";
+import { AvatarImport } from "@/components/settings/avatar-import";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,7 +16,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { appState, logout } from "@/state/app";
-import { avatarMapState } from "@/state/avatars";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import React from "react";
@@ -41,23 +41,15 @@ export default function Page() {
         {/* options */}
 
         <div className="py-4 flex flex-col items-start justify-start gap-4">
-          {/* export */}
-          <div>
-            <AvatarExport />
-          </div>
+          <AvatarExport />
+          <AvatarImport />
 
-          {/* dark mode */}
-          <div className="w-full">
-            <ThemeToggle />
-          </div>
+          <ThemeToggle />
 
           {/* avatar fetch interval */}
           <div className="w-full">
-            <Label htmlFor="avatar-fetch-interval" className="text-nowrap px-2">
-              单次请求间隔时间 (毫秒)
-            </Label>
+            <Label className="text-nowrap px-2">单次请求间隔时间 (毫秒)</Label>
             <Input
-              name="avatar-fetch-interval"
               type="number"
               value={settings.avatarFetchInterval}
               onChange={(e) => {
@@ -70,11 +62,8 @@ export default function Page() {
 
           {/* avatar expires in */}
           <div className="w-full">
-            <Label htmlFor="avatar-expires" className="text-nowrap px-2">
-              模型数据更新间隔 (小时)
-            </Label>
+            <Label className="text-nowrap px-2">模型数据更新间隔 (小时)</Label>
             <Input
-              name="avatar-expires"
               type="number"
               value={settings.avatarStatusExpiresHr}
               onChange={(e) => {

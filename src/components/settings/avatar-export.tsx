@@ -1,8 +1,9 @@
 import React from "react";
 import { Button } from "../ui/button";
 import { avatarMapState } from "@/state/avatars";
-import { dt } from "@/lib/utils";
+import { cn, dt } from "@/lib/utils";
 import { Checkbox } from "../ui/checkbox";
+import { exportFile } from "@/lib/file";
 
 const HEADERS = [
   "\ufeff模型id",
@@ -15,19 +16,6 @@ const HEADERS = [
   "最后更新时间",
   "发布状态",
 ].join(",");
-
-export function exportFile(
-  lines: string[],
-  filename: string,
-  type: "text/plain" | "text/csv",
-) {
-  const blob = new Blob([lines.join("\n")], { type });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = filename;
-  a.click();
-}
 
 function exportIds() {
   const ids = [...avatarMapState.values()].map((a) => a.id);
@@ -64,7 +52,7 @@ export function AvatarExport() {
   }
 
   return (
-    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+    <div className="flex flex-col items-stretch sm:flex-row sm:items-center w-full gap-4">
       <Button
         variant="outline"
         onClick={() => {
@@ -75,7 +63,7 @@ export function AvatarExport() {
         导出{exportIdsOnly ? "文件" : "CSV"}
       </Button>
 
-      <div className="flex gap-4">
+      <div className="flex justify-around gap-4">
         <label className="flex items-center gap-1">
           仅导出模型ID
           <Checkbox
@@ -84,17 +72,21 @@ export function AvatarExport() {
           />
         </label>
 
-        {!exportIdsOnly && (
-          <label className="flex items-center gap-1">
-            使用ISO时间格式
-            <Checkbox
-              checked={dateFmt === "ISO"}
-              onCheckedChange={(v) =>
-                setDateFormat((v.valueOf() as boolean) ? "ISO" : "FRIENDLY")
-              }
-            />
-          </label>
-        )}
+        <label
+          className={cn(
+            "flex items-center gap-1",
+            exportIdsOnly ? "text-muted-foreground" : "",
+          )}
+        >
+          使用ISO时间格式
+          <Checkbox
+            disabled={exportIdsOnly}
+            checked={dateFmt === "ISO"}
+            onCheckedChange={(v) =>
+              setDateFormat((v.valueOf() as boolean) ? "ISO" : "FRIENDLY")
+            }
+          />
+        </label>
       </div>
     </div>
   );
