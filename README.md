@@ -4,7 +4,10 @@
 
 - system tray
 - notification
-- avatar id & copy icon alignment
 - search / filter
-- import / export
 - update check
+- avatar info status
+  - unfetched - grey
+  - recently fetched - green
+  - haven't fetched for a while - yellow
+  - expired - red
