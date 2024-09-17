@@ -12,7 +12,7 @@ export function Tooltip({
 }: React.PropsWithChildren & { tooltip: string } & TooltipContentProps) {
   return (
     <TT>
-      <TooltipTrigger>{children}</TooltipTrigger>
+      <TooltipTrigger asChild>{children}</TooltipTrigger>
       <TooltipContent {...props}>{tooltip}</TooltipContent>
     </TT>
   );
