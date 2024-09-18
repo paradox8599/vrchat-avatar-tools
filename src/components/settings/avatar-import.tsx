@@ -166,7 +166,7 @@ export function AvatarImport() {
                     "whitespace-nowrap w-full py-2 flex items-center justify-between",
                     "border-b",
                     // i % 2 === 0 ? "" : "",
-                    idsExists.filter((x) => x.id === id.id)
+                    idsExists.find((x) => x.id === id.id)
                       ? "text-destructive line-through"
                       : "",
                   )}
