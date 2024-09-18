@@ -21,13 +21,15 @@ export type AppState = {
   filter?: string;
 };
 
-export const appState: AppState = proxy({
+const initAppState = {
   auth: { status: LoginStatus.NotLoggedIn },
   settings: {
     avatarFetchInterval: 3000,
     avatarStatusExpiresHr: 1,
   },
-});
+}
+
+export const appState: AppState = proxy(initAppState);
 
 subscribe(appState, async () => {
   console.log(Object.values(LoginStatus)[appState.auth.status]);

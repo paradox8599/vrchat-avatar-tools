@@ -1,7 +1,7 @@
 import React from "react";
 import { Button } from "../ui/button";
 import { avatarMapState } from "@/state/avatars";
-import { cn, dt } from "@/lib/utils";
+import { dt } from "@/lib/utils";
 import { Checkbox } from "../ui/checkbox";
 import { exportFile } from "@/lib/file";
 
@@ -27,6 +27,7 @@ export function AvatarExport() {
   const [dateFmt, setDateFormat] = React.useState<"ISO" | "FRIENDLY">(
     "FRIENDLY",
   );
+  const [includeTags, setIncludeTags] = React.useState(false);
 
   function generateDateString(d?: string) {
     if (!d) return "";
@@ -72,19 +73,18 @@ export function AvatarExport() {
           />
         </label>
 
-        <label
-          className={cn(
-            "flex items-center gap-1",
-            exportIdsOnly ? "text-muted-foreground" : "",
-          )}
-        >
-          使用ISO时间格式
+        <label className="flex items-center gap-1">
+          {exportIdsOnly ? "包括标签" : "使用ISO时间格式"}
           <Checkbox
-            disabled={exportIdsOnly}
-            checked={dateFmt === "ISO"}
-            onCheckedChange={(v) =>
-              setDateFormat((v.valueOf() as boolean) ? "ISO" : "FRIENDLY")
-            }
+            checked={exportIdsOnly ? includeTags : dateFmt === "ISO"}
+            onCheckedChange={(v) => {
+              const value = v.valueOf() as boolean;
+              if (exportIdsOnly) {
+                setIncludeTags(value);
+              } else {
+                setDateFormat(value ? "ISO" : "FRIENDLY");
+              }
+            }}
           />
         </label>
       </div>

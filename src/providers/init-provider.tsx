@@ -38,7 +38,7 @@ export default function InitProvider({
     if (!appState.init) {
       router.replace("/splash");
     } else if (path === "/splash") {
-      router.push("/");
+      router.push("/settings");
     }
   }, [init, path, router]);
 
