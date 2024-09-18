@@ -22,6 +22,38 @@ import { toast } from "@/hooks/use-toast";
 import { AvatarTagSelector } from "./tag-selector";
 import { avatarMapState } from "@/state/avatars";
 import { Tooltip } from "../tooltip";
+import { appState } from "@/state/app";
+
+const EXPIRING_MS = appState.settings.avatarStatusExpiresHr * 60 * 60 * 1000;
+const HALF_EXPIRING_MS = EXPIRING_MS / 2;
+
+function Dot({ dts }: { dts?: string }) {
+  let color: "red" | "yellow" | "green" | "gray";
+
+  if (!dts) {
+    color = "gray";
+  } else {
+    const diff = Date.now() - new Date(dts as string).getTime();
+    if (diff < HALF_EXPIRING_MS) color = "green";
+    else if (diff < EXPIRING_MS) color = "yellow";
+    else color = "red";
+  }
+
+  return (
+    <div
+      className={cn(
+        "w-3 h-3 rounded-full",
+        "absolute top-0 left-0 -translate-x-1/3 -translate-y-1/3",
+        {
+          red: "bg-red-500",
+          yellow: "bg-yellow-500",
+          green: "bg-green-500",
+          gray: "bg-gray-500",
+        }[color],
+      )}
+    ></div>
+  );
+}
 
 export default function AvatarGrid() {
   const { sortedAvatars } = useAvatars();
@@ -45,12 +77,15 @@ export default function AvatarGrid() {
             <Card
               key={avatar.id}
               className={cn(
+                "relative",
                 "max-w-fit min-w-fit min-h-[8rem]",
                 "px-2 flex flex-col justify-center gap-2",
                 avatar.info ? "bg-cardhl" : "bg-card",
               )}
             >
               {/* thumbnail & id row */}
+
+              <Dot dts={avatar.lastFetch} />
 
               <div className="flex items-start justify-start gap-2">
                 {/* thumbnail image */}

@@ -65,11 +65,13 @@ export default function Page() {
             <Label className="text-nowrap px-2">模型数据更新间隔 (小时)</Label>
             <Input
               type="number"
+              min="1"
               value={settings.avatarStatusExpiresHr}
               onChange={(e) => {
-                appState.settings.avatarStatusExpiresHr = Number.parseInt(
-                  e.target.value,
-                );
+                const parsed = Number.parseInt(e.target.value);
+                if (Number.isNaN(parsed)) return;
+                if (parsed < 1) return;
+                appState.settings.avatarStatusExpiresHr = parsed;
               }}
             />
           </div>
