@@ -1,6 +1,7 @@
 "use client";
 import { AvatarExport } from "@/components/settings/avatar-export";
 import { AvatarImport } from "@/components/settings/avatar-import";
+import { NotificationToggle } from "@/components/settings/notification-toggle";
 import { ThemeToggle } from "@/components/settings/theme-toggle";
 import { Button } from "@/components/ui/button";
 import {
@@ -40,11 +41,12 @@ export default function Page() {
 
         {/* options */}
 
-        <div className="py-4 flex flex-col items-start justify-start gap-4">
-          <AvatarExport />
-          <AvatarImport />
-
+        <div className="py-4 flex flex-col items-start justify-start gap-4 sm:gap-8">
+          <NotificationToggle />
           <ThemeToggle />
+
+          <AvatarImport />
+          <AvatarExport />
 
           {/* avatar fetch interval */}
           <div className="w-full">

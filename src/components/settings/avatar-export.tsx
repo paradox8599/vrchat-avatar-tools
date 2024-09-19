@@ -53,9 +53,10 @@ export function AvatarExport() {
   }
 
   return (
-    <div className="flex flex-col items-stretch sm:flex-row sm:items-center w-full gap-4">
+    <div className="w-full flex flex-col items-stretch sm:flex-row sm:items-center justify-between gap-4">
       <Button
         variant="outline"
+        className="w-32"
         onClick={() => {
           if (exportIdsOnly) exportIds();
           else exportAvatars();
@@ -64,8 +65,8 @@ export function AvatarExport() {
         导出{exportIdsOnly ? "文件" : "CSV"}
       </Button>
 
-      <div className="flex justify-around gap-4">
-        <label className="flex items-center gap-1">
+      <div className="w-fit flex gap-8">
+        <label className="flex-1 flex items-center justify-end gap-1 whitespace-nowrap">
           仅导出模型ID
           <Checkbox
             checked={exportIdsOnly}
@@ -73,7 +74,7 @@ export function AvatarExport() {
           />
         </label>
 
-        <label className="flex items-center gap-1">
+        <label className="flex-1 flex items-center justify-end gap-1 whitespace-nowrap">
           {exportIdsOnly ? "包括标签" : "使用ISO时间格式"}
           <Checkbox
             checked={exportIdsOnly ? includeTags : dateFmt === "ISO"}

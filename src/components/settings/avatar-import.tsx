@@ -145,10 +145,10 @@ export function AvatarImport() {
   }
 
   return (
-    <div className="flex items-center gap-4">
+    <div className="w-full flex items-center justify-between gap-4">
       <Dialog open={dialogOpen} onOpenChange={(open) => !open && close()}>
         <DialogTrigger asChild>
-          <Button variant="outline" onClick={importIds}>
+          <Button variant="outline" onClick={importIds} className="w-32">
             导入模型ID
           </Button>
         </DialogTrigger>

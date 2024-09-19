@@ -37,13 +37,13 @@ export function ThemeToggle() {
   const themeName = React.useMemo(
     () =>
       ({ system: "跟随系统", light: "总是关闭", dark: "总是开启" })[
-      theme ?? ""
+        theme ?? ""
       ],
     [theme],
   );
 
   return (
-    <ClientOnly className="flex flex-row items-center justify-start gap-4">
+    <ClientOnly className="w-full flex flex-row items-center justify-between gap-4">
       <p>深色模式</p>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>

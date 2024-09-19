@@ -17,6 +17,7 @@ export type AppState = {
   settings: {
     avatarFetchInterval: number;
     avatarStatusExpiresHr: number;
+    notifications: boolean;
   };
   filter?: string;
 };
@@ -26,6 +27,7 @@ const initAppState = {
   settings: {
     avatarFetchInterval: 3000,
     avatarStatusExpiresHr: 1,
+    notifications: true,
   },
 }
 
