@@ -18,6 +18,7 @@ export type AppState = {
     avatarFetchInterval: number;
     avatarStatusExpiresHr: number;
     notifications: boolean;
+    autoStart: boolean
   };
   filter?: string;
 };
@@ -28,6 +29,7 @@ const initAppState = {
     avatarFetchInterval: 1,
     avatarStatusExpiresHr: 1,
     notifications: true,
+    autoStart: false,
   },
 }
 

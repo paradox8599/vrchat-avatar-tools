@@ -60,9 +60,9 @@ fn show_window(app: &tauri::AppHandle) {
 }
 
 pub fn init(app: &mut tauri::App) -> StdResult<()> {
+    // cookies
     let cookies = load_cookies(app.handle())?;
     app.manage(cookies.clone());
-
     let config = Configuration {
         base_path: BASE_URL.to_owned(),
         user_agent: Some(UA.to_owned()),
@@ -77,10 +77,18 @@ pub fn init(app: &mut tauri::App) -> StdResult<()> {
     };
     app.manage(Arc::new(RwLock::new(config)));
 
+    // system tray
     #[cfg(desktop)]
     {
         let handle = app.handle();
         tray::create_tray(handle)?;
     }
+
+    // auto start
+    #[cfg(desktop)]
+    let _ = app.handle().plugin(tauri_plugin_autostart::init(
+        tauri_plugin_autostart::MacosLauncher::LaunchAgent,
+        Some(vec!["--flag1", "--flag2"]), /* arbitrary number of args to pass to your app */
+    ));
     Ok(())
 }

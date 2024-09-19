@@ -1,4 +1,5 @@
 "use client";
+import { AutoStartToggle } from "@/components/settings/auto-start";
 import { AvatarExport } from "@/components/settings/avatar-export";
 import { AvatarImport } from "@/components/settings/avatar-import";
 import { NotificationToggle } from "@/components/settings/notification-toggle";
@@ -44,9 +45,10 @@ export default function Page() {
 
         {/* options */}
 
-        <ScrollArea className="h-full py-6" >
+        <ScrollArea className="h-full py-6">
           <div className="px-4 py-4 flex flex-col items-start justify-start gap-4">
             <NotificationToggle />
+            <AutoStartToggle />
             <ThemeToggle />
 
             <AvatarImport />
@@ -68,7 +70,9 @@ export default function Page() {
 
             {/* avatar expires in */}
             <div className="w-full">
-              <Label className="text-nowrap px-2">模型数据更新间隔 (小时)</Label>
+              <Label className="text-nowrap px-2">
+                模型数据更新间隔 (小时)
+              </Label>
               <Input
                 type="number"
                 min="1"

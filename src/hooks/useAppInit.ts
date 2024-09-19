@@ -7,6 +7,7 @@ import { usePathname, useRouter } from "next/navigation";
 import React from "react";
 import useSWR from "swr";
 import { useSnapshot } from "valtio";
+import { isEnabled } from "@tauri-apps/plugin-autostart";
 
 export default function useAppInit() {
   const { init } = useSnapshot(appState);
@@ -39,18 +40,29 @@ export default function useAppInit() {
   }, [init, path, router]);
 
   React.useEffect(() => {
-    if (window.location.hostname !== 'tauri.localhost') {
-      return
+    if (window.location.hostname !== "tauri.localhost") {
+      return;
     }
 
-    document.addEventListener('contextmenu', e => {
-      e.preventDefault();
-      return false;
-    }, { capture: true })
+    document.addEventListener(
+      "contextmenu",
+      (e) => {
+        e.preventDefault();
+        return false;
+      },
+      { capture: true },
+    );
 
-    document.addEventListener('selectstart', e => {
-      e.preventDefault();
-      return false;
-    }, { capture: true })
-  }, [])
+    document.addEventListener(
+      "selectstart",
+      (e) => {
+        e.preventDefault();
+        return false;
+      },
+      { capture: true },
+    );
+
+    // load auto start state
+    isEnabled().then((v) => (appState.settings.autoStart = v));
+  }, []);
 }
