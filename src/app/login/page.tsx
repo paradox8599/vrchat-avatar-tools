@@ -100,77 +100,79 @@ export default function Page() {
         LoginStatus.NotLoggedIn,
         LoginStatus.NotInWhitelist,
       ].includes(loginResult) && (
-        <form
-          className="max-w-sm w-full flex-col flex-center gap-2"
-          action={onLogin}
-        >
-          <h1 className="font-bold">VRCHAT</h1>
-          <p className="text-xs font-semibold">
-            由于 VRChat 接口限制，登录后方可获取模型信息
-          </p>
-          <Input
-            required
-            readOnly={isLoading}
-            disabled={isLoading}
-            defaultValue={appState.auth.credentials?.username}
-            name="username"
-            type="text"
-            placeholder="用户名"
-          />
-          <Input
-            required
-            readOnly={isLoading}
-            disabled={isLoading}
-            defaultValue={appState.auth.credentials?.password}
-            name="password"
-            type="password"
-            placeholder="密码"
-          />
-          <Button
-            className="uppercase min-w-full"
-            type="submit"
-            disabled={isLoading}
+          <form
+            className="max-w-sm w-full flex-col flex-center gap-2"
+            action={onLogin}
           >
-            {isLoading ? (
-              <span className="animate-spin ease-out">
-                <LoaderCircle />
-              </span>
-            ) : (
-              "登录"
-            )}
-          </Button>
-        </form>
-      )}
+            <h1 className="font-bold">VRCHAT</h1>
+            <p className="text-xs font-semibold">
+              由于 VRChat 接口限制，登录后方可获取模型信息
+            </p>
+            <Input
+              required
+              readOnly={isLoading}
+              disabled={isLoading}
+              defaultValue={appState.auth.credentials?.username}
+              name="username"
+              type="text"
+              placeholder="用户名"
+            />
+            <Input
+              required
+              readOnly={isLoading}
+              disabled={isLoading}
+              defaultValue={appState.auth.credentials?.password}
+              name="password"
+              type="password"
+              placeholder="密码"
+            />
+            <Button
+              className="uppercase min-w-full"
+              type="submit"
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <span className="animate-spin ease-out">
+                  <LoaderCircle />
+                </span>
+              ) : (
+                "登录"
+              )}
+            </Button>
+          </form>
+        )}
 
       {/* Needs Verify */}
       {[LoginStatus.NeedsEmailVerify, LoginStatus.NeedsVerify].includes(
         loginResult,
       ) && (
-        <div className="flex-center flex-col gap-4">
-          <h1 className="font-semibold">输入验证码</h1>
-          <InputOTP
-            readOnly={isLoading}
-            maxLength={6}
-            minLength={6}
-            value={otpCode}
-            pattern={REGEXP_ONLY_DIGITS}
-            onChange={onOtpInput}
-            disabled={isLoading}
-          >
-            <InputOTPGroup>
-              <InputOTPSlot index={0} />
-              <InputOTPSlot index={1} />
-              <InputOTPSlot index={2} />
-              <InputOTPSlot index={3} />
-              <InputOTPSlot index={4} />
-              <InputOTPSlot index={5} />
-            </InputOTPGroup>
-          </InputOTP>
-        </div>
-      )}
+          <div className="flex-center flex-col gap-4">
+            <h1 className="font-semibold">输入验证码</h1>
+            <InputOTP
+              readOnly={isLoading}
+              maxLength={6}
+              minLength={6}
+              value={otpCode}
+              pattern={REGEXP_ONLY_DIGITS}
+              onChange={onOtpInput}
+              disabled={isLoading}
+            >
+              <InputOTPGroup>
+                <InputOTPSlot index={0} />
+                <InputOTPSlot index={1} />
+                <InputOTPSlot index={2} />
+                <InputOTPSlot index={3} />
+                <InputOTPSlot index={4} />
+                <InputOTPSlot index={5} />
+              </InputOTPGroup>
+            </InputOTP>
+          </div>
+        )}
 
       <Button
         className="fixed bottom-4 right-4"
+        variant="outline"
+        size="sm"
         onClick={() => {
           avatarMapState.clear();
           logout();
