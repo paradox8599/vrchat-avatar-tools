@@ -4,4 +4,4 @@
 
 - multiple tags
 - update check
-- auto start: minimized
+- auto start: minimized, login
