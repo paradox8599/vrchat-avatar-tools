@@ -16,6 +16,7 @@ import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "../ui/badge";
 import { toast } from "@/hooks/use-toast";
+import { ScrollArea } from "../ui/scroll-area";
 
 const EXAMPLE_FILE = `
 # 模型ID导入格式示例
@@ -158,57 +159,59 @@ export function AvatarImport() {
             <DialogTitle className="text-center">
               {`将导入 ${ids.length} 个 ID 中的 ${idsToAdd.length} 个 （${idsExists.length} 个已存在）`}
             </DialogTitle>
-            <DialogDescription className="max-h-[60vh]  overflow-y-scroll [scrollbar-width:thin] text-mono">
-              {ids.map((id, i) => (
-                <span
-                  key={id.id}
-                  className={cn(
-                    "whitespace-nowrap w-full py-2 flex items-center justify-between",
-                    "border-b",
-                    // i % 2 === 0 ? "" : "",
-                    idsExists.find((x) => x.id === id.id)
-                      ? "text-destructive line-through"
-                      : "",
-                  )}
-                >
-                  <span className="flex flex-row items-start">
-                    {/* index number */}
-                    <span className="w-12 pr-1 text-end">
-                      {(i + 1).toString().padStart(2, " ")}.
-                    </span>
-
-                    <span className="flex flex-col items-start xs:flex-row xs:items-center justify-start">
-                      {/* id */}
-                      <span className="font-mono whitespace-pre-wrap">
-                        {id.id}
-                      </span>
-                      {/* tag */}
-                      {id.tag && (
-                        <span>
-                          <Badge
-                            variant="outline"
-                            className="text-xs w-fit ml-2"
-                          >
-                            {id.tag}
-                          </Badge>
-                        </span>
-                      )}
-                    </span>
-                  </span>
-
-                  {/* delete button */}
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="mx-4"
-                    onClick={() =>
-                      setIds((prev) => prev.filter((v) => v.id !== id.id))
-                    }
+            <DialogDescription className="max-h-[60vh] text-mono">
+              <ScrollArea className="h-full pr-4">
+                {ids.map((id, i) => (
+                  <span
+                    key={id.id}
+                    className={cn(
+                      "whitespace-nowrap w-full py-2 flex items-center justify-between",
+                      "border-b",
+                      // i % 2 === 0 ? "" : "",
+                      idsExists.find((x) => x.id === id.id)
+                        ? "text-destructive line-through"
+                        : "",
+                    )}
                   >
-                    <X size={18} />
-                  </Button>
-                </span>
-              ))}
+                    <span className="flex flex-row items-start">
+                      {/* index number */}
+                      <span className="w-12 pr-1 text-end">
+                        {(i + 1).toString().padStart(2, " ")}.
+                      </span>
+
+                      <span className="flex flex-col items-start xs:flex-row xs:items-center justify-start">
+                        {/* id */}
+                        <span className="font-mono whitespace-pre-wrap">
+                          {id.id}
+                        </span>
+                        {/* tag */}
+                        {id.tag && (
+                          <span>
+                            <Badge
+                              variant="outline"
+                              className="text-xs w-fit ml-2"
+                            >
+                              {id.tag}
+                            </Badge>
+                          </span>
+                        )}
+                      </span>
+                    </span>
+
+                    {/* delete button */}
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="mx-4"
+                      onClick={() =>
+                        setIds((prev) => prev.filter((v) => v.id !== id.id))
+                      }
+                    >
+                      <X size={18} />
+                    </Button>
+                  </span>
+                ))}
+              </ScrollArea>
             </DialogDescription>
           </DialogHeader>
 
