@@ -3,6 +3,7 @@ import React from "react";
 import { vrchatGetAvatarInfo } from "@/lib/api";
 import { avatarMapState } from "@/state/avatars";
 import { sendNotification } from "@tauri-apps/plugin-notification";
+import { Avatar } from "@/types";
 
 function hasOutdated(date?: Date | string) {
   return (
@@ -17,21 +18,40 @@ function getOutdatedAvatar() {
   )[0];
 }
 
+export async function fetchAvatarInfo(avatar: Avatar) {
+  // hardcoded prevent fetching too frequently
+  if (avatar.fetching) return;
+  // if (avatar.lastFetch) {
+  //   const diff = Date.now() - new Date(avatar.lastFetch).getTime();
+  //   if (diff < 1000) return;
+  // }
+  try {
+    avatar.fetching = true;
+    const info = await vrchatGetAvatarInfo(avatar.id);
+    const newPublic =
+      info?.releaseStatus === "public" && avatar.info === void 0;
+    if (newPublic && appState.settings.notifications) {
+      sendNotification({
+        title: `发现  ${info.authorName}  的公开模型`,
+        body: [avatar.id, avatar.tag].filter((l) => !!l).join("\n"),
+      });
+    }
+    setTimeout(() => {
+      avatar.info = info;
+      avatar.lastFetch = new Date().toISOString();
+      avatar.fetching = false;
+    }, 300);
+  } catch (_) {
+    setTimeout(() => (avatar.fetching = false), 300);
+  }
+}
+
 export function useAvatarFetcher() {
   React.useEffect(() => {
     const timer = setInterval(async () => {
       const avatar = getOutdatedAvatar();
       if (!avatar) return;
-      avatar.info = await vrchatGetAvatarInfo(avatar.id);
-      avatar.lastFetch = new Date().toISOString();
-      avatarMapState.set(avatar.id, avatar);
-      if (avatar.info && appState.settings.notifications) {
-        sendNotification({
-          title: `发现  ${avatar.info.authorName}  的公开模型`,
-          body: [avatar.id, avatar.tag].filter((l) => !!l).join("\n"),
-          autoCancel: true,
-        });
-      }
+      await fetchAvatarInfo(avatar);
     }, appState.settings.avatarFetchInterval * 1000);
 
     return () => {

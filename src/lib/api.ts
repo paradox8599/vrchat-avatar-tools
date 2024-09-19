@@ -30,7 +30,7 @@ async function invoke<T>(
   try {
     return await _invoke<T>(cmd, args, options);
   } catch (e) {
-    console.error(JSON.stringify(e));
+    // console.error(JSON.stringify(e));
     throw e;
   }
 }

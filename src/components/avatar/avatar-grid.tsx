@@ -54,7 +54,7 @@ export default function AvatarGrid() {
             >
               {/* thumbnail & id row */}
 
-              <StatusDot dts={avatar.lastFetch} />
+              <StatusDot avatar={avatar} />
 
               <div className="flex items-start justify-start gap-2">
                 {/* thumbnail image */}
