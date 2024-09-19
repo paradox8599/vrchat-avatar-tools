@@ -2,18 +2,15 @@
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "default",
   "description": "enables the default permissions",
-  "windows": [
-    "main"
-  ],
+  "windows": ["main"],
   "remote": {
-    "urls": [
-      "https://vrchat.com"
-    ]
+    "urls": ["https://vrchat.com"]
   },
   "permissions": [
     "core:app:default",
     "store:default",
     "shell:default",
-    "clipboard-manager:allow-write-text"
+    "clipboard-manager:allow-write-text",
+    "notification:default"
   ]
 }
