@@ -2,7 +2,6 @@
 
 ## TODO
 
-- notification
 - multiple tags
 - update check
-- use scroll area
+- auto start: minimized
