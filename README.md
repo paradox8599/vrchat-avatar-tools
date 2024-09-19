@@ -4,11 +4,6 @@
 
 - system tray
 - notification
-- search / filter
+- multiple tags
 - update check
-- avatar info status
-  - unfetched - grey
-  - recently fetched - green
-  - haven't fetched for a while - yellow
-  - expired - red
 - use scroll area
