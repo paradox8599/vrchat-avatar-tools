@@ -1,6 +1,9 @@
-pub mod cmd;
-pub mod cookies;
-pub mod err;
+mod cmd;
+mod cookies;
+mod err;
+
+#[cfg(desktop)]
+mod tray;
 
 use cookies::load_cookies;
 
@@ -36,6 +39,12 @@ pub fn init(app: &mut tauri::App) -> StdResult<()> {
         api_key: None,
     };
     app.manage(Arc::new(RwLock::new(config)));
+
+    #[cfg(desktop)]
+    {
+        let handle = app.handle();
+        tray::create_tray(handle)?;
+    }
     Ok(())
 }
 

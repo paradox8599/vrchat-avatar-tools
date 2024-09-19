@@ -2,7 +2,6 @@
 
 ## TODO
 
-- system tray
 - notification
 - multiple tags
 - update check
