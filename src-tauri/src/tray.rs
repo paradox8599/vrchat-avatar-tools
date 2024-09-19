@@ -13,6 +13,7 @@ macro_rules! toggle_window {
                 } else {
                     let _ = window.show();
                     let _ = window.set_focus();
+                    let _ = window.unminimize();
                 }
             }
         }
