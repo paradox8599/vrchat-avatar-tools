@@ -1,5 +1,5 @@
 "use client";
-import { useAutoBodyTheme } from "@/components/theme-toggle";
+import { useAutoBodyThemeSetter } from "@/components/settings/theme-toggle";
 import { vrchatLogin } from "@/lib/api";
 import { appState, loadAppState } from "@/state/app";
 import { loadAvatarState } from "@/state/avatars";
@@ -32,7 +32,7 @@ export default function InitProvider({
     },
   );
 
-  useAutoBodyTheme();
+  useAutoBodyThemeSetter();
 
   React.useEffect(() => {
     if (!appState.init) {

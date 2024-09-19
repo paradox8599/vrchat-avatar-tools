@@ -1,7 +1,7 @@
 "use client";
 import { AvatarExport } from "@/components/settings/avatar-export";
 import { AvatarImport } from "@/components/settings/avatar-import";
-import { ThemeToggle } from "@/components/theme-toggle";
+import { ThemeToggle } from "@/components/settings/theme-toggle";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,

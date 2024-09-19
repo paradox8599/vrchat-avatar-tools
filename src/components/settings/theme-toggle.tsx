@@ -11,9 +11,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import ClientOnly from "./client-only";
+import ClientOnly from "../client-only";
 
-export function useAutoBodyTheme() {
+export function useAutoBodyThemeSetter() {
   const { resolvedTheme } = useTheme();
 
   React.useEffect(() => {
