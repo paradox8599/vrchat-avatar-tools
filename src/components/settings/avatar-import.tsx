@@ -12,11 +12,12 @@ import {
 } from "../ui/dialog";
 import React from "react";
 import { avatarMapState } from "@/state/avatars";
-import { X } from "lucide-react";
+import { Copy, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "../ui/badge";
 import { toast } from "@/hooks/use-toast";
 import { ScrollArea } from "../ui/scroll-area";
+import { writeText } from "@tauri-apps/plugin-clipboard-manager";
 
 const EXAMPLE_FILE = `
 # 模型ID导入格式示例
@@ -173,17 +174,37 @@ export function AvatarImport() {
                         : "",
                     )}
                   >
-                    <span className="flex flex-row items-start">
+                    <span className="flex flex-row items-center">
                       {/* index number */}
-                      <span className="w-12 pr-1 text-end">
+                      <span className="w-12 pr-1 text-end text-md font-bold">
                         {(i + 1).toString().padStart(2, " ")}.
                       </span>
 
-                      <span className="flex flex-col items-start xs:flex-row xs:items-center justify-start">
+                      <span className="flex flex-col items-start xs:flex-row xs:items-center justify-start gap-1">
+
                         {/* id */}
-                        <span className="font-mono whitespace-pre-wrap">
-                          {id.id}
-                        </span>
+                        <div className="w-full flex items-center justify-center">
+                          <Button
+                            className={cn(
+                              "rounded-full",
+                              "font-mono font-bold text-xs",
+                              "flex gap-2",
+                            )}
+                            variant="outline"
+                            size="sm"
+                            onClick={() =>
+                              writeText(id.id).then(() =>
+                                toast({
+                                  title: "已复制模型ID",
+                                  description: id.id,
+                                }),
+                              )
+                            }
+                          >
+                            {id.id}
+                            <Copy size={16} />
+                          </Button>
+                        </div>
                         {/* tag */}
                         {id.tag && (
                           <span>
