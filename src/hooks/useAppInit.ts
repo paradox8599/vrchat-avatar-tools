@@ -8,11 +8,7 @@ import React from "react";
 import useSWR from "swr";
 import { useSnapshot } from "valtio";
 
-export default function InitProvider({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function useAppInit() {
   const { init } = useSnapshot(appState);
   const path = usePathname();
   const router = useRouter();
@@ -38,9 +34,7 @@ export default function InitProvider({
     if (!appState.init) {
       router.replace("/splash");
     } else if (path === "/splash") {
-      router.push("/settings");
+      router.push("/");
     }
   }, [init, path, router]);
-
-  return <>{children}</>;
 }

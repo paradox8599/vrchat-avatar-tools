@@ -5,11 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import React from "react";
 import { useSnapshot } from "valtio";
 
-export default function AuthProvider({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function useAuth() {
   const { auth, init } = useSnapshot(appState);
   const path = usePathname();
   const router = useRouter();
@@ -25,6 +21,4 @@ export default function AuthProvider({
       router.replace("/login");
     }
   }, [init, auth, path, router]);
-
-  return <>{children}</>;
 }
