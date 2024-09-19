@@ -32,7 +32,7 @@ export function useAvatarFetcher() {
           autoCancel: true,
         });
       }
-    }, appState.settings.avatarFetchInterval);
+    }, appState.settings.avatarFetchInterval * 1000);
 
     return () => {
       clearInterval(timer);

@@ -50,7 +50,7 @@ export default function Page() {
 
           {/* avatar fetch interval */}
           <div className="w-full">
-            <Label className="text-nowrap px-2">单次请求间隔时间 (毫秒)</Label>
+            <Label className="text-nowrap px-2">单次请求间隔时间 (秒)</Label>
             <Input
               type="number"
               value={settings.avatarFetchInterval}

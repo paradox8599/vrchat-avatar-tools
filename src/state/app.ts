@@ -25,7 +25,7 @@ export type AppState = {
 const initAppState = {
   auth: { status: LoginStatus.NotLoggedIn },
   settings: {
-    avatarFetchInterval: 3000,
+    avatarFetchInterval: 1,
     avatarStatusExpiresHr: 1,
     notifications: true,
   },
