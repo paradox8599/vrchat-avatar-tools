@@ -45,7 +45,7 @@ export default function Page() {
         {/* options */}
 
         <ScrollArea className="h-full py-6" >
-          <div className="px-4 py-4 flex flex-col items-start justify-start gap-4 sm:gap-8">
+          <div className="px-4 py-4 flex flex-col items-start justify-start gap-4">
             <NotificationToggle />
             <ThemeToggle />
 
