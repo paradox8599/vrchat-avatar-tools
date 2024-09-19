@@ -16,7 +16,9 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { toast } from "@/hooks/use-toast";
 import { appState, logout } from "@/state/app";
+import { avatarMapState } from "@/state/avatars";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import React from "react";
@@ -41,7 +43,7 @@ export default function Page() {
 
         {/* options */}
 
-        <div className="py-4 flex flex-col items-start justify-start gap-4 sm:gap-8">
+        <div className="px-4 py-4 flex flex-col items-start justify-start gap-4 sm:gap-8">
           <NotificationToggle />
           <ThemeToggle />
 
@@ -77,30 +79,61 @@ export default function Page() {
               }}
             />
           </div>
-        </div>
 
-        {/* Logout button */}
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button variant="destructive" className="w-full bg-red-700">
-              退出登录
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="bg-white">
-            <DialogHeader>
-              <DialogTitle>退出登录</DialogTitle>
-              <DialogDescription>是否退出登录？</DialogDescription>
-              <DialogFooter>
-                <Button variant="outline" onClick={logout}>
-                  确认
-                </Button>
-                <DialogClose asChild>
-                  <Button variant="default">取消</Button>
-                </DialogClose>
-              </DialogFooter>
-            </DialogHeader>
-          </DialogContent>
-        </Dialog>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="destructive" className="w-full">
+                清空数据
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="bg-secondary">
+              <DialogHeader>
+                <DialogTitle>清空数据</DialogTitle>
+                <DialogDescription>
+                  确定要清空数据？这将清空所有添加的模型ID，并登出账号。
+                </DialogDescription>
+                <DialogFooter>
+                  <Button
+                    variant="outline"
+                    onClick={async () => {
+                      avatarMapState.clear();
+                      await logout();
+                      toast({ title: "已清空数据" });
+                    }}
+                  >
+                    确认
+                  </Button>
+                  <DialogClose asChild>
+                    <Button variant="default">取消</Button>
+                  </DialogClose>
+                </DialogFooter>
+              </DialogHeader>
+            </DialogContent>
+          </Dialog>
+
+          {/* Logout button */}
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="destructive" className="w-full">
+                退出登录
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="bg-secondary">
+              <DialogHeader>
+                <DialogTitle>退出登录</DialogTitle>
+                <DialogDescription>是否退出登录？</DialogDescription>
+                <DialogFooter>
+                  <Button variant="outline" onClick={logout}>
+                    确认
+                  </Button>
+                  <DialogClose asChild>
+                    <Button variant="default">取消</Button>
+                  </DialogClose>
+                </DialogFooter>
+              </DialogHeader>
+            </DialogContent>
+          </Dialog>
+        </div>
       </div>
     </main>
   );
