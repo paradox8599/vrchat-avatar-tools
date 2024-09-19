@@ -2,6 +2,7 @@ import { appState } from "@/state/app";
 import React from "react";
 import { vrchatGetAvatarInfo } from "@/lib/api";
 import { avatarMapState } from "@/state/avatars";
+import { sendNotification } from "@tauri-apps/plugin-notification";
 
 function hasOutdated(date?: Date | string) {
   return (
@@ -24,6 +25,13 @@ export function useAvatarFetcher() {
       avatar.info = await vrchatGetAvatarInfo(avatar.id);
       avatar.lastFetch = new Date().toISOString();
       avatarMapState.set(avatar.id, avatar);
+      if (avatar.info && appState.settings.notifications) {
+        sendNotification({
+          title: `发现  ${avatar.info.authorName}  的公开模型`,
+          body: [avatar.id, avatar.tag].filter((l) => !!l).join("\n"),
+          autoCancel: true,
+        });
+      }
     }, appState.settings.avatarFetchInterval);
 
     return () => {
