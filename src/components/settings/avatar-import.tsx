@@ -33,13 +33,13 @@ avtr_b69eddca-db02-4be8-9c07-396d865f8c41
 
 
 
-# 格式 2: 每行一个模型ID和标签,用空格或半角逗号分隔
+# 格式 2: 每行一个模型ID和标签,用空格或中英文半角逗号分隔
 # 例:
 
 avtr_b69eddca-db02-4be8-9c07-396d865f8c42  mamehinata    # 这个ID会获得标签 [mamehinata]
 avtr_b69eddca-db02-4be8-9c07-396d865f8c43, mamehinata    # 这个ID会获得标签 [mamehinata]
-avtr_b69eddca-db02-4be8-9c07-396d865f8c44 grus           # 这个ID会获得标签 [grus]
-avtr_b69eddca-db02-4be8-9c07-396d865f8c45   selestia     # 这个ID会获得标签 [selestia]
+avtr_b69eddca-db02-4be8-9c07-396d865f8c44，grus          # 这个ID会获得标签 [grus]
+avtr_b69eddca-db02-4be8-9c07-396d865f8c45  selestia      # 这个ID会获得标签 [selestia]
 
 
 
@@ -67,7 +67,7 @@ avtr_b69eddca-db02-4be8-9c07-396d865f8c53
 
 // match id and tag at a same line, tag can contain any character that are not # symbol, or newline character
 const reIdTag =
-  /(avtr_[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})[ ,]+([^#\n]+)/;
+  /(avtr_[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})[ ,，]+([^#\n]+)/;
 // match id only
 const reId =
   /.*(avtr_[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}).*/;
