@@ -47,6 +47,15 @@ pub fn run() {
             vrchat_get_avatar_info,
         ])
         .setup(init)
+        // close to hide
+        .on_window_event(|app, event| {
+            if let Some(window) = app.get_webview_window("main") {
+                if let tauri::WindowEvent::CloseRequested { api, .. } = event {
+                    api.prevent_close();
+                    let _ = window.hide();
+                }
+            }
+        })
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
