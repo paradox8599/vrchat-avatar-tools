@@ -51,7 +51,7 @@ export default function AvatarGrid() {
                   "relative",
                   "max-w-fit min-w-fit min-h-[8rem]",
                   "px-2 flex flex-col justify-center gap-2",
-                  avatar.info ? "bg-cardhl" : "bg-card",
+                  avatar.public ? "bg-cardhl" : "bg-card",
                 )}
               >
                 {/* thumbnail & id row */}
@@ -106,21 +106,21 @@ export default function AvatarGrid() {
                         <Button
                           className={cn(
                             "uppercase w-24 rounded-full font-bold flex gap-2",
-                            avatar.info ? "" : "bg-muted text-foreground",
+                            avatar.public ? "" : "bg-muted text-foreground",
                           )}
                           size="sm"
                           onClick={() =>
                             open(`https://vrchat.com/home/avatar/${avatar.id}`)
                           }
                         >
-                          {avatar.info?.releaseStatus ? "已公开" : "未知"}
+                          {avatar.public ? "已公开" : "未知"}
                           <SquareArrowOutUpRight size={12} />
                         </Button>
                       </Tooltip>
 
                       {/* avatar author name  */}
 
-                      {avatar.info && (
+                      {avatar.public && (
                         <Tooltip tooltip="上传者">
                           <Button
                             className="rounded-full text-md flex gap-1 font-bold"
@@ -153,7 +153,7 @@ export default function AvatarGrid() {
                     <Tooltip tooltip="首次上传时间">
                       <p className="flex-center gap-2 bg-accent text-accent-foreground px-2 rounded-full">
                         <Box size={13} />
-                        {avatar.info
+                        {avatar.info && avatar.public
                           ? format(avatar.info?.created_at, "yyyy/MM/dd HH:mm")
                           : "----/--/-- --:--"}
                       </p>
@@ -162,7 +162,7 @@ export default function AvatarGrid() {
                     <Tooltip tooltip="最后修改时间">
                       <p className="flex-center gap-2 bg-accent text-accent-foreground px-2 rounded-full">
                         <CloudUpload size={14} />
-                        {avatar.info
+                        {avatar.info && avatar.public
                           ? format(avatar.info?.updated_at, "yyyy/MM/dd HH:mm")
                           : "----/--/-- --:--"}
                       </p>

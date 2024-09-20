@@ -81,6 +81,7 @@ export type Avatar = {
   lastFetch?: string;
   fetching?: boolean;
   tag?: string;
+  public?: boolean;
   info?: {
     authorName: string;
     authorId: string;
