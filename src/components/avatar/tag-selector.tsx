@@ -27,11 +27,13 @@ export function TagSelector({
   value,
   hideOnEmpty = false,
   align = "start",
+  placeholder = "选择标签",
 }: {
   onSelect?: (tag: string) => void;
   value?: string;
   hideOnEmpty?: boolean;
   align?: "start" | "center" | "end";
+  placeholder?: string;
 }) {
   const [open, setOpen] = React.useState(false);
   const [search, setSearch] = React.useState("");
@@ -56,7 +58,7 @@ export function TagSelector({
             value ? "opacity-100" : "opacity-50",
           )}
         >
-          <span className="w-full">{value ? value : "选择标签"}</span>
+          <span className="w-full">{value ? value : placeholder}</span>
           <ChevronsUpDown size={14} className="ml-2 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -134,5 +136,5 @@ export function TagFilter() {
   function setTag(tag: string) {
     appState.filter = filter === tag ? undefined : tag;
   }
-  return <TagSelector hideOnEmpty onSelect={setTag} value={filter} />;
+  return <TagSelector hideOnEmpty onSelect={setTag} value={filter} placeholder="标签过滤"/>;
 }
