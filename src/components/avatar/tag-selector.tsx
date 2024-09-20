@@ -41,7 +41,12 @@ export function TagSelector({
 
   function setTag(tag: string) {
     tag = tag.trim();
-    onSelect?.(tag);
+    if (!tag) return;
+    if (hideOnEmpty) {
+      onSelect?.(tags.includes(tag) ? tag : "");
+    } else {
+      onSelect?.(tag)
+    }
     setOpen(false);
     setSearch("");
   }
@@ -70,13 +75,11 @@ export function TagSelector({
             value={search}
             onValueChange={setSearch}
             onKeyUp={
-              !hideOnEmpty
-                ? (e) => e.key === "Enter" && setTag(search)
-                : undefined
+              (e) => e.key === "Enter" && setTag(search)
             }
           />
           <CommandList>
-            {!hideOnEmpty && search?.trim() !== "" && (
+            {search?.trim() !== "" && (
               <CommandEmpty className="p-1">
                 <div
                   className={cn(
@@ -87,7 +90,7 @@ export function TagSelector({
                   )}
                   onClick={() => setTag(search.trim())}
                 >
-                  {search.trim()}
+                  {hideOnEmpty ? "无" : search.trim()}
                 </div>
               </CommandEmpty>
             )}
@@ -136,5 +139,5 @@ export function TagFilter() {
   function setTag(tag: string) {
     appState.filter = filter === tag ? undefined : tag;
   }
-  return <TagSelector hideOnEmpty onSelect={setTag} value={filter} placeholder="标签过滤"/>;
+  return <TagSelector hideOnEmpty onSelect={setTag} value={filter} placeholder="标签过滤" />;
 }

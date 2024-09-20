@@ -36,7 +36,7 @@ const initAppState = {
 export const appState: AppState = proxy(initAppState);
 
 subscribe(appState, async () => {
-  console.log(Object.values(LoginStatus)[appState.auth.status]);
+  // console.log(Object.values(LoginStatus)[appState.auth.status]);
   await appStore.set(APP_STORE_KEY, appState);
   await appStore.save();
 });
