@@ -52,7 +52,7 @@ export function TagSelector({
           role="combobox"
           aria-expanded={open}
           className={cn(
-            "w-32 justify-between py-1 text-xs rounded-full",
+            "h-full w-32 justify-between py-1 text-xs rounded-full",
             value ? "opacity-100" : "opacity-50",
           )}
         >

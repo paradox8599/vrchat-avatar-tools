@@ -49,16 +49,14 @@ export default function AvatarGrid() {
                 key={avatar.id}
                 className={cn(
                   "relative",
-                  "max-w-fit min-w-fit min-h-[8rem]",
+                  "w-96 min-h-[10rem]",
                   "px-2 flex flex-col justify-center gap-2",
                   avatar.public ? "bg-cardhl" : "bg-card",
                 )}
               >
-                {/* thumbnail & id row */}
-
                 <StatusDot avatar={avatar} />
 
-                <div className="flex items-start justify-start gap-2">
+                <div className="flex items-center justify-start gap-2 px-0">
                   {/* thumbnail image */}
 
                   <AvatarIcon>
@@ -69,16 +67,61 @@ export default function AvatarGrid() {
                     <AvatarFallback />
                   </AvatarIcon>
 
-                  {/* avatar id */}
+                  {/* vrchat urls */}
+                  <div className="w-full flex items-center justify-end gap-2">
+                    {/* avatar author name  */}
 
-                  <div className="w-full flex items-center justify-center">
+                    <Tooltip
+                      tooltip={`上传者${avatar.info ? `: ${avatar.info.authorName}` : ""}`}
+                    >
+                      <Button
+                        className="w-full max-w-full rounded-full flex gap-2 font-bold overflow-x-hidden"
+                        variant="outline"
+                        size="sm"
+                        onClick={() =>
+                          avatar.public &&
+                          open(
+                            `https://vrchat.com/home/user/${avatar.info?.authorId}`,
+                          )
+                        }
+                      >
+                        {avatar.info?.authorName}
+                        {avatar.info && <SquareArrowOutUpRight size={12} />}
+                      </Button>
+                    </Tooltip>
+
+                    {/* avatar status */}
+                    <Tooltip tooltip="公开状态">
+                      <Button
+                        className={cn(
+                          "uppercase w-24 rounded-full font-bold flex gap-2",
+                          avatar.public ? "" : "bg-muted text-foreground",
+                        )}
+                        size="sm"
+                        onClick={() =>
+                          open(`https://vrchat.com/home/avatar/${avatar.id}`)
+                        }
+                      >
+                        {avatar.public ? "已公开" : "未知"}
+                        <SquareArrowOutUpRight size={12} />
+                      </Button>
+                    </Tooltip>
+                  </div>
+                </div>
+
+                {/* info row */}
+
+                <div className="w-full text-sm flex flex-col items-start gap-1">
+                  {/* avatar id */}
+                  <div className="w-full flex items-start justify-center">
                     <Button
                       className={cn(
+                        "w-full",
                         "rounded-full bg-background",
-                        "font-mono font-bold text-xs",
+                        "font-mono font-bold text-sm",
                         "flex gap-2",
                       )}
-                      variant="secondary"
+                      variant="outline"
                       onClick={() =>
                         writeText(avatar.id).then(() =>
                           toast({
@@ -92,94 +135,51 @@ export default function AvatarGrid() {
                       <Copy size={16} />
                     </Button>
                   </div>
-                </div>
 
-                {/* info row */}
-
-                <div className="w-full text-sm flex flex-col gap-1">
-                  <div className="flex items-center justify-between">
-                    {/* vrchat urls */}
-                    <div className="flex items-center justify-start gap-4">
-                      {/* avatar status */}
-
-                      <Tooltip tooltip="公开状态">
-                        <Button
-                          className={cn(
-                            "uppercase w-24 rounded-full font-bold flex gap-2",
-                            avatar.public ? "" : "bg-muted text-foreground",
-                          )}
-                          size="sm"
-                          onClick={() =>
-                            open(`https://vrchat.com/home/avatar/${avatar.id}`)
-                          }
-                        >
-                          {avatar.public ? "已公开" : "未知"}
-                          <SquareArrowOutUpRight size={12} />
-                        </Button>
-                      </Tooltip>
-
-                      {/* avatar author name  */}
-
-                      {avatar.public && (
-                        <Tooltip tooltip="上传者">
-                          <Button
-                            className="rounded-full text-md flex gap-1 font-bold"
-                            size="sm"
-                            onClick={() =>
-                              open(
-                                `https://vrchat.com/home/user/${avatar.info?.authorId}`,
-                              )
-                            }
-                          >
-                            {avatar.info?.authorName}
-                            <SquareArrowOutUpRight size={12} />
-                          </Button>
-                        </Tooltip>
-                      )}
-                    </div>
-
+                  <div className="w-full flex items-end justify-between gap-2">
                     {/* tag selector */}
 
-                    <div className="flex-center">
-                      <AvatarTagSelector avatar={avatar} />
+                    <AvatarTagSelector avatar={avatar} />
+
+                    {/* dates & delete row */}
+
+                    <div className="pl-1 font-mono flex flex-col items-center justify-between text-sm gap-0.5">
+                      <Tooltip tooltip="首次上传时间">
+                        <p className="flex-center gap-2 bg-background border border-secondary text-accent-foreground px-2 rounded-full">
+                          <Box size={13} />
+                          {avatar.info && avatar.public
+                            ? format(
+                                avatar.info?.created_at,
+                                "yyyy/MM/dd HH:mm",
+                              )
+                            : "----/--/-- --:--"}
+                        </p>
+                      </Tooltip>
+
+                      <Tooltip tooltip="最后修改时间" side="bottom">
+                        <p className="flex-center gap-2 bg-background border border-secondary text-accent-foreground px-2 rounded-full">
+                          <CloudUpload size={14} />
+                          {avatar.info && avatar.public
+                            ? format(
+                                avatar.info?.updated_at,
+                                "yyyy/MM/dd HH:mm",
+                              )
+                            : "----/--/-- --:--"}
+                        </p>
+                      </Tooltip>
                     </div>
-                  </div>
-                </div>
 
-                <div className="flex justify-between items-center gap-1">
-                  {/* dates & delete row */}
-
-                  <div className="font-mono flex items-center justify-between text-sm gap-2">
-                    <Tooltip tooltip="首次上传时间">
-                      <p className="flex-center gap-2 bg-accent text-accent-foreground px-2 rounded-full">
-                        <Box size={13} />
-                        {avatar.info && avatar.public
-                          ? format(avatar.info?.created_at, "yyyy/MM/dd HH:mm")
-                          : "----/--/-- --:--"}
-                      </p>
-                    </Tooltip>
-
-                    <Tooltip tooltip="最后修改时间">
-                      <p className="flex-center gap-2 bg-accent text-accent-foreground px-2 rounded-full">
-                        <CloudUpload size={14} />
-                        {avatar.info && avatar.public
-                          ? format(avatar.info?.updated_at, "yyyy/MM/dd HH:mm")
-                          : "----/--/-- --:--"}
-                      </p>
+                    {/* delete button */}
+                    <Tooltip tooltip="删除">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => avatarMapState.delete(avatar.id)}
+                      >
+                        <TrashIcon size={16} />
+                      </Button>
                     </Tooltip>
                   </div>
-
-                  {/* delete button */}
-                  <Tooltip tooltip="删除">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="flex-1 h-5"
-                      onClick={() => avatarMapState.delete(avatar.id)}
-                    >
-                      <TrashIcon size={16} />
-                    </Button>
-                  </Tooltip>
                 </div>
               </Card>
             );
