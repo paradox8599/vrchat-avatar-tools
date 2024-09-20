@@ -89,7 +89,7 @@ export async function vrchatGetMe() {
   }
 }
 
-async function checkAuth() {
+export async function checkAuth() {
   const me = await vrchatGetMe();
   switch (me) {
     case LoginStatus.NotInWhitelist:

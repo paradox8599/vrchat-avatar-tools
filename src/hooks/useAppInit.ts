@@ -1,6 +1,5 @@
 "use client";
 import { useAutoBodyThemeSetter } from "@/components/settings/theme-toggle";
-import { vrchatLogin } from "@/lib/api";
 import { appState, loadAppState } from "@/state/app";
 import { loadAvatarState } from "@/state/avatars";
 import { usePathname, useRouter } from "next/navigation";
@@ -8,6 +7,7 @@ import React from "react";
 import useSWR from "swr";
 import { useSnapshot } from "valtio";
 import { isEnabled } from "@tauri-apps/plugin-autostart";
+import { checkAuth } from "@/lib/api";
 
 export default function useAppInit() {
   const { init } = useSnapshot(appState);
@@ -17,10 +17,13 @@ export default function useAppInit() {
   useSWR(
     appState.init ? null : "appInit",
     async () => {
+      // load auto start state
+      isEnabled().then((v) => (appState.settings.autoStart = v));
+      // load app data & settings
       await loadAvatarState();
       await loadAppState();
       if (!appState.auth?.credentials) return;
-      await vrchatLogin(appState.auth!.credentials);
+      await checkAuth();
     },
     {
       revalidateIfStale: false,
@@ -61,8 +64,5 @@ export default function useAppInit() {
       },
       { capture: true },
     );
-
-    // load auto start state
-    isEnabled().then((v) => (appState.settings.autoStart = v));
   }, []);
 }
