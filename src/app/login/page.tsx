@@ -104,7 +104,7 @@ export default function Page() {
             className="max-w-sm w-full flex-col flex-center gap-2"
             action={onLogin}
           >
-            <h1 className="font-bold">VRCHAT</h1>
+            <h1 className="font-bold">登录 VRCHAT</h1>
             <p className="text-xs font-semibold">
               由于 VRChat 接口限制，登录后方可获取模型信息
             </p>

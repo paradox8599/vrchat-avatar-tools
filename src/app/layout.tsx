@@ -18,8 +18,8 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "模型公开检测",
-  description: "批量检查 VRChat 模型公开状态",
+  title: "VRChat 模型公开检测",
+  description: "自动定期批量检查 VRChat 模型公开状态",
 };
 
 export default function RootLayout({

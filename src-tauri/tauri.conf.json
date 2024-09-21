@@ -1,7 +1,7 @@
 {
-  "productName": "avatar_pub_check",
+  "productName": "VRChat 模型公开检测",
   "version": "0.1.0",
-  "identifier": "io.paradox8599.vrchat-avatar-pub-check",
+  "identifier": "io.paradox8599.vrchat-avatar-tools",
   "build": {
     "frontendDist": "../out",
     "devUrl": "http://localhost:3000",
@@ -11,7 +11,7 @@
   "app": {
     "windows": [
       {
-        "title": "模型公开检测",
+        "title": "VRChat 模型公开检测",
         "width": 1280,
         "height": 720,
         "resizable": true,
@@ -25,6 +25,13 @@
   "bundle": {
     "active": true,
     "targets": "all",
+    "windows": {
+      "wix": {
+        "language": [
+          "zh-CN"
+        ]
+      }
+    },
     "icon": [
       "icons/32x32.png",
       "icons/128x128.png",
