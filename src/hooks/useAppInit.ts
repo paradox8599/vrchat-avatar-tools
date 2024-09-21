@@ -19,6 +19,8 @@ export default function useAppInit() {
   useSWR(
     appState.init ? null : "appInit",
     async () => {
+      disableContextMenu();
+
       // version check
       const version = await getVersion();
       appState.version = version;
@@ -39,8 +41,6 @@ export default function useAppInit() {
     },
   );
 
-  useAutoBodyThemeSetter();
-
   React.useEffect(() => {
     if (!appState.init) {
       router.replace("/splash");
@@ -49,27 +49,27 @@ export default function useAppInit() {
     }
   }, [init, path, router]);
 
-  React.useEffect(() => {
-    if (window.location.hostname !== "tauri.localhost") {
-      return;
-    }
+  useAutoBodyThemeSetter();
+}
 
-    document.addEventListener(
-      "contextmenu",
-      (e) => {
-        e.preventDefault();
-        return false;
-      },
-      { capture: true },
-    );
+function disableContextMenu() {
+  if (window.location.hostname !== "tauri.localhost") return;
 
-    document.addEventListener(
-      "selectstart",
-      (e) => {
-        e.preventDefault();
-        return false;
-      },
-      { capture: true },
-    );
-  }, []);
+  document.addEventListener(
+    "contextmenu",
+    (e) => {
+      e.preventDefault();
+      return false;
+    },
+    { capture: true },
+  );
+
+  document.addEventListener(
+    "selectstart",
+    (e) => {
+      e.preventDefault();
+      return false;
+    },
+    { capture: true },
+  );
 }
