@@ -33,7 +33,7 @@ avtr_b69eddca-db02-4be8-9c07-396d865f8c41
 
 
 
-# 格式 2: 每行一个模型ID和标签,用空格或中英文半角逗号分隔
+# 格式 2: 每行一个模型ID和标签,用空格或半角逗号分隔
 # 例:
 
 avtr_b69eddca-db02-4be8-9c07-396d865f8c42  mamehinata    # 这个ID会获得标签 [mamehinata]
@@ -147,10 +147,10 @@ export function AvatarImport() {
   }
 
   return (
-    <div className="w-full flex items-center justify-between gap-4">
+    <div className="w-full">
       <Dialog open={dialogOpen} onOpenChange={(open) => !open && close()}>
         <DialogTrigger asChild>
-          <Button variant="outline" onClick={importIds} className="w-32">
+          <Button variant="outline" onClick={importIds} className="w-full">
             导入模型ID
           </Button>
         </DialogTrigger>
@@ -181,7 +181,6 @@ export function AvatarImport() {
                       </span>
 
                       <span className="flex flex-col items-start xs:flex-row xs:items-center justify-start gap-1">
-
                         {/* id */}
                         <div className="w-full flex items-center justify-center">
                           <Button
@@ -249,8 +248,8 @@ export function AvatarImport() {
         </DialogContent>
       </Dialog>
 
-      <span className="text-sm text-muted-foreground">
-        支持 txt 文本文件，详情见示例文件：
+      <div className="text-sm text-muted-foreground">
+        导入使用 txt 文本文件，详情见示例：
         <Button
           variant={"link"}
           size={"sm"}
@@ -264,7 +263,7 @@ export function AvatarImport() {
         >
           查看示例
         </Button>
-      </span>
+      </div>
     </div>
   );
 }
