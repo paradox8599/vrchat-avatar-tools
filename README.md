@@ -2,6 +2,9 @@
 
 ## TODO
 
-- multiple tags
 - update check
-- auto start: minimized, login
+- data collection
+- auto start fix: minimized, login
+
+- multiple tags
+- hall of shame ( for whom published avatars )
