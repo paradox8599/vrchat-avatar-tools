@@ -45,7 +45,7 @@ export function TagSelector({
     if (hideOnEmpty) {
       onSelect?.(tags.includes(tag) ? tag : "");
     } else {
-      onSelect?.(tag)
+      onSelect?.(tag);
     }
     setOpen(false);
     setSearch("");
@@ -74,9 +74,7 @@ export function TagSelector({
             placeholder="输入标签..."
             value={search}
             onValueChange={setSearch}
-            onKeyUp={
-              (e) => e.key === "Enter" && setTag(search)
-            }
+            onKeyUp={(e) => e.key === "Enter" && setTag(search)}
           />
           <CommandList>
             {search?.trim() !== "" && (
@@ -131,7 +129,7 @@ export function AvatarTagSelector({ avatar }: { avatar: Avatar }) {
   function setTag(tag: string) {
     mutAvatar.tag = mutAvatar.tag === tag ? undefined : tag;
   }
-  return <TagSelector onSelect={setTag} value={mutAvatar?.tag} align="end" />;
+  return <TagSelector onSelect={setTag} value={mutAvatar?.tag} />;
 }
 
 export function TagFilter() {
@@ -139,5 +137,12 @@ export function TagFilter() {
   function setTag(tag: string) {
     appState.filter = filter === tag ? undefined : tag;
   }
-  return <TagSelector hideOnEmpty onSelect={setTag} value={filter} placeholder="标签过滤" />;
+  return (
+    <TagSelector
+      hideOnEmpty
+      onSelect={setTag}
+      value={filter}
+      placeholder="标签过滤"
+    />
+  );
 }
