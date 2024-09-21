@@ -9,6 +9,7 @@ const appStore = new Store("store");
 
 export type AppState = {
   init?: boolean;
+  version: string;
   auth: {
     status: LoginStatus;
     credentials?: { username: string; password: string };
@@ -18,20 +19,21 @@ export type AppState = {
     avatarFetchInterval: number;
     avatarStatusExpiresHr: number;
     notifications: boolean;
-    autoStart: boolean
+    autoStart: boolean;
   };
   filter?: string;
 };
 
 const initAppState = {
   auth: { status: LoginStatus.NotLoggedIn },
+  version: "0.0.0",
   settings: {
     avatarFetchInterval: 1,
     avatarStatusExpiresHr: 1,
     notifications: true,
     autoStart: false,
   },
-}
+};
 
 export const appState: AppState = proxy(initAppState);
 

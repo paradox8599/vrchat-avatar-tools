@@ -4,7 +4,7 @@
   "description": "enables the default permissions",
   "windows": ["main"],
   "remote": {
-    "urls": ["https://vrchat.com"]
+    "urls": ["https://vrchat.com", "https://vrchat-avatar-tools.paradox8599.io"]
   },
   "permissions": [
     "core:app:default",
@@ -12,6 +12,8 @@
     "shell:default",
     "clipboard-manager:allow-write-text",
     "notification:default",
-    "autostart:default"
+    "autostart:default",
+    "updater:default",
+    "process:default"
   ]
 }

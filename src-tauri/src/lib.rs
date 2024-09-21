@@ -38,6 +38,7 @@ pub fn run() {
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_clipboard_manager::init())
         .plugin(tauri_plugin_notification::init())
+        .plugin(tauri_plugin_process::init())
         .invoke_handler(tauri::generate_handler![
             vrchat_login,
             vrchat_verify_emailotp,
@@ -86,18 +87,22 @@ pub fn init(app: &mut tauri::App) -> StdResult<()> {
     };
     app.manage(Arc::new(RwLock::new(config)));
 
-    // system tray
     #[cfg(desktop)]
     {
-        let handle = app.handle();
-        tray::create_tray(handle)?;
+        // system tray
+        tray::create_tray(app.handle())?;
+
+        // auto start
+        let _ = app.handle().plugin(tauri_plugin_autostart::init(
+            tauri_plugin_autostart::MacosLauncher::LaunchAgent,
+            Some(vec![ /* arbitrary number of args to pass to your app */ ]),
+        ));
+
+        // updateer
+        let _ = app
+            .handle()
+            .plugin(tauri_plugin_updater::Builder::new().build());
     }
 
-    // auto start
-    #[cfg(desktop)]
-    let _ = app.handle().plugin(tauri_plugin_autostart::init(
-        tauri_plugin_autostart::MacosLauncher::LaunchAgent,
-        Some(vec!["--flag1", "--flag2"]), /* arbitrary number of args to pass to your app */
-    ));
     Ok(())
 }

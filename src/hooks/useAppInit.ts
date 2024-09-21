@@ -8,6 +8,8 @@ import useSWR from "swr";
 import { useSnapshot } from "valtio";
 import { isEnabled } from "@tauri-apps/plugin-autostart";
 import { checkAuth } from "@/lib/api";
+import { getVersion } from "@tauri-apps/api/app";
+import { checkAndUpdate } from "@/lib/update";
 
 export default function useAppInit() {
   const { init } = useSnapshot(appState);
@@ -17,6 +19,11 @@ export default function useAppInit() {
   useSWR(
     appState.init ? null : "appInit",
     async () => {
+      // version check
+      const version = await getVersion();
+      appState.version = version;
+      await checkAndUpdate({ silent: true });
+
       // load auto start state
       isEnabled().then((v) => (appState.settings.autoStart = v));
       // load app data & settings
