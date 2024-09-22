@@ -4,6 +4,8 @@ import { generateUpdateInfo } from "./lib/updater";
 import { getLatestReleaseFile } from "./lib/files";
 
 const prefix = "release/";
+const Bucket = "vrchat-avatar-tools";
+
 const client = new S3Client({
   region: "auto",
   endpoint: process.env.R2_ENDPOINT,
@@ -12,8 +14,6 @@ const client = new S3Client({
     secretAccessKey: process.env.R2_SECRET!,
   },
 });
-
-const Bucket = "vrchat-avatar-tools";
 
 async function pushLatestInfo() {
   const latest = generateUpdateInfo();
@@ -32,21 +32,39 @@ async function pushLatestInfo() {
 }
 
 async function pushLatestFile() {
-  const { full, file } = getLatestReleaseFile();
+  const { full, file, version } = getLatestReleaseFile();
   const buffer = fs.readFileSync(full);
-  const putCmd = new PutObjectCommand({
-    Bucket,
-    Key: `${prefix}${file}`,
-    Body: buffer,
-    ContentType: "application/x-msdownload",
-  });
-  console.log(
-    `Pushing [${file}] (${(buffer.length / 1024 / 1024).toFixed(2)}mb)...`,
-  );
-  const putResult = await client.send(putCmd);
-  if (putResult.$metadata.httpStatusCode === 200) {
-    console.log("Installer pushed");
+  const size = (buffer.length / 1024 / 1024).toFixed(2);
+  console.log(`Pushing [${file}] (${size}mb)...`);
+
+  async function putLatest() {
+    const latestFilename = file.replace(version.raw, "latest");
+    const putLatestCmd = new PutObjectCommand({
+      Bucket,
+      Key: `${prefix}${latestFilename}`,
+      Body: buffer,
+      ContentType: "application/x-msdownload",
+    });
+    const putResult = await client.send(putLatestCmd);
+    if (putResult.$metadata.httpStatusCode === 200) {
+      console.log("Latest installer pushed");
+    }
   }
+
+  async function putVerLatest() {
+    const putCmd = new PutObjectCommand({
+      Bucket,
+      Key: `${prefix}${file}`,
+      Body: buffer,
+      ContentType: "application/x-msdownload",
+    });
+    const putResult = await client.send(putCmd);
+    if (putResult.$metadata.httpStatusCode === 200) {
+      console.log("Versioned installer pushed");
+    }
+  }
+
+  await Promise.all([putLatest(), putVerLatest()]);
 }
 
 async function pushAll() {
