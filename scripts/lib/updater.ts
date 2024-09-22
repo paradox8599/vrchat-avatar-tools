@@ -1,7 +1,7 @@
 import { getLatestReleaseFile } from "./files";
 
 export function generateUpdateInfo() {
-  const url = "https://vrchat-avatar-tools.paradox8599.io";
+  const url = "https://vrchat-avatar-tools.paradox8599.io/release";
   const { sig, version, file } = getLatestReleaseFile();
 
   const updater = {
