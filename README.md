@@ -3,7 +3,7 @@
 ## TODO
 
 - version increment script
-- release script
+- release script: version inc + build + push
 
 - usage analytics
 - auto start fix: minimized, login
