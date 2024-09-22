@@ -17,11 +17,7 @@ export async function checkAndUpdate({
       return;
     }
 
-    console.log(
-      `found update ${update.version} from ${update.date} with notes ${update.body}`,
-    );
-
-    let downloaded = 0;
+    // let downloaded = 0;
     let contentLength = 0;
 
     await update.download((event) => {
@@ -34,10 +30,9 @@ export async function checkAndUpdate({
               description: `共 ${contentLength / 1024 / 1024} MB`,
             });
           break;
-        case "Progress":
-          downloaded += event.data.chunkLength;
-          console.log(downloaded);
-          break;
+        // case "Progress":
+        //   downloaded += event.data.chunkLength;
+        //   break;
         // case "Finished":
         //   toast({ title: "下载完成" });
         //   break;

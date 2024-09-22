@@ -99,7 +99,7 @@ export async function checkAuth() {
   return me;
 }
 
-export async function vrchatLogin(credentials: LoginCredentials) {
+export async function vrchatLogin(credentials?: LoginCredentials) {
   appState.auth.credentials = credentials;
   await invoke(API_NAMES.vrchatLogin, credentials);
   return await checkAuth();
