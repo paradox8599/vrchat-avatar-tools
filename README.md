@@ -2,6 +2,9 @@
 
 ## TODO
 
+- version increment script
+- release script
+
 - usage analytics
 - auto start fix: minimized, login
 
