@@ -28,6 +28,7 @@ async function main() {
 
   const updatedVer = readCurrentVersion();
 
-  console.log(`Updated app version from ${ver.raw} to ${updatedVer.raw}`);
+  console.log(`${ver.raw} -> ${updatedVer.raw}`);
 }
+
 main();
