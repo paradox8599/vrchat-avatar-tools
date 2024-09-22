@@ -9,7 +9,7 @@
     "lint": "next lint",
     "tauri:dev": "tauri dev",
     "tauri:build": "tauri build",
-    "ver": "bun run scripts/ver.ts"
+    "ver": "bun run $(git rev-parse --show-toplevel)/scripts/ver.ts"
   },
   "dependencies": {
     "@radix-ui/react-avatar": "^1.1.0",
