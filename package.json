@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "tauri:dev": "tauri dev",
+    "tauri:build": "tauri build"
   },
   "dependencies": {
     "@radix-ui/react-avatar": "^1.1.0",
@@ -45,6 +47,7 @@
     "valtio": "^2.0.0"
   },
   "devDependencies": {
+    "@tauri-apps/cli": "^2.0.0-rc.16",
     "@types/lodash": "^4.17.7",
     "@types/node": "^20",
     "@types/react": "^18",
