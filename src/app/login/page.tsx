@@ -14,6 +14,7 @@ import { useToast } from "@/hooks/use-toast";
 import { LoaderCircle } from "lucide-react";
 import { appState, logout } from "@/state/app";
 import { avatarMapState } from "@/state/avatars";
+import { ThemeToggleIcon } from "@/components/settings/theme-toggle";
 
 export default function Page() {
   const [loginResult, setLoginResult] = React.useState<LoginStatus>(
@@ -168,6 +169,8 @@ export default function Page() {
             </InputOTP>
           </div>
         )}
+
+      <ThemeToggleIcon className="fixed bottom-4 left-4" />
 
       <Button
         className="fixed bottom-4 right-4"
