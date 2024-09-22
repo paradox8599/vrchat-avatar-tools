@@ -19,6 +19,10 @@ export default function useAppInit() {
   useSWR(
     appState.init ? null : "appInit",
     async () => {
+      ////////////////////////////////////////////////////////////////
+      ////////////////////////////////////////////////////////////////
+      ////////////////////////////////////////////////////////////////
+
       disableContextMenu();
 
       // version check
@@ -33,6 +37,10 @@ export default function useAppInit() {
 
       // load auto start state
       isEnabled().then((v) => (appState.settings.autoStart = v));
+
+      ////////////////////////////////////////////////////////////////
+      ////////////////////////////////////////////////////////////////
+      ////////////////////////////////////////////////////////////////
     },
     {
       revalidateIfStale: false,
@@ -53,7 +61,7 @@ export default function useAppInit() {
 }
 
 function disableContextMenu() {
-  if (window.location.hostname !== "tauri.localhost") return;
+  // if (window.location.hostname !== "tauri.localhost") return;
 
   document.addEventListener(
     "contextmenu",
