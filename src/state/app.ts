@@ -58,3 +58,7 @@ export function clearAuth() {
   console.error("clear auth");
   appState.auth = { status: LoginStatus.NotLoggedIn };
 }
+
+export function clearApp() {
+  Object.assign(appState, initAppState);
+}

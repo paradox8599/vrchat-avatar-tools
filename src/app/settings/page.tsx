@@ -19,8 +19,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "@/hooks/use-toast";
-import { appState, logout } from "@/state/app";
-import { avatarMapState } from "@/state/avatars";
+import { appState, clearApp, logout } from "@/state/app";
+import { clearAvatars } from "@/state/avatars";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import React from "react";
@@ -101,9 +101,9 @@ export default function Page() {
                   <DialogFooter>
                     <Button
                       variant="outline"
-                      onClick={async () => {
-                        avatarMapState.clear();
-                        await logout();
+                      onClick={() => {
+                        clearAvatars();
+                        clearApp();
                         toast({ title: "已清空数据" });
                       }}
                     >

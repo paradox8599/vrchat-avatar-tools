@@ -1,7 +1,7 @@
 import { getLatestReleaseFile } from "./files";
 
 export function generateUpdateInfo() {
-  const url = "https://vrchat-avatar-tools.paradox8599.io/release";
+  const url = "https://vrchat-avatar-tools.paradox8599.io";
   const { sig, version, file } = getLatestReleaseFile();
 
   const updater = {
@@ -11,7 +11,7 @@ export function generateUpdateInfo() {
     platforms: {
       "windows-x86_64": {
         signature: sig,
-        url: new URL(file, url).href,
+        url: new URL(`/release/${file}`, url).href,
       },
     },
   };

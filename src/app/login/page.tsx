@@ -12,8 +12,8 @@ import { LoginStatus } from "../../types";
 import { vrchatLogin, vrchatVerifyEmailOtp, vrchatVerifyOtp } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
 import { LoaderCircle } from "lucide-react";
-import { appState, logout } from "@/state/app";
-import { avatarMapState } from "@/state/avatars";
+import { appState, clearApp } from "@/state/app";
+import { clearAvatars } from "@/state/avatars";
 import { ThemeToggleIcon } from "@/components/settings/theme-toggle";
 
 export default function Page() {
@@ -177,8 +177,8 @@ export default function Page() {
         variant="outline"
         size="sm"
         onClick={() => {
-          avatarMapState.clear();
-          logout();
+          clearAvatars();
+          clearApp();
           toast({ title: "已清空数据" });
         }}
       >
