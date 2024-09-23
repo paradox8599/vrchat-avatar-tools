@@ -51,6 +51,7 @@
   "devDependencies": {
     "@aws-sdk/client-s3": "^3.654.0",
     "@tauri-apps/cli": "^2.0.0-rc.16",
+    "@types/bun": "^1.1.10",
     "@types/lodash": "^4.17.7",
     "@types/node": "^20",
     "@types/react": "^18",
