@@ -11,7 +11,10 @@ export function readPackageVersion({ version }: { version: string }) {
 }
 
 export function readTauriConf(root: string = "./") {
-  const tauriJson = fs.readFileSync(`${root}src-tauri/tauri.conf.json`, "utf-8");
+  const tauriJson = fs.readFileSync(
+    `${root}src-tauri/tauri.conf.json`,
+    "utf-8",
+  );
   return JSON.parse(tauriJson);
 }
 
@@ -25,12 +28,11 @@ export function readCargo(root: string = "./") {
 }
 
 export function readCargoVersion(cargo: string) {
-  const cargoVerFileRe = /^\s*version\s*=\s*"(\d+\.\d+\.\d+)"/gm;
-  const cargoVerRe = /^(\s*version\s*=\s*)"(\d+\.\d+\.\d+)"/;
+  const cargoVerFileRe = /^\s*version\s*=\s*"(\d+\.\d+\.\d+-?\d*)"/gm;
+  const cargoVerRe = /^(\s*version\s*=\s*)"(\d+\.\d+\.\d+-?\d*)"/;
   let cargoVerStr = cargo.match(cargoVerFileRe)![0].match(cargoVerRe)![2];
   return semver.parse(cargoVerStr)!;
 }
-
 
 export function updatePkgVersion(ver: semver.SemVer) {
   const pkg = readPackage();
@@ -50,7 +52,7 @@ export function updateTauriVersion(ver: semver.SemVer) {
 export function updateCargoVersion(ver: semver.SemVer) {
   const cargo = readCargo();
   const newCargoToml = cargo.replace(
-    /^\s*version\s*=\s*"\d+\.\d+\.\d+"/m,
+    /^\s*version\s*=\s*"\d+\.\d+\.\d+-?\d*"/m,
     `version = "${ver.raw}"`,
   );
   fs.writeFileSync("src-tauri/Cargo.toml", newCargoToml);
@@ -64,11 +66,9 @@ export function parseVersion(ver: string) {
   return semver.parse(ver)!;
 }
 
-
-
 export function readCurrentVersion(root: string = "./") {
   const pkg = readPackage(root);
-  const pkgVer = readPackageVersion(pkg)
+  const pkgVer = readPackageVersion(pkg);
   const tauriConf = readTauriConf(root);
   const tauriVer = readTauriVersion(tauriConf);
   const cargo = readCargo(root);
@@ -76,11 +76,9 @@ export function readCurrentVersion(root: string = "./") {
 
   if ([...new Set([tauriVer.raw, pkgVer.raw, cargoVer.raw])].length !== 1) {
     console.log("version mismatch");
-    console.log(
-      `package.json: ${pkgVer}\n`,
-      `src-tauri/Cargo.toml: ${cargoVer}`,
-      `src-tauri/tauri.conf.json: ${tauriVer}\n`,
-    );
+    console.log(`package.json: ${pkgVer}`);
+    console.log(`src-tauri/Cargo.toml: ${cargoVer}`);
+    console.log(`src-tauri/tauri.conf.json: ${tauriVer}`);
     process.exit(1);
   }
 

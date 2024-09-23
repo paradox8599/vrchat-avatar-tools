@@ -1,11 +1,11 @@
 import { getRoot } from "./lib/path";
 import {
-  parseVersion,
   readCurrentVersion,
   updateCargoVersion,
   updatePkgVersion,
   updateTauriVersion,
 } from "./lib/version";
+import semver from "semver";
 
 async function main() {
   if (Bun.argv.length > 3) {
@@ -20,7 +20,33 @@ async function main() {
     process.exit(0);
   }
 
-  const newVer = parseVersion(Bun.argv[2]);
+  const cmd = Bun.argv[2].trim();
+  const newVer = semver.parse(ver.raw)!;
+  if (semver.valid(cmd)) {
+    Object.assign(newVer, semver.parse(cmd)!);
+  } else {
+    if (
+      [
+        "major",
+        "minor",
+        "patch",
+        "premajor",
+        "preminor",
+        "prepatch",
+        "prerelease",
+      ].includes(cmd)
+    ) {
+      newVer.inc(cmd as semver.ReleaseType);
+      console.log(newVer.raw);
+    } else {
+      const msg = [
+        "Available Inc Commands:",
+        "major, minor, patch, premajor, preminor, prepatch, prerelease",
+      ].join(" ");
+      console.log(msg);
+      return;
+    }
+  }
 
   updatePkgVersion(newVer);
   updateTauriVersion(newVer);
