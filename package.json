@@ -1,6 +1,6 @@
 {
   "name": "avatar_pub_check",
-  "version": "0.1.1",
+  "version": "0.1.3",
   "private": true,
   "scripts": {
     "dev:next": "next dev",
@@ -11,7 +11,7 @@
     "dev": "tauri dev",
     "ver": "bun run $(git rev-parse --show-toplevel)/scripts/ver.ts",
     "build": "pwsh $(git rev-parse --show-toplevel)/scripts/build.ps1",
-    "b": "bun run b",
+    "b": "bun run build",
     "push": "bun run $(git rev-parse --show-toplevel)/scripts/push.ts",
     "deploy": "bun run build && bun run push"
   },
@@ -29,6 +29,7 @@
     "@radix-ui/react-toast": "^1.2.1",
     "@radix-ui/react-tooltip": "^1.1.2",
     "@tauri-apps/plugin-autostart": "^2.0.0-rc.1",
+    "@tauri-apps/plugin-cli": "^2.0.0-rc.1",
     "@tauri-apps/plugin-clipboard-manager": "^2.0.0-rc.1",
     "@tauri-apps/plugin-notification": "^2.0.0-rc.1",
     "@tauri-apps/plugin-process": "^2.0.0-rc.1",

@@ -14,6 +14,7 @@ use cmd::{
 };
 use std::sync::Arc;
 use tauri::Manager;
+use tauri_plugin_cli::CliExt;
 use tokio::sync::RwLock;
 use vrchatapi::apis::configuration::Configuration;
 
@@ -90,19 +91,39 @@ pub fn init(app: &mut tauri::App) -> StdResult<()> {
 
     #[cfg(desktop)]
     {
+        // cli
+        let _ = app.handle().plugin(tauri_plugin_cli::init());
+
         // system tray
         tray::create_tray(app.handle())?;
 
         // auto start
         let _ = app.handle().plugin(tauri_plugin_autostart::init(
             tauri_plugin_autostart::MacosLauncher::LaunchAgent,
-            Some(vec![ /* arbitrary number of args to pass to your app */ ]),
+            Some(vec!["--hidden"]),
         ));
 
         // updateer
         let _ = app
             .handle()
             .plugin(tauri_plugin_updater::Builder::new().build());
+    }
+
+    if let Ok(matches) = app.cli().matches() {
+        // hidden flag
+        // [visible] in tauri.conf.json is set to false so app can start hidden at the very start
+        // then if the --hidden flag is not set, show the window
+        // if the --hidden flag is set, do nothing just like regular start
+        if let Some(hidden) = matches.args.get("hidden") {
+            let hidden = hidden.value.as_bool().unwrap();
+            if let Some(window) = app.get_webview_window("main") {
+                if !hidden {
+                    let _ = window.show();
+                    let _ = window.set_focus();
+                    let _ = window.unminimize();
+                }
+            }
+        }
     }
 
     Ok(())

@@ -14,6 +14,7 @@
     "notification:default",
     "autostart:default",
     "updater:default",
-    "process:default"
+    "process:default",
+    "cli:default"
   ]
 }
