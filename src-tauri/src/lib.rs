@@ -116,8 +116,8 @@ pub fn init(app: &mut tauri::App) -> StdResult<()> {
         // if the --hidden flag is set, do nothing just like regular start
         if let Some(hidden) = matches.args.get("hidden") {
             let hidden = hidden.value.as_bool().unwrap();
-            if let Some(window) = app.get_webview_window("main") {
-                if !hidden {
+            if !hidden {
+                if let Some(window) = app.get_webview_window("main") {
                     let _ = window.show();
                     let _ = window.set_focus();
                     let _ = window.unminimize();
