@@ -2,8 +2,8 @@
 
 ## TODO
 
+- auto start fix: minimized
 - usage analytics
-- auto start fix: minimized, login
 
 - multiple tags
 - hall of shame ( for whom published private avatars )
