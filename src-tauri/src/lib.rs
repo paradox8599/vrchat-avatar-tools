@@ -1,6 +1,7 @@
 mod cmd;
 mod cookies;
 mod err;
+mod whitelist;
 
 #[cfg(desktop)]
 mod tray;

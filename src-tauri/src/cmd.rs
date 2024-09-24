@@ -18,15 +18,6 @@ use crate::{
     Arw,
 };
 
-const WHITELISTED: [&str; 3] = [
-    // uu
-    "usr_352b1ce8-bec0-4f64-a648-b611d23b0a6c",
-    // Brntm
-    "usr_1c4f1844-9467-4566-b8df-4fad78d647ba",
-    // 小鹿 XiaoLu
-    "usr_88f0206e-34fc-452b-a770-819d198bf7c1",
-];
-
 fn auth_error(e: &vrchatapi::models::error::Error) -> AppError {
     AppError::AuthFailed(
         e.clone()
@@ -72,8 +63,7 @@ pub async fn vrchat_get_me(
     match me {
         Ok(me) => {
             if let EitherUserOrTwoFactor::CurrentUser(me) = &me {
-                if !WHITELISTED.contains(&me.id.as_str()) {
-                    eprintln!("{} not in whitelist", me.id);
+                if !crate::whitelist::WHITELISTED.contains(&me.id.as_str()) {
                     clear_cookies(&app)?;
                     return Err(AppError::NotInWhiteList(me.id.to_owned()));
                 }
