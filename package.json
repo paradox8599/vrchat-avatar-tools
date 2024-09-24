@@ -3,14 +3,17 @@
   "version": "0.1.1",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
+    "dev:next": "next dev",
+    "build:next": "next build",
+    "start:next": "next start",
     "lint": "next lint",
-    "tauri:dev": "tauri dev",
     "tauri:build": "tauri build",
+    "dev": "tauri dev",
     "ver": "bun run $(git rev-parse --show-toplevel)/scripts/ver.ts",
-    "push": "bun run $(git rev-parse --show-toplevel)/scripts/push.ts"
+    "build": "pwsh $(git rev-parse --show-toplevel)/scripts/build.ps1",
+    "b": "bun run b",
+    "push": "bun run $(git rev-parse --show-toplevel)/scripts/push.ts",
+    "deploy": "bun run build && bun run push"
   },
   "dependencies": {
     "@radix-ui/react-avatar": "^1.1.0",
