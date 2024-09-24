@@ -39,7 +39,9 @@ export default function Page() {
             toast({ title: "登录失败" });
             break;
           case LoginStatus.NotInWhitelist:
-            toast({ title: "尝试登录的账号不在白名单内" });
+            toast({
+              title: "尝试登录的账号不在白名单内，请联系作者或等待公开发布",
+            });
             break;
         }
 
