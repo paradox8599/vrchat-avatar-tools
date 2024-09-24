@@ -69,6 +69,7 @@ async function pushLatestFile() {
 
 async function pushAll() {
   await Promise.all([pushLatestInfo(), pushLatestFile()]);
+  console.log("https://vrchat-avatar-tools.paradox8599.io/release/latest.json");
 }
 
 pushAll();
