@@ -1,4 +1,4 @@
-# VRChat Avatar Publication Check
+# VRChat Avatar Tools
 
 ## TODO
 
