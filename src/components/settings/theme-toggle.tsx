@@ -13,24 +13,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import ClientOnly from "../client-only";
 
-export function useAutoBodyThemeSetter() {
-  const { resolvedTheme } = useTheme();
-
-  React.useEffect(() => {
-    const body = document.getElementsByTagName("body")[0];
-    const currentThemeClass = body.className
-      .match(/ (dark|light|system) /)
-      ?.pop()
-      ?.trim();
-    if (currentThemeClass === resolvedTheme) return;
-
-    body.className =
-      body.className
-        .replaceAll(/ (dark|light|system) /g, " ")
-        .replaceAll(/ +/g, " ") + ` ${resolvedTheme} `;
-  }, [resolvedTheme]);
-}
-
 export function ThemeToggle() {
   const { theme, setTheme, resolvedTheme } = useTheme();
 

@@ -2,19 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-/* Disable this to allow next-themes handle theme changes*/
-/* @media (prefers-color-scheme: dark) { */
-/*   :root { */
-/*     --background: #0a0a0a; */
-/*     --foreground: #ededed; */
-/*   } */
-/* } */
-
 body {
   color: var(--foreground);
   background: var(--background);
@@ -93,7 +80,7 @@ body {
   }
 
   body {
-    @apply bg-background text-foreground h-screen overflow-hidden unselectable;
+    @apply bg-background text-foreground h-screen overflow-hidden antialiased unselectable;
     scrollbar-color: var(--ring) var(--background);
   }
 }

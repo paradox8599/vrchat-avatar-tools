@@ -1,5 +1,4 @@
 "use client";
-import { useAutoBodyThemeSetter } from "@/components/settings/theme-toggle";
 import { appState, loadAppState } from "@/state/app";
 import { loadAvatarState } from "@/state/avatars";
 import { usePathname, useRouter } from "next/navigation";
@@ -56,8 +55,6 @@ export default function useAppInit() {
       router.push("/");
     }
   }, [init, path, router]);
-
-  useAutoBodyThemeSetter();
 }
 
 function disableContextMenu() {

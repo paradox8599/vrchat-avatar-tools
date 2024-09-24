@@ -5,6 +5,7 @@ import ThemeProvider from "@/providers/theme-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/toaster";
 import AppProvider from "@/providers/app-provider";
+import { cn } from "@/lib/utils";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -29,9 +30,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased dark `}
-      >
+      <body className={cn(geistSans.variable, geistMono.variable)}>
         <ThemeProvider>
           <TooltipProvider>
             <AppProvider />
