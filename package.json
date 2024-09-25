@@ -1,6 +1,6 @@
 {
   "name": "avatar_pub_check",
-  "version": "0.1.4",
+  "version": "0.1.7",
   "private": true,
   "scripts": {
     "dev:next": "next dev",
@@ -13,7 +13,8 @@
     "build": "pwsh $(git rev-parse --show-toplevel)/scripts/build.ps1",
     "b": "bun run build",
     "push": "bun run $(git rev-parse --show-toplevel)/scripts/push.ts",
-    "deploy": "bun run build && bun run push"
+    "deploy": "bun run build && bun run push",
+    "release": "bun run ver patch && bun run deploy"
   },
   "dependencies": {
     "@radix-ui/react-avatar": "^1.1.0",

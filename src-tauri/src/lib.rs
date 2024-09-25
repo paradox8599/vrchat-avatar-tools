@@ -75,6 +75,7 @@ pub fn init(app: &mut tauri::App) -> StdResult<()> {
     // cookies
     let cookies = load_cookies(app.handle())?;
     app.manage(cookies.clone());
+
     let config = Configuration {
         base_path: BASE_URL.to_owned(),
         user_agent: Some(UA.to_owned()),
@@ -100,7 +101,7 @@ pub fn init(app: &mut tauri::App) -> StdResult<()> {
         // auto start
         let _ = app.handle().plugin(tauri_plugin_autostart::init(
             tauri_plugin_autostart::MacosLauncher::LaunchAgent,
-            Some(vec!["--hidden"]),
+            Some(vec!["--", "--hidden"]),
         ));
 
         // updateer
@@ -114,14 +115,16 @@ pub fn init(app: &mut tauri::App) -> StdResult<()> {
         // [visible] in tauri.conf.json is set to false so app can start hidden at the very start
         // then if the --hidden flag is not set, show the window
         // if the --hidden flag is set, do nothing just like regular start
-        if let Some(hidden) = matches.args.get("hidden") {
-            let hidden = hidden.value.as_bool().unwrap();
-            if !hidden {
-                if let Some(window) = app.get_webview_window("main") {
-                    let _ = window.show();
-                    let _ = window.set_focus();
-                    let _ = window.unminimize();
-                }
+        let hidden = match matches.args.get("hidden") {
+            Some(hidden) => hidden.value.as_bool().unwrap(),
+            None => false,
+        };
+
+        if !hidden {
+            if let Some(window) = app.get_webview_window("main") {
+                let _ = window.show();
+                let _ = window.set_focus();
+                let _ = window.unminimize();
             }
         }
     }
