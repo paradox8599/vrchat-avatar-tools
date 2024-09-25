@@ -1,48 +1,9 @@
-"use client";
-import { AvatarFallback, Avatar, AvatarImage } from "@/components/ui/avatar";
-import { appState } from "@/state/app";
-import React from "react";
-import { useSnapshot } from "valtio";
-import Link from "next/link";
-import AvatarGrid from "../components/avatar/avatar-grid";
-import AvatarInput from "@/components/avatar/avatar-input";
-import { TagFilter } from "@/components/avatar/tag-selector";
-import { Settings } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Tooltip } from "@/components/tooltip";
+import { Updater } from "@/components/updater";
 
 export default function Page() {
-  const { auth } = useSnapshot(appState);
-
   return (
-    <main className="py-2 h-full flex flex-col">
-      <div className="flex flex-row items-center justify-between gap-2 px-2 pb-2 shadow">
-        {/* Avatar Icon & Settings button */}
-
-        <Tooltip tooltip="设置">
-          <Button asChild size="icon" variant="ghost">
-            <Link href="/settings">
-              <Settings />
-            </Link>
-          </Button>
-        </Tooltip>
-
-        <Avatar className="relative avatar-btn">
-          <AvatarImage
-            src={auth?.me?.currentAvatarThumbnailImageUrl}
-            className="object-cover"
-          />
-          <AvatarFallback>{auth?.me?.displayName}</AvatarFallback>
-        </Avatar>
-
-        <TagFilter />
-
-        <AvatarInput />
-      </div>
-
-      <div className="flex-1 overflow-hidden">
-        <AvatarGrid />
-      </div>
+    <main className="h-full flex-center">
+      <Updater />
     </main>
   );
 }
