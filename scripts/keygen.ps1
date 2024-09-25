@@ -1,1 +1,1 @@
-cargo tauri signer generate -w $HOME\.tauri/app.key
+bun tauri signer generate -w $HOME\.tauri/app.key
