@@ -24,9 +24,6 @@ export default function useAppInit() {
 
       disableContextMenu();
 
-      // version check
-      appState.version = await getVersion();
-
       // load app data & settings
       await loadAvatarState();
       await loadAppState();
@@ -35,9 +32,12 @@ export default function useAppInit() {
       // load auto start state
       isEnabled().then((v) => (appState.settings.autoStart = v));
 
+      appState.version = await getVersion();
+
       ////////////////////////////////////////////////////////////////
       ////////////////////////////////////////////////////////////////
       ////////////////////////////////////////////////////////////////
+      appState.init = true;
     },
     {
       revalidateIfStale: false,

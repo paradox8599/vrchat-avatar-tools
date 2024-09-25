@@ -27,7 +27,7 @@ import React from "react";
 import { useSnapshot } from "valtio";
 
 export default function Page() {
-  const { settings } = useSnapshot(appState);
+  const { settings, version } = useSnapshot(appState);
   return (
     <main className="h-full w-full pt-4 flex flex-col items-center">
       <div className="h-full max-w-lg w-full px-4">
@@ -142,6 +142,8 @@ export default function Page() {
           </div>
         </ScrollArea>
       </div>
+
+      <div className="py-1 w-full text-center text-sm">v{version}</div>
     </main>
   );
 }

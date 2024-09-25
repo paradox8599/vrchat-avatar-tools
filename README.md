@@ -2,7 +2,7 @@
 
 ## TODO
 
-- auto start fix: minimized
+- redesign routing
 - usage analytics
 
 - multiple tags

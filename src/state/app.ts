@@ -46,7 +46,6 @@ subscribe(appState, async () => {
 export async function loadAppState() {
   const stored: AppState | null = await appStore.get(APP_STORE_KEY);
   if (stored) Object.assign(appState, stored);
-  appState.init = true;
 }
 
 export async function logout() {
