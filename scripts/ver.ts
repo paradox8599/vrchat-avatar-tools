@@ -37,7 +37,6 @@ async function main() {
       ].includes(cmd)
     ) {
       newVer.inc(cmd as semver.ReleaseType);
-      console.log(newVer.raw);
     } else {
       const msg = [
         "Available Inc Commands:",
