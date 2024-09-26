@@ -3,7 +3,6 @@
 ## TODO
 
 - prevent web keyboard shortcuts
-- redesign routing
 - usage analytics
 
 - multiple tags
