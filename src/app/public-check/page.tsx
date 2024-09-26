@@ -10,6 +10,7 @@ import { Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tooltip } from "@/components/tooltip";
 import AvatarGrid from "@/components/avatar/avatar-grid";
+import { ROUTES } from "@/routes";
 
 export default function Page() {
   const { auth } = useSnapshot(appState);
@@ -21,7 +22,7 @@ export default function Page() {
 
         <Tooltip tooltip="设置">
           <Button asChild size="icon" variant="ghost">
-            <Link href="/settings">
+            <Link href={ROUTES.settings}>
               <Settings />
             </Link>
           </Button>

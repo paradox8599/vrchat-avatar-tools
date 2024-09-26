@@ -5,6 +5,7 @@ import { check } from "@tauri-apps/plugin-updater";
 import { relaunch } from "@tauri-apps/plugin-process";
 import { useRouter } from "next/navigation";
 import { Progress } from "./ui/progress";
+import { ROUTES } from "@/routes";
 
 export function Updater() {
   const router = useRouter();
@@ -16,7 +17,7 @@ export function Updater() {
     "updater",
     async () => {
       const update = await check();
-      if (!update) return router.replace("/public-check");
+      if (!update) return router.replace(ROUTES.publickCheck);
 
       let innerProgress = 0;
       let len = 0;

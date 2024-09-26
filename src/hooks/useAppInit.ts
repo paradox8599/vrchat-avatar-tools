@@ -9,6 +9,7 @@ import { isEnabled } from "@tauri-apps/plugin-autostart";
 import { vrchatLogin } from "@/lib/api";
 import { getVersion } from "@tauri-apps/api/app";
 import useAppUpdater from "./useAppUpdater";
+import { ROUTES } from "@/routes";
 
 export default function useAppInit() {
   const { init } = useSnapshot(appState);
@@ -49,7 +50,7 @@ export default function useAppInit() {
   useAppUpdater({ interval: 1000 * 60 * 60 });
 
   React.useEffect(() => {
-    if (!appState.init) router.replace("/");
+    if (!appState.init) router.replace(ROUTES.start);
   }, [init, path, router]);
 }
 

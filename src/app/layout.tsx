@@ -30,7 +30,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={cn(geistSans.variable, geistMono.variable)}>
+      <body className={cn(geistSans.variable, geistMono.variable)} >
         <ThemeProvider>
           <TooltipProvider>
             <AppProvider />
