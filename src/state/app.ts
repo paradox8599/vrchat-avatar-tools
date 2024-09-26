@@ -9,6 +9,7 @@ const appStore = new Store("store");
 
 export type AppState = {
   init?: boolean;
+  updated?: boolean;
   version: string;
   auth: {
     status: LoginStatus;
@@ -45,7 +46,8 @@ subscribe(appState, async () => {
 
 export async function loadAppState() {
   const stored: AppState | null = await appStore.get(APP_STORE_KEY);
-  if (stored) Object.assign(appState, stored);
+  if (!stored) return;
+  Object.assign(appState, { auth: stored.auth, settings: stored.settings });
 }
 
 export async function logout() {
@@ -54,7 +56,7 @@ export async function logout() {
 }
 
 export function clearAuth() {
-  console.error("clear auth");
+  console.log("clear auth");
   appState.auth = { status: LoginStatus.NotLoggedIn };
 }
 

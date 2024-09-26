@@ -4,3 +4,5 @@ export enum ROUTES {
   publickCheck = "/public-check",
   settings = "/settings",
 }
+
+export const ROUTE_HOME = ROUTES.publickCheck;

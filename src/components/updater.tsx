@@ -3,12 +3,13 @@ import React from "react";
 import useSWR from "swr";
 import { check } from "@tauri-apps/plugin-updater";
 import { relaunch } from "@tauri-apps/plugin-process";
-import { useRouter } from "next/navigation";
 import { Progress } from "./ui/progress";
-import { ROUTES } from "@/routes";
+import { appState } from "@/state/app";
+import { getVersion } from "@tauri-apps/api/app";
+
+const MB = 1024 * 1024;
 
 export function Updater() {
-  const router = useRouter();
   const [size, setSize] = React.useState(0);
   const [progress, setProgress] = React.useState(0);
   const [text, setText] = React.useState("");
@@ -17,8 +18,11 @@ export function Updater() {
     "updater",
     async () => {
       const update = await check();
-      if (!update) return router.replace(ROUTES.publickCheck);
-
+      appState.version = await getVersion();
+      if (!update) {
+        appState.updated = true;
+        return;
+      }
       let innerProgress = 0;
       let len = 0;
       await update.download(async (event) => {
@@ -58,8 +62,7 @@ export function Updater() {
           <>
             <Progress value={(progress / size) * 100} className="w-64" />
             <div className="mt-2">
-              {(progress / 1000 / 1000).toFixed(2)} MB /{" "}
-              {(size / 1000 / 1000).toFixed(2)} MB
+              {(progress / MB).toFixed(2)} MB / {(size / MB).toFixed(2)} MB
             </div>
           </>
         )}

@@ -7,38 +7,46 @@ import useSWR from "swr";
 import { useSnapshot } from "valtio";
 import { isEnabled } from "@tauri-apps/plugin-autostart";
 import { vrchatLogin } from "@/lib/api";
-import { getVersion } from "@tauri-apps/api/app";
 import useAppUpdater from "./useAppUpdater";
-import { ROUTES } from "@/routes";
+import { ROUTE_HOME, ROUTES } from "@/routes";
+import { toast } from "./use-toast";
 
 export default function useAppInit() {
-  const { init } = useSnapshot(appState);
+  const { init, updated } = useSnapshot(appState);
   const path = usePathname();
   const router = useRouter();
+  console.log("updated", updated, "init", init);
 
   useSWR(
-    init ? null : "appInit",
+    // do not init if:
+    // - not updated
+    // - already init
+    !updated || init ? null : "appInit",
     async () => {
-      ////////////////////////////////////////////////////////////////
-      ////////////////////////////////////////////////////////////////
-      ////////////////////////////////////////////////////////////////
+      try {
+        ////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////
 
-      disableContextMenu();
+        disableContextMenu();
 
-      // load app data & settings
-      await loadAvatarState();
-      await loadAppState();
-      if (appState.auth?.credentials) await vrchatLogin();
+        // load app data & settings
+        await loadAppState();
+        await loadAvatarState();
+        if (appState.auth?.credentials) await vrchatLogin();
 
-      // load auto start state
-      isEnabled().then((v) => (appState.settings.autoStart = v));
+        // load auto start state
+        isEnabled().then((v) => (appState.settings.autoStart = v));
 
-      appState.version = await getVersion();
-
-      ////////////////////////////////////////////////////////////////
-      ////////////////////////////////////////////////////////////////
-      ////////////////////////////////////////////////////////////////
-      appState.init = true;
+        ////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////
+      } catch (e) {
+        toast({ title: "初始化失败", description: String(e) });
+      } finally {
+        appState.init = true;
+        router.replace(ROUTE_HOME);
+      }
     },
     {
       revalidateIfStale: false,

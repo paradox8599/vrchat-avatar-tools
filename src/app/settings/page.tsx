@@ -19,7 +19,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "@/hooks/use-toast";
-import { ROUTES } from "@/routes";
+import { ROUTE_HOME } from "@/routes";
 import { appState, clearApp, logout } from "@/state/app";
 import { clearAvatars } from "@/state/avatars";
 import { ChevronLeft } from "lucide-react";
@@ -39,7 +39,7 @@ export default function Page() {
             className="absolute left-0 flex items-center w-fit"
             variant="ghost"
             size="sm"
-            onClick={() => router.replace(ROUTES.home)}
+            onClick={() => router.replace(ROUTE_HOME)}
           >
             <ChevronLeft />
           </Button>
@@ -112,6 +112,7 @@ export default function Page() {
                       onClick={() => {
                         clearAvatars();
                         clearApp();
+                        logout();
                         toast({ title: "已清空数据" });
                       }}
                     >
