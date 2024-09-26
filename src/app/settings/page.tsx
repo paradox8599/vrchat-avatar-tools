@@ -22,25 +22,28 @@ import { toast } from "@/hooks/use-toast";
 import { appState, clearApp, logout } from "@/state/app";
 import { clearAvatars } from "@/state/avatars";
 import { ChevronLeft } from "lucide-react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React from "react";
 import { useSnapshot } from "valtio";
 
 export default function Page() {
   const { settings, version } = useSnapshot(appState);
+  const router = useRouter();
   return (
     <main className="h-full w-full pt-4 flex flex-col items-center">
       <div className="h-full max-w-lg w-full px-4">
         {/* header */}
         <div className="relative flex items-center justify-center">
-          <Link href="/" className="absolute left-0 bottom-0">
-            <div className="flex justify-start items-center w-fit">
-              <ChevronLeft />
-              返回
-            </div>
-          </Link>
+          <Button
+            className="absolute left-0 flex items-center w-fit"
+            variant="ghost"
+            size="sm"
+            onClick={() => router.back()}
+          >
+            <ChevronLeft />
+          </Button>
 
-          <h1 className="font-semibold text-xl">设置</h1>
+          <h1 className="font-semibold text-xl px-8">设置</h1>
         </div>
 
         {/* options */}
