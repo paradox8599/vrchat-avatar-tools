@@ -4,6 +4,7 @@ import { vrchatGetAvatarInfo } from "@/lib/api";
 import { avatarMapState } from "@/state/avatars";
 import { sendNotification } from "@tauri-apps/plugin-notification";
 import { Avatar } from "@/types";
+import { track } from "@/lib/aptabase";
 
 function hasOutdated(date?: Date | string) {
   return (
@@ -26,12 +27,17 @@ export async function fetchAvatarInfo(avatar: Avatar) {
     const isPublic = info?.releaseStatus === "public";
     const newPublic = isPublic && avatar.info === void 0;
 
-    if (newPublic && appState.settings.notifications) {
-      sendNotification({
-        title: `发现  ${info.authorName}  的公开模型`,
-        body: [avatar.id, avatar.tag].filter((l) => !!l).join("\n"),
-      });
+    if (newPublic) {
+      track("pub_avatar", { avatar: `${info.authorId}:${avatar.id}` });
+      if (appState.settings.notifications) {
+        sendNotification({
+          title: `发现  ${info.authorName}  的公开模型`,
+          body: [avatar.id, avatar.tag].filter((l) => !!l).join("\n"),
+        });
+      }
     }
+
+    // wait for status indicator dot animation
     setTimeout(() => {
       avatar.info = info;
       avatar.lastFetch = new Date().toISOString();

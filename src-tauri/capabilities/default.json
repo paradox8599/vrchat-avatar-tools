@@ -15,6 +15,7 @@
     "autostart:default",
     "updater:default",
     "process:default",
-    "cli:default"
+    "cli:default",
+    "aptabase:allow-track-event"
   ]
 }

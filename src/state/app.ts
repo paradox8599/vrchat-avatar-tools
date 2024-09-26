@@ -2,6 +2,7 @@ import { LoginStatus, UserInfo } from "@/types";
 import { Store } from "@tauri-apps/plugin-store";
 import { proxy, subscribe } from "valtio";
 import { invoke } from "@tauri-apps/api/core";
+import { track } from "@/lib/aptabase";
 
 const APP_STORE_KEY = "appStore";
 
@@ -51,6 +52,7 @@ export async function loadAppState() {
 }
 
 export async function logout() {
+  track("logout");
   clearAuth();
   await invoke("vrchat_logout");
 }
@@ -61,5 +63,6 @@ export function clearAuth() {
 }
 
 export function clearApp() {
+  track("clearApp");
   Object.assign(appState, initAppState);
 }

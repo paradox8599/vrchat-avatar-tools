@@ -45,6 +45,7 @@ export async function vrchatGetMe() {
   }
   try {
     const me: GetMeResult = await invoke(API_NAMES.vrchatGetMe);
+
     // Login succeeded and got user info
     if (isLoginSuccess(me)) {
       appState.auth.me = me;
@@ -52,25 +53,27 @@ export async function vrchatGetMe() {
       return appState.auth.status;
     }
     // needs verify but not available verify method
-    else if (me.requiresTwoFactorAuth.length === 0) {
-      appState.auth.status = LoginStatus.NotLoggedIn;
-      return appState.auth.status;
-    }
-    // needs emailotp verify
-    else if (me.requiresTwoFactorAuth.includes("emailOtp")) {
-      appState.auth.status = LoginStatus.NeedsEmailVerify;
-      return appState.auth.status;
-    }
-    // needs totp verify
-    else if (me.requiresTwoFactorAuth.includes("totp")) {
-      appState.auth.status = LoginStatus.NeedsVerify;
-      return appState.auth.status;
-    }
-    // unsupported verify method
     else {
-      alert(`尚未支持的验证方式: ${me.requiresTwoFactorAuth}`);
-      appState.auth.status = LoginStatus.NotLoggedIn;
-      return appState.auth.status;
+      if (me.requiresTwoFactorAuth.length === 0) {
+        appState.auth.status = LoginStatus.NotLoggedIn;
+        return appState.auth.status;
+      }
+      // needs emailotp verify
+      else if (me.requiresTwoFactorAuth.includes("emailOtp")) {
+        appState.auth.status = LoginStatus.NeedsEmailVerify;
+        return appState.auth.status;
+      }
+      // needs totp verify
+      else if (me.requiresTwoFactorAuth.includes("totp")) {
+        appState.auth.status = LoginStatus.NeedsVerify;
+        return appState.auth.status;
+      }
+      // unsupported verify method
+      else {
+        alert(`尚未支持的验证方式: ${me.requiresTwoFactorAuth}`);
+        appState.auth.status = LoginStatus.NotLoggedIn;
+        return appState.auth.status;
+      }
     }
   } catch (e) {
     console.error("caught at vrchatGetMe");

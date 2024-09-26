@@ -3,21 +3,21 @@ import { appState, loadAppState } from "@/state/app";
 import { loadAvatarState } from "@/state/avatars";
 import { usePathname, useRouter } from "next/navigation";
 import React from "react";
-import useSWR from "swr";
 import { useSnapshot } from "valtio";
 import { isEnabled } from "@tauri-apps/plugin-autostart";
 import { vrchatLogin } from "@/lib/api";
 import useAppUpdater from "./useAppUpdater";
 import { ROUTE_HOME, ROUTES } from "@/routes";
 import { toast } from "./use-toast";
+import useSWRImmutable from "swr/immutable";
+import { track } from "@/lib/aptabase";
 
 export default function useAppInit() {
   const { init, updated } = useSnapshot(appState);
   const path = usePathname();
   const router = useRouter();
-  console.log("updated", updated, "init", init);
 
-  useSWR(
+  useSWRImmutable(
     // do not init if:
     // - not updated
     // - already init
@@ -41,17 +41,16 @@ export default function useAppInit() {
         ////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////
-      } catch (e) {
-        toast({ title: "初始化失败", description: String(e) });
-      } finally {
+        track("app_init", { msg: "success" });
         appState.init = true;
         router.replace(ROUTE_HOME);
+      } catch (e) {
+        track("app_init", { msg: String(e) });
+        toast({
+          title: "初始化失败，请稍后重启 App 再试",
+          description: String(e),
+        });
       }
-    },
-    {
-      revalidateIfStale: false,
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
     },
   );
 

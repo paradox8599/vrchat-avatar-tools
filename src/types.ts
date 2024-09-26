@@ -109,3 +109,7 @@ export enum LoginStatus {
   NeedsVerify,
   NeedsEmailVerify,
 }
+
+export type EventProps = {
+  [key: string]: string | number;
+};

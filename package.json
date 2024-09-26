@@ -1,6 +1,6 @@
 {
   "name": "avatar_pub_check",
-  "version": "0.1.16",
+  "version": "0.1.17",
   "private": true,
   "scripts": {
     "dev:next": "next dev",
@@ -8,15 +8,17 @@
     "start:next": "next start",
     "lint": "next lint",
     "tauri:build": "tauri build",
-    "dev": "tauri dev",
+    "dev": "pwsh $(git rev-parse --show-toplevel)/scripts/dev.ps1",
     "ver": "bun run $(git rev-parse --show-toplevel)/scripts/ver.ts",
     "build": "pwsh $(git rev-parse --show-toplevel)/scripts/build.ps1",
     "b": "bun run build",
+    "env": "bun run $(git rev-parse --show-toplevel)/scripts/env.ts",
     "push": "bun run $(git rev-parse --show-toplevel)/scripts/push.ts",
     "deploy": "bun run build && bun run push",
     "release": "bun run ver patch && bun run deploy"
   },
   "dependencies": {
+    "@aptabase/tauri": "https://github.com/aptabase/tauri-plugin-aptabase#v2",
     "@radix-ui/react-avatar": "^1.1.0",
     "@radix-ui/react-checkbox": "^1.1.1",
     "@radix-ui/react-dialog": "^1.1.1",
