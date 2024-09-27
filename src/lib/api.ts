@@ -137,7 +137,7 @@ export async function vrchatGetAvatarInfo(avatarId: string) {
       API_NAMES.vrchatGetAvatarInfo,
       { avatarId },
     );
-    track("avatar_info", { success: trackId() });
+    track("avatar_info", { fetched: trackId() });
     return avatarInfo;
   } catch (e) {
     const err = parseError(e);
