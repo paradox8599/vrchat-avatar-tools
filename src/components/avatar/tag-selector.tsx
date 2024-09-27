@@ -21,6 +21,7 @@ import {
 import useAvatars from "@/hooks/useAvatars";
 import { useSnapshot } from "valtio";
 import { appState } from "@/state/app";
+import { track } from "@/lib/aptabase";
 
 export function TagSelector({
   onSelect,
@@ -42,6 +43,7 @@ export function TagSelector({
   function setTag(tag: string) {
     tag = tag.trim();
     if (!tag) return;
+
     if (hideOnEmpty) {
       onSelect?.(tags.includes(tag) ? tag : "");
     } else {
@@ -127,7 +129,9 @@ export function TagSelector({
 export function AvatarTagSelector({ avatar }: { avatar: Avatar }) {
   const mutAvatar = avatarMapState.get(avatar.id)!;
   function setTag(tag: string) {
-    mutAvatar.tag = mutAvatar.tag === tag ? undefined : tag;
+    const exists = mutAvatar.tag === tag;
+    mutAvatar.tag = exists ? undefined : tag;
+    if (!exists) track("tag", { set: tag });
   }
   return <TagSelector onSelect={setTag} value={mutAvatar?.tag} />;
 }
@@ -135,7 +139,9 @@ export function AvatarTagSelector({ avatar }: { avatar: Avatar }) {
 export function TagFilter() {
   const { filter } = useSnapshot(appState);
   function setTag(tag: string) {
-    appState.filter = filter === tag ? undefined : tag;
+    const filtering = filter === tag;
+    appState.filter = filtering ? undefined : tag;
+    if (!filtering) track("tag", { filter: tag });
   }
   return (
     <TagSelector

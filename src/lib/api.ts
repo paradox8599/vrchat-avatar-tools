@@ -12,6 +12,7 @@ import {
 } from "@tauri-apps/api/core";
 import { parseError } from "./err";
 import { authState, clearAuth } from "@/state/auth";
+import { track, trackId } from "./aptabase";
 
 export const API_NAMES = {
   vrchatLogin: "vrchat_login",
@@ -54,6 +55,9 @@ export async function vrchatGetMe() {
     }
     // needs verify but not available verify method
     else {
+      for (const method of me.requiresTwoFactorAuth) {
+        track("login:verify", { [method]: authState.credentials.username });
+      }
       if (me.requiresTwoFactorAuth.length === 0) {
         authState.status = LoginStatus.NotLoggedIn;
         return authState.status;
@@ -76,8 +80,8 @@ export async function vrchatGetMe() {
       }
     }
   } catch (e) {
-    console.error("caught at vrchatGetMe");
     const err = parseError(e);
+    track("login:error", { [err.name]: authState.credentials.username });
     switch (err.name) {
       // 429 Too many requests, do not change status
       case "TooManyRequests":
@@ -128,14 +132,16 @@ export async function vrchatVerifyOtp(code: string) {
 
 export async function vrchatGetAvatarInfo(avatarId: string) {
   try {
+    track("avatar_info", { avatar: avatarId });
     const avatarInfo: Avatar["info"] = await invoke(
       API_NAMES.vrchatGetAvatarInfo,
       { avatarId },
     );
+    track("avatar_info", { success: trackId() });
     return avatarInfo;
   } catch (e) {
     const err = parseError(e);
-    console.error(`caught at vrchatGetAvatarInfo ${JSON.stringify(err)}`);
+    track("avatar_info", { [err.name]: trackId() });
     switch (err.name) {
       case "AvatarNotFound":
         return undefined;

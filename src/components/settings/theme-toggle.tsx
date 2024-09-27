@@ -12,17 +12,27 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import ClientOnly from "../client-only";
+import { track, trackId } from "@/lib/aptabase";
+
+function trackTheme(theme: string) {
+  track("theme", { [theme]: trackId(), total: theme });
+}
 
 export function ThemeToggle() {
-  const { theme, setTheme, resolvedTheme } = useTheme();
+  const { theme, setTheme: _setTheme, resolvedTheme } = useTheme();
 
   const themeName = React.useMemo(
     () =>
       ({ system: "跟随系统", light: "总是关闭", dark: "总是开启" })[
-        theme ?? ""
+      theme ?? ""
       ],
     [theme],
   );
+
+  function setTheme(themeStr: string) {
+    trackTheme(themeStr);
+    _setTheme(themeStr);
+  }
 
   return (
     <ClientOnly className="w-full flex flex-row items-center justify-between gap-4">
@@ -56,7 +66,12 @@ export function ThemeToggle() {
 }
 
 export function ThemeToggleIcon(props: React.ComponentProps<"div">) {
-  const { setTheme, resolvedTheme } = useTheme();
+  const { setTheme: _setTheme, resolvedTheme } = useTheme();
+
+  function setTheme(themeStr: string) {
+    trackTheme(themeStr);
+    _setTheme(themeStr);
+  }
 
   return (
     <ClientOnly {...props}>

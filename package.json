@@ -1,6 +1,6 @@
 {
   "name": "avatar_pub_check",
-  "version": "0.1.18",
+  "version": "0.1.19",
   "private": true,
   "scripts": {
     "dev:next": "next dev",
@@ -10,7 +10,7 @@
     "tauri:build": "tauri build",
     "dev": "pwsh $(git rev-parse --show-toplevel)/scripts/dev.ps1",
     "ver": "bun run $(git rev-parse --show-toplevel)/scripts/ver.ts",
-    "build": "pwsh $(git rev-parse --show-toplevel)/scripts/build.ps1",
+    "build": "bun run lint && pwsh $(git rev-parse --show-toplevel)/scripts/build.ps1",
     "b": "bun run build",
     "env": "bun run $(git rev-parse --show-toplevel)/scripts/env.ts",
     "push": "bun run $(git rev-parse --show-toplevel)/scripts/push.ts",

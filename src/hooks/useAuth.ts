@@ -1,10 +1,10 @@
 "use client";
+import React from "react";
 import { ROUTES } from "@/routes";
 import { appState } from "@/state/app";
 import { authState } from "@/state/auth";
 import { LoginStatus } from "@/types";
 import { usePathname, useRouter } from "next/navigation";
-import React from "react";
 import { useSnapshot } from "valtio";
 
 export default function useAuth() {

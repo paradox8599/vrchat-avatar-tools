@@ -18,6 +18,7 @@ import { Badge } from "../ui/badge";
 import { toast } from "@/hooks/use-toast";
 import { ScrollArea } from "../ui/scroll-area";
 import { writeText } from "@tauri-apps/plugin-clipboard-manager";
+import { track, trackId } from "@/lib/aptabase";
 
 const EXAMPLE_FILE = `
 # 模型ID导入格式示例
@@ -138,7 +139,12 @@ export function AvatarImport() {
   }
 
   function confirmImport() {
-    for (const id of ids) avatarMapState.set(id.id, id);
+    for (const id of idsToAdd) avatarMapState.set(id.id, id);
+    track("avatar:import", {
+      count: trackId(),
+      size: idsToAdd.length,
+      exists: idsExists.length,
+    });
     close();
     toast({
       title: "导入成功",

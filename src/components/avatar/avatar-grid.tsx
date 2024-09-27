@@ -24,7 +24,8 @@ import { avatarMapState } from "@/state/avatars";
 import { Tooltip } from "../tooltip";
 import { StatusDot } from "../status-dot";
 import { ScrollArea } from "../ui/scroll-area";
-
+import { track, trackId } from "@/lib/aptabase";
+//
 export default function AvatarGrid() {
   const { sortedAvatars } = useAvatars();
 
@@ -78,12 +79,17 @@ export default function AvatarGrid() {
                         className="w-full max-w-full rounded-full flex gap-2 font-bold overflow-x-hidden"
                         variant="outline"
                         size="sm"
-                        onClick={() =>
-                          avatar.public &&
+                        onClick={() => {
+                          if (!avatar.info?.authorId) return;
+                          track("open:author", {
+                            id: avatar.info.authorId,
+                            user: trackId(),
+                            // [trackId()]: avatar.info.authorId,
+                          });
                           open(
                             `https://vrchat.com/home/user/${avatar.info?.authorId}`,
-                          )
-                        }
+                          );
+                        }}
                       >
                         {avatar.info?.authorName}
                         {avatar.info && <SquareArrowOutUpRight size={12} />}
@@ -98,9 +104,15 @@ export default function AvatarGrid() {
                           avatar.public ? "" : "bg-muted text-foreground",
                         )}
                         size="sm"
-                        onClick={() =>
-                          open(`https://vrchat.com/home/avatar/${avatar.id}`)
-                        }
+                        onClick={() => {
+                          if (!avatar.info) return;
+                          track("open:avatar", {
+                            id: avatar.id,
+                            user: trackId(),
+                            // [trackId()]: avatar.id,
+                          });
+                          open(`https://vrchat.com/home/avatar/${avatar.id}`);
+                        }}
                       >
                         {avatar.public ? "已公开" : "未知"}
                         <SquareArrowOutUpRight size={12} />
@@ -122,14 +134,19 @@ export default function AvatarGrid() {
                         "flex gap-2",
                       )}
                       variant="outline"
-                      onClick={() =>
+                      onClick={() => {
+                        track("copy:avatar", {
+                          id: avatar.id,
+                          user: trackId(),
+                          // [trackId()]: avatar.id,
+                        });
                         writeText(avatar.id).then(() =>
                           toast({
                             title: "已复制模型ID",
                             description: avatar.id,
                           }),
-                        )
-                      }
+                        );
+                      }}
                     >
                       {avatar.id}
                       <Copy size={16} />
@@ -149,9 +166,9 @@ export default function AvatarGrid() {
                           <Box size={13} />
                           {avatar.info && avatar.public
                             ? format(
-                                avatar.info?.created_at,
-                                "yyyy/MM/dd HH:mm",
-                              )
+                              avatar.info?.created_at,
+                              "yyyy/MM/dd HH:mm",
+                            )
                             : "----/--/-- --:--"}
                         </p>
                       </Tooltip>
@@ -161,9 +178,9 @@ export default function AvatarGrid() {
                           <CloudUpload size={14} />
                           {avatar.info && avatar.public
                             ? format(
-                                avatar.info?.updated_at,
-                                "yyyy/MM/dd HH:mm",
-                              )
+                              avatar.info?.updated_at,
+                              "yyyy/MM/dd HH:mm",
+                            )
                             : "----/--/-- --:--"}
                         </p>
                       </Tooltip>
@@ -174,7 +191,14 @@ export default function AvatarGrid() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        onClick={() => avatarMapState.delete(avatar.id)}
+                        onClick={() => {
+                          track("delete:avatar", {
+                            id: avatar.id,
+                            user: trackId(),
+                            // [trackId()]: avatar.id,
+                          });
+                          avatarMapState.delete(avatar.id);
+                        }}
                       >
                         <TrashIcon size={16} />
                       </Button>

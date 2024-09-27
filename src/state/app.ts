@@ -1,6 +1,6 @@
 import { Store } from "@tauri-apps/plugin-store";
 import { proxy, subscribe } from "valtio";
-import { track } from "@/lib/aptabase";
+import { track, trackId } from "@/lib/aptabase";
 
 const APP_STORE_KEY = "appStore";
 
@@ -44,6 +44,6 @@ export async function loadAppState() {
 }
 
 export function clearApp() {
-  track("clearApp");
+  track("clear", { app: trackId() });
   Object.assign(appState, initAppState);
 }

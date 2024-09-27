@@ -2,6 +2,7 @@ import { avatarMapState } from "@/state/avatars";
 import React from "react";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
+import { track, trackId } from "@/lib/aptabase";
 
 const AVATAR_URL_PREFIX = "https://vrchat.com/home/avatar/";
 
@@ -18,6 +19,7 @@ export default function AvatarInput() {
 
     if (!avatarMapState.get(idToAdd)) {
       avatarMapState.set(idToAdd, { id: idToAdd });
+      track("add:avatar", { id: idToAdd, user: trackId() });
     }
     setAddAvatarId("");
   }

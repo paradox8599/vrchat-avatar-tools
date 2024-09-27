@@ -2,7 +2,7 @@ import { LoginStatus, UserInfo } from "@/types";
 import { Store } from "@tauri-apps/plugin-store";
 import { proxy, subscribe } from "valtio";
 import { invoke } from "@tauri-apps/api/core";
-import { track } from "@/lib/aptabase";
+import { track, trackId } from "@/lib/aptabase";
 import { appState } from "./app";
 
 const AUTH_STORE_KEY = "authStore";
@@ -39,6 +39,7 @@ export async function logout() {
 }
 
 export function clearAuth() {
+  track("clear", { auth: trackId() });
   authState.me = void 0;
   authState.credentials = void 0;
   authState.status = LoginStatus.NotLoggedIn;
