@@ -1,5 +1,4 @@
 export type ErrorName =
-  | "NotInWhiteList"
   | "AuthFailed"
   | "AvatarNotFound"
   | "TooManyRequests"

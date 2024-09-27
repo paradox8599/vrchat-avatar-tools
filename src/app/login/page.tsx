@@ -39,11 +39,6 @@ export default function Page() {
           case LoginStatus.NotLoggedIn:
             toast({ title: "登录失败" });
             break;
-          case LoginStatus.NotInWhitelist:
-            toast({
-              title: "尝试登录的账号不在白名单内，请联系作者或等待公开发布",
-            });
-            break;
         }
 
         setLoginResult(result);
@@ -83,9 +78,6 @@ export default function Page() {
           case LoginStatus.NeedsEmailVerify:
             toast({ title: "验证码错误" });
             break;
-          case LoginStatus.NotInWhitelist:
-            toast({ title: "尝试登录的账号不在白名单内" });
-            break;
         }
       } catch (e) {
         toast({ title: e as string });
@@ -99,52 +91,48 @@ export default function Page() {
   return (
     <main className="h-full p-4 flex-col flex-center">
       {/* Login */}
-      {[
-        undefined,
-        LoginStatus.NotLoggedIn,
-        LoginStatus.NotInWhitelist,
-      ].includes(loginResult) && (
-          <form
-            className="max-w-sm w-full flex-col flex-center gap-2"
-            action={onLogin}
+      {[undefined, LoginStatus.NotLoggedIn].includes(loginResult) && (
+        <form
+          className="max-w-sm w-full flex-col flex-center gap-2"
+          action={onLogin}
+        >
+          <h1 className="font-bold">登录 VRCHAT</h1>
+          <p className="text-xs font-semibold">
+            由于 VRChat 接口限制，登录后方可获取模型信息
+          </p>
+          <Input
+            required
+            readOnly={isLoading}
+            disabled={isLoading}
+            defaultValue={authState.credentials?.username}
+            name="username"
+            type="text"
+            placeholder="用户名"
+          />
+          <Input
+            required
+            readOnly={isLoading}
+            disabled={isLoading}
+            defaultValue={authState.credentials?.password}
+            name="password"
+            type="password"
+            placeholder="密码"
+          />
+          <Button
+            className="uppercase min-w-full"
+            type="submit"
+            disabled={isLoading}
           >
-            <h1 className="font-bold">登录 VRCHAT</h1>
-            <p className="text-xs font-semibold">
-              由于 VRChat 接口限制，登录后方可获取模型信息
-            </p>
-            <Input
-              required
-              readOnly={isLoading}
-              disabled={isLoading}
-              defaultValue={authState.credentials?.username}
-              name="username"
-              type="text"
-              placeholder="用户名"
-            />
-            <Input
-              required
-              readOnly={isLoading}
-              disabled={isLoading}
-              defaultValue={authState.credentials?.password}
-              name="password"
-              type="password"
-              placeholder="密码"
-            />
-            <Button
-              className="uppercase min-w-full"
-              type="submit"
-              disabled={isLoading}
-            >
-              {isLoading ? (
-                <span className="animate-spin ease-out">
-                  <LoaderCircle />
-                </span>
-              ) : (
-                "登录"
-              )}
-            </Button>
-          </form>
-        )}
+            {isLoading ? (
+              <span className="animate-spin ease-out">
+                <LoaderCircle />
+              </span>
+            ) : (
+              "登录"
+            )}
+          </Button>
+        </form>
+      )}
 
       {/* Needs Verify */}
       {[LoginStatus.NeedsEmailVerify, LoginStatus.NeedsVerify].includes(

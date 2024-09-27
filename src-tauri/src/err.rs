@@ -3,9 +3,6 @@ use thiserror::Error;
 
 #[derive(Error, Debug, Serialize, Deserialize)]
 pub enum AppError {
-    #[error("id not in whitelist: {0}")]
-    NotInWhiteList(String),
-
     #[error("too many requests")]
     TooManyRequests,
 

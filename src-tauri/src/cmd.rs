@@ -60,32 +60,19 @@ pub async fn vrchat_get_me(
 
     save_cookies(&app)?;
 
-    match me {
-        Ok(me) => {
-            if let EitherUserOrTwoFactor::CurrentUser(me) = &me {
-                if !crate::whitelist::WHITELISTED.contains(&me.id.as_str()) {
-                    clear_cookies(&app)?;
-                    return Err(AppError::NotInWhiteList(me.id.to_owned()));
-                }
-            }
-            Ok(me)
-        }
-        Err(e) => Err(match &e {
-            Error::ResponseError(e) => match e.status {
-                StatusCode::TOO_MANY_REQUESTS => AppError::TooManyRequests,
-                _ => match &e.entity {
-                    None => unknown_error(e),
-                    Some(entity) => match entity {
-                        GetCurrentUserError::Status401(e) => auth_error(e),
-                        GetCurrentUserError::UnknownValue(v) => {
-                            AppError::UnknownError(v.to_string())
-                        }
-                    },
+    me.map_err(|e| match &e {
+        Error::ResponseError(e) => match e.status {
+            StatusCode::TOO_MANY_REQUESTS => AppError::TooManyRequests,
+            _ => e.entity.as_ref().map_or_else(
+                || unknown_error(e),
+                |entity| match entity {
+                    GetCurrentUserError::Status401(e) => auth_error(e),
+                    GetCurrentUserError::UnknownValue(v) => AppError::UnknownError(v.to_string()),
                 },
-            },
-            e => AppError::UnknownError(e.to_string()),
-        }),
-    }
+            ),
+        },
+        e => AppError::UnknownError(e.to_string()),
+    })
 }
 
 #[command]

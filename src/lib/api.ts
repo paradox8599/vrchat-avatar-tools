@@ -82,10 +82,6 @@ export async function vrchatGetMe() {
       // 429 Too many requests, do not change status
       case "TooManyRequests":
         return authState.status;
-      // not in whitelist
-      case "NotInWhiteList":
-        authState.status = LoginStatus.NotInWhitelist;
-        return authState.status;
     }
     authState.status = LoginStatus.NotLoggedIn;
     return authState.status;
@@ -95,7 +91,6 @@ export async function vrchatGetMe() {
 export async function checkAuth() {
   const me = await vrchatGetMe();
   switch (me) {
-    case LoginStatus.NotInWhitelist:
     case LoginStatus.NotLoggedIn:
       clearAuth();
   }
