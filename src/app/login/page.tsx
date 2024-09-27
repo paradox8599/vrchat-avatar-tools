@@ -12,9 +12,10 @@ import { LoginStatus } from "../../types";
 import { vrchatLogin, vrchatVerifyEmailOtp, vrchatVerifyOtp } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
 import { LoaderCircle } from "lucide-react";
-import { appState, clearApp } from "@/state/app";
+import { clearApp } from "@/state/app";
 import { clearAvatars } from "@/state/avatars";
 import { ThemeToggleIcon } from "@/components/settings/theme-toggle";
+import { authState } from "@/state/auth";
 
 export default function Page() {
   const [loginResult, setLoginResult] = React.useState<LoginStatus>(
@@ -61,7 +62,7 @@ export default function Page() {
     (async () => {
       try {
         let result: LoginStatus;
-        switch (appState.auth.status) {
+        switch (authState.status) {
           case LoginStatus.NeedsVerify:
             result = await vrchatVerifyOtp(code);
             break;
@@ -89,7 +90,7 @@ export default function Page() {
       } catch (e) {
         toast({ title: e as string });
       }
-      setLoginResult(appState.auth.status);
+      setLoginResult(authState.status);
       setOtpCode("");
       setIsLoading(false);
     })();
@@ -115,7 +116,7 @@ export default function Page() {
               required
               readOnly={isLoading}
               disabled={isLoading}
-              defaultValue={appState.auth.credentials?.username}
+              defaultValue={authState.credentials?.username}
               name="username"
               type="text"
               placeholder="用户名"
@@ -124,7 +125,7 @@ export default function Page() {
               required
               readOnly={isLoading}
               disabled={isLoading}
-              defaultValue={appState.auth.credentials?.password}
+              defaultValue={authState.credentials?.password}
               name="password"
               type="password"
               placeholder="密码"

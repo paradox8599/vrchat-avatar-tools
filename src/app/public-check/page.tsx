@@ -11,9 +11,10 @@ import { Button } from "@/components/ui/button";
 import { Tooltip } from "@/components/tooltip";
 import AvatarGrid from "@/components/avatar/avatar-grid";
 import { ROUTES } from "@/routes";
+import { authState } from "@/state/auth";
 
 export default function Page() {
-  const { auth } = useSnapshot(appState);
+  const auth = useSnapshot(authState);
 
   return (
     <main className="py-2 h-full flex flex-col">

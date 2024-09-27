@@ -2,7 +2,7 @@
 
 ## TODO
 
-- prevent web keyboard shortcuts
+- check connection at start
 - usage analytics
 
 - multiple tags

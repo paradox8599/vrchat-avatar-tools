@@ -1,7 +1,5 @@
-import { LoginStatus, UserInfo } from "@/types";
 import { Store } from "@tauri-apps/plugin-store";
 import { proxy, subscribe } from "valtio";
-import { invoke } from "@tauri-apps/api/core";
 import { track } from "@/lib/aptabase";
 
 const APP_STORE_KEY = "appStore";
@@ -12,11 +10,6 @@ export type AppState = {
   init?: boolean;
   updated?: boolean;
   version: string;
-  auth: {
-    status: LoginStatus;
-    credentials?: { username: string; password: string };
-    me?: UserInfo;
-  };
   settings: {
     avatarFetchInterval: number;
     avatarStatusExpiresHr: number;
@@ -27,7 +20,6 @@ export type AppState = {
 };
 
 const initAppState = {
-  auth: { status: LoginStatus.NotLoggedIn },
   version: "0.0.0",
   settings: {
     avatarFetchInterval: 1,
@@ -48,18 +40,7 @@ subscribe(appState, async () => {
 export async function loadAppState() {
   const stored: AppState | null = await appStore.get(APP_STORE_KEY);
   if (!stored) return;
-  Object.assign(appState, { auth: stored.auth, settings: stored.settings });
-}
-
-export async function logout() {
-  track("logout");
-  clearAuth();
-  await invoke("vrchat_logout");
-}
-
-export function clearAuth() {
-  console.log("clear auth");
-  appState.auth = { status: LoginStatus.NotLoggedIn };
+  Object.assign(appState, { settings: stored.settings });
 }
 
 export function clearApp() {
