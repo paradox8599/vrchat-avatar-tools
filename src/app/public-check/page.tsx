@@ -1,14 +1,16 @@
 "use client";
-import { AvatarFallback, Avatar, AvatarImage } from "@/components/ui/avatar";
+
 import React from "react";
-import { useSnapshot } from "valtio";
 import Link from "next/link";
-import AvatarInput from "@/components/avatar/avatar-input";
-import { TagFilter } from "@/components/avatar/tag-selector";
+import { useSnapshot } from "valtio";
 import { Settings } from "lucide-react";
+
+import { AvatarFallback, Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Tooltip } from "@/components/tooltip";
+import AvatarInput from "@/components/avatar/avatar-input";
 import AvatarGrid from "@/components/avatar/avatar-grid";
+import { TagFilter } from "@/components/avatar/tag-selector";
 import { ROUTES } from "@/routes";
 import { authState } from "@/state/auth";
 
@@ -21,7 +23,7 @@ export default function Page() {
         {/* Avatar Icon & Settings button */}
 
         <Tooltip tooltip="设置">
-          <Button asChild size="icon" variant="ghost">
+          <Button asChild size="icon" variant="ghost" aria-label="Settings">
             <Link href={ROUTES.settings}>
               <Settings />
             </Link>
@@ -29,11 +31,13 @@ export default function Page() {
         </Tooltip>
 
         <Avatar className="relative avatar-btn">
-          <AvatarImage
-            src={auth?.me?.currentAvatarThumbnailImageUrl}
-            className="object-cover"
-          />
-          <AvatarFallback>{auth?.me?.displayName}</AvatarFallback>
+          {auth?.me?.currentAvatarThumbnailImageUrl && (
+            <AvatarImage
+              src={auth.me.currentAvatarThumbnailImageUrl}
+              className="object-cover"
+            />
+          )}
+          <AvatarFallback>{auth?.me?.displayName || 'User'}</AvatarFallback>
         </Avatar>
 
         <TagFilter />

@@ -8,20 +8,18 @@ const AVATAR_URL_PREFIX = "https://vrchat.com/home/avatar/";
 export default function AvatarInput() {
   const [addAvatarId, setAddAvatarId] = React.useState("");
   function onAvatarIdAdd() {
-    {
-      if (
-        !addAvatarId.startsWith("avtr_") &&
-        !addAvatarId.startsWith(AVATAR_URL_PREFIX)
-      ) {
-        return;
-      }
-      const idToAdd = addAvatarId.replace(AVATAR_URL_PREFIX, "");
-
-      if (!avatarMapState.get(idToAdd)) {
-        avatarMapState.set(idToAdd, { id: idToAdd });
-      }
-      setAddAvatarId("");
+    if (
+      !addAvatarId.startsWith("avtr_") &&
+      !addAvatarId.startsWith(AVATAR_URL_PREFIX)
+    ) {
+      return;
     }
+    const idToAdd = addAvatarId.replace(AVATAR_URL_PREFIX, "");
+
+    if (!avatarMapState.get(idToAdd)) {
+      avatarMapState.set(idToAdd, { id: idToAdd });
+    }
+    setAddAvatarId("");
   }
 
   return (

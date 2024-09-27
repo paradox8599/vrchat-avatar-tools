@@ -12,11 +12,11 @@ export default function useAvatars() {
     () =>
       avatars
         .sort((a, b) => {
-          if (a.info?.releaseStatus) {
-            return -1;
-          } else if (b.info?.releaseStatus) {
-            return 1;
-          }
+          // if a has releaseStatus, make a higher priority
+          if (a.info?.releaseStatus) return -1;
+          // if b has releaseStatus, make b higher priority
+          else if (b.info?.releaseStatus) return 1;
+          // if both a and b have no releaseStatus, sort by lastFetch and earlier lastFetch first
           return (
             new Date(a.lastFetch ?? 0).getTime() -
             new Date(b.lastFetch ?? 0).getTime()

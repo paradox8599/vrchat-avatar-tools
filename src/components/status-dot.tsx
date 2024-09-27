@@ -8,17 +8,18 @@ import React from "react";
 const EXPIRING_MS = appState.settings.avatarStatusExpiresHr * 60 * 60 * 1000;
 const HALF_EXPIRING_MS = EXPIRING_MS / 2;
 
-export function StatusDot({ avatar }: { avatar: Avatar }) {
-  let color: "red" | "yellow" | "green" | "gray";
-  if (!avatar.lastFetch) {
-    color = "gray";
-  } else {
-    const diff = Date.now() - new Date(avatar.lastFetch).getTime();
-    if (diff < HALF_EXPIRING_MS) color = "green";
-    else if (diff < EXPIRING_MS) color = "yellow";
-    else color = "red";
-  }
+type StatusColor = "red" | "yellow" | "green" | "gray";
 
+function getColor(lastFetch: string | undefined): StatusColor {
+  if (!lastFetch) return "gray";
+  const diff = Date.now() - new Date(lastFetch).getTime();
+  if (diff < HALF_EXPIRING_MS) return "green";
+  if (diff < EXPIRING_MS) return "yellow";
+  return "red";
+}
+
+export function StatusDot({ avatar }: { avatar: Avatar }) {
+  const color = getColor(avatar.lastFetch);
   return (
     <Tooltip
       tooltip={
