@@ -140,7 +140,7 @@ export function AvatarImport() {
 
   function confirmImport() {
     for (const id of idsToAdd) avatarMapState.set(id.id, id);
-    track("avatar:import", {
+    track("avatar#import", {
       count: trackId(),
       size: idsToAdd.length,
       exists: idsExists.length,

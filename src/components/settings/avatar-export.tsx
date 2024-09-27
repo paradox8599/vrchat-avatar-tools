@@ -50,7 +50,7 @@ export function AvatarExport() {
       ].join(","),
     );
 
-    track("avatar:export", {
+    track("avatar#export", {
       count: trackId(),
       size: avatars.length,
       format: exportIdsOnly ? "txt" : "csv",

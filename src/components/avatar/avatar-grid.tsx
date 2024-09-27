@@ -81,7 +81,7 @@ export default function AvatarGrid() {
                         size="sm"
                         onClick={() => {
                           if (!avatar.info?.authorId) return;
-                          track("open:author", {
+                          track("open#author", {
                             id: avatar.info.authorId,
                             user: trackId(),
                             // [trackId()]: avatar.info.authorId,
@@ -106,7 +106,7 @@ export default function AvatarGrid() {
                         size="sm"
                         onClick={() => {
                           if (!avatar.info) return;
-                          track("open:avatar", {
+                          track("avatar#open", {
                             id: avatar.id,
                             user: trackId(),
                             // [trackId()]: avatar.id,
@@ -135,7 +135,7 @@ export default function AvatarGrid() {
                       )}
                       variant="outline"
                       onClick={() => {
-                        track("copy:avatar", {
+                        track("avatar#copy", {
                           id: avatar.id,
                           user: trackId(),
                           // [trackId()]: avatar.id,
@@ -192,7 +192,7 @@ export default function AvatarGrid() {
                         variant="ghost"
                         size="sm"
                         onClick={() => {
-                          track("delete:avatar", {
+                          track("avatar#delete", {
                             id: avatar.id,
                             user: trackId(),
                             // [trackId()]: avatar.id,

@@ -56,7 +56,7 @@ export async function vrchatGetMe() {
     // needs verify but not available verify method
     else {
       for (const method of me.requiresTwoFactorAuth) {
-        track("login:verify", { [method]: authState.credentials.username });
+        track("login#verify", { [method]: authState.credentials.username });
       }
       if (me.requiresTwoFactorAuth.length === 0) {
         authState.status = LoginStatus.NotLoggedIn;
@@ -81,7 +81,7 @@ export async function vrchatGetMe() {
     }
   } catch (e) {
     const err = parseError(e);
-    track("login:error", { [err.name]: authState.credentials.username });
+    track("login#error", { [err.name]: authState.credentials.username });
     switch (err.name) {
       // 429 Too many requests, do not change status
       case "TooManyRequests":
