@@ -10,3 +10,5 @@
 - update check
   - channels
   - update server (allow rollback)
+
+- avatar uploading
