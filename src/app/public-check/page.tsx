@@ -1,6 +1,5 @@
 "use client";
 import { AvatarFallback, Avatar, AvatarImage } from "@/components/ui/avatar";
-import { appState } from "@/state/app";
 import React from "react";
 import { useSnapshot } from "valtio";
 import Link from "next/link";

@@ -11,7 +11,7 @@ import { ROUTE_HOME, ROUTES } from "@/routes";
 import { toast } from "./use-toast";
 import useSWRImmutable from "swr/immutable";
 import { track } from "@/lib/aptabase";
-import { authState } from "@/state/auth";
+import { authState, loadAuthState } from "@/state/auth";
 
 export default function useAppInit() {
   const { init, updated } = useSnapshot(appState);
@@ -32,6 +32,8 @@ export default function useAppInit() {
         disableContextMenu();
 
         // load app data & settings
+
+        await loadAuthState();
         await loadAppState();
         await loadAvatarState();
         if (authState.credentials) await vrchatLogin();

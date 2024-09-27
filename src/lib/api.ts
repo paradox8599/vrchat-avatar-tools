@@ -99,7 +99,8 @@ export async function checkAuth() {
 
 export async function vrchatLogin(credentials?: LoginCredentials) {
   authState.credentials ??= credentials;
-  await invoke(API_NAMES.vrchatLogin, credentials);
+  if (!authState.credentials) throw new Error("no credentials provided");
+  await invoke(API_NAMES.vrchatLogin, authState.credentials);
   return await checkAuth();
 }
 
