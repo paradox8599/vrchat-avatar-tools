@@ -8,23 +8,22 @@ export default function useAvatars() {
   const avatars = Array.from(avatarMapState.values());
   const { filter } = useSnapshot(appState);
 
-  const sortedAvatars = React.useMemo(
-    () =>
-      avatars
-        .sort((a, b) => {
-          // if a has releaseStatus, make a higher priority
-          if (a.info?.releaseStatus) return -1;
-          // if b has releaseStatus, make b higher priority
-          else if (b.info?.releaseStatus) return 1;
-          // if both a and b have no releaseStatus, sort by lastFetch and earlier lastFetch first
-          return (
-            new Date(a.lastFetch ?? 0).getTime() -
-            new Date(b.lastFetch ?? 0).getTime()
-          );
-        })
-        .filter((a) => (filter ? a.tag === filter : true)),
-    [avatars, filter],
-  );
+  const sortedAvatars = React.useMemo(() => {
+    const filteredAvatars = filter
+      ? avatars.filter((a) => (filter ? a.tag === filter : true))
+      : avatars;
+    return filteredAvatars.sort((a, b) => {
+      // if a has releaseStatus, make a higher priority
+      if (a.info?.releaseStatus) return -1;
+      // if b has releaseStatus, make b higher priority
+      else if (b.info?.releaseStatus) return 1;
+      // if both a and b have no releaseStatus, sort by lastFetch and earlier lastFetch first
+      return (
+        new Date(a.lastFetch ?? 0).getTime() -
+        new Date(b.lastFetch ?? 0).getTime()
+      );
+    });
+  }, [avatars, filter]);
 
   const tags = React.useMemo(
     () =>
