@@ -39,7 +39,6 @@ pub fn run() {
 
     let mut aptabase = tauri_plugin_aptabase::Builder::new(ENV_APTABASE_KEY);
     let host = ENV_APTABASE_HOST;
-    println!("APTABASE_HOST: {}", host);
     if !host.contains("APTABASE_HOST") {
         aptabase = aptabase.with_options(tauri_plugin_aptabase::InitOptions {
             host: Some(host.to_owned()),
