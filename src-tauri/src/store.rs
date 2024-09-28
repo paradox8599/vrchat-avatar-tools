@@ -1,7 +1,6 @@
 use serde_json::Value;
 use tauri::Manager;
 
-
 pub fn read_store(app: &tauri::AppHandle, store: &str, key: &str) -> Option<Value> {
     let mut result: Option<Value> = None;
     if let Some(stores) = app.try_state::<tauri_plugin_store::StoreCollection<tauri::Wry>>() {
@@ -37,5 +36,3 @@ pub fn clear_store(app: &tauri::AppHandle, store: &str) {
         });
     }
 }
-
-

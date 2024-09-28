@@ -123,16 +123,14 @@ pub fn init(app: &mut tauri::App) -> StdResult<()> {
     Ok(())
 }
 
-#[cfg(debug_assertions)]
 fn prevent_default() -> tauri::plugin::TauriPlugin<tauri::Wry> {
-    use tauri_plugin_prevent_default::Flags;
-
-    tauri_plugin_prevent_default::Builder::new()
-        .with_flags(Flags::all().difference(Flags::DEV_TOOLS | Flags::RELOAD))
-        .build()
-}
-
-#[cfg(not(debug_assertions))]
-fn prevent_default() -> tauri::plugin::TauriPlugin<tauri::Wry> {
+    #[cfg(debug_assertions)]
+    {
+        use tauri_plugin_prevent_default::Flags;
+        tauri_plugin_prevent_default::Builder::new()
+            .with_flags(Flags::all().difference(Flags::DEV_TOOLS | Flags::RELOAD))
+            .build()
+    }
+    #[cfg(not(debug_assertions))]
     tauri_plugin_prevent_default::init()
 }
