@@ -24,8 +24,11 @@ pub async fn vrchat_get_avatar_info(
                 _ => match &e.entity {
                     None => unknown_error(e),
                     Some(entity) => match entity {
-                        GetAvatarError::Status401(e) => auth_error(e),
-                        // NOTE: Status404 does not work
+                        GetAvatarError::Status401(e) => {
+                            let _ = cookies_save(&app);
+                            auth_error(e)
+                        }
+                        // NOTE: Status404 does not work, check StatusCode from response instead
                         GetAvatarError::Status404(e) => {
                             AppError::AvatarNotFound(format!("{:?}", e))
                         }
@@ -35,8 +38,6 @@ pub async fn vrchat_get_avatar_info(
             },
             e => AppError::UnknownError(e.to_string()),
         })?;
-
-    cookies_save(&app)?;
 
     Ok(avatar)
 }

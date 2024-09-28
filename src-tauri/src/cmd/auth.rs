@@ -19,7 +19,6 @@ use crate::{
 
 use super::{auth_error, unknown_error};
 
-
 #[command]
 pub async fn vrchat_login(
     app: tauri::AppHandle,
@@ -30,7 +29,6 @@ pub async fn vrchat_login(
     let mut config = config.write().await;
     cookies_clear(&app)?;
     config.basic_auth = Some((username, Some(password)));
-    cookies_save(&app)?;
     Ok(())
 }
 
@@ -136,4 +134,3 @@ pub async fn vrchat_logout(
         })?;
     Ok(())
 }
-
