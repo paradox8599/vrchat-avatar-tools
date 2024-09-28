@@ -29,7 +29,7 @@ pub fn load_cookies(app: &tauri::AppHandle) -> StdResult<CookieStoreMutex> {
 pub fn save_cookies(app: &tauri::AppHandle) -> Result<(), AppError> {
     let cookies = app
         .try_state::<Arc<reqwest_cookie_store::CookieStoreMutex>>()
-        .ok_or("Store not found")
+        .ok_or("Cookies not found")
         .unwrap();
 
     let cookies = cookies.lock().unwrap();
