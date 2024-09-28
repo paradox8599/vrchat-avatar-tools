@@ -57,7 +57,7 @@ const envs = [
 ////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////
 
-const files = [new TextFile("src-tauri/src/lib.rs")];
+const files = [new TextFile("src-tauri/src/constants.rs")];
 
 for (const env of envs) {
   files

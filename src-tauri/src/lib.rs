@@ -1,4 +1,5 @@
 mod cmd;
+mod constants;
 mod cookies;
 mod err;
 mod store;
@@ -6,6 +7,7 @@ mod store;
 #[cfg(desktop)]
 mod tray;
 
+use constants::{BASE_URL, ENV_APTABASE_HOST, ENV_APTABASE_KEY, ENV_APTABASE_MATCH, UA};
 use cookies::load_cookies;
 
 use cmd::{
@@ -21,12 +23,6 @@ use vrchatapi::apis::configuration::Configuration;
 pub type StdResult<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 pub type Arw<T> = Arc<RwLock<T>>;
 
-pub const UA: &str =  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36";
-pub const BASE_URL: &str = "https://vrchat.com/api/1";
-
-const ENV_APTABASE_KEY: &str = "{{APTABASE_KEY}}";
-const ENV_APTABASE_HOST: &str = "{{APTABASE_HOST}}";
-
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     let mut builder = tauri::Builder::default();
@@ -39,10 +35,9 @@ pub fn run() {
     }
 
     let mut aptabase = tauri_plugin_aptabase::Builder::new(ENV_APTABASE_KEY);
-    let host = ENV_APTABASE_HOST;
-    if !host.contains("APTABASE_HOST") {
+    if !ENV_APTABASE_HOST.contains(ENV_APTABASE_MATCH) {
         aptabase = aptabase.with_options(tauri_plugin_aptabase::InitOptions {
-            host: Some(host.to_owned()),
+            host: Some(ENV_APTABASE_HOST.to_owned()),
             flush_interval: None,
         });
     }
