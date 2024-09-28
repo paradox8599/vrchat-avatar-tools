@@ -1,6 +1,7 @@
 mod cmd;
 mod cookies;
 mod err;
+mod store;
 
 #[cfg(desktop)]
 mod tray;
@@ -87,6 +88,7 @@ fn show_window(app: &tauri::AppHandle) {
 pub fn init(app: &mut tauri::App) -> StdResult<()> {
     // cookies
     let cookies = load_cookies(app.handle())?;
+    let cookies = Arc::new(cookies);
     app.manage(cookies.clone());
 
     let config = Configuration {
