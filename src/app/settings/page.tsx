@@ -20,7 +20,7 @@ import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "@/hooks/use-toast";
 import { ROUTE_HOME } from "@/routes";
-import { appState, clearApp } from "@/state/app";
+import { appState } from "@/state/app";
 import { logout } from "@/state/auth";
 import { clearAvatars } from "@/state/avatars";
 import { ChevronLeft } from "lucide-react";

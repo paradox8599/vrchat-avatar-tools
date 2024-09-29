@@ -38,7 +38,7 @@ class TextFile {
       } else {
         this.text = this.text.replaceAll(text, template);
         console.log(
-          `[${this.filename}] ${action} to "${template}" from "${text}"`,
+          `[${this.filename}] ${action} from "${text}" to "${template}"`,
         );
       }
     }

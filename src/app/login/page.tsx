@@ -138,28 +138,28 @@ export default function Page() {
       {[LoginStatus.NeedsEmailVerify, LoginStatus.NeedsVerify].includes(
         loginResult,
       ) && (
-          <div className="flex-center flex-col gap-4">
-            <h1 className="font-semibold">输入验证码</h1>
-            <InputOTP
-              readOnly={isLoading}
-              maxLength={6}
-              minLength={6}
-              value={otpCode}
-              pattern={REGEXP_ONLY_DIGITS}
-              onChange={onOtpInput}
-              disabled={isLoading}
-            >
-              <InputOTPGroup>
-                <InputOTPSlot index={0} />
-                <InputOTPSlot index={1} />
-                <InputOTPSlot index={2} />
-                <InputOTPSlot index={3} />
-                <InputOTPSlot index={4} />
-                <InputOTPSlot index={5} />
-              </InputOTPGroup>
-            </InputOTP>
-          </div>
-        )}
+        <div className="flex-center flex-col gap-4">
+          <h1 className="font-semibold">输入验证码</h1>
+          <InputOTP
+            readOnly={isLoading}
+            maxLength={6}
+            minLength={6}
+            value={otpCode}
+            pattern={REGEXP_ONLY_DIGITS}
+            onChange={onOtpInput}
+            disabled={isLoading}
+          >
+            <InputOTPGroup>
+              <InputOTPSlot index={0} />
+              <InputOTPSlot index={1} />
+              <InputOTPSlot index={2} />
+              <InputOTPSlot index={3} />
+              <InputOTPSlot index={4} />
+              <InputOTPSlot index={5} />
+            </InputOTPGroup>
+          </InputOTP>
+        </div>
+      )}
 
       <ThemeToggleIcon className="fixed bottom-4 left-4" />
 
