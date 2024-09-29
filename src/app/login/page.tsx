@@ -12,10 +12,11 @@ import { LoginStatus } from "../../types";
 import { vrchatLogin, vrchatVerifyEmailOtp, vrchatVerifyOtp } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
 import { LoaderCircle } from "lucide-react";
-import { clearApp } from "@/state/app";
+import { appState, clearApp } from "@/state/app";
 import { clearAvatars } from "@/state/avatars";
 import { ThemeToggleIcon } from "@/components/settings/theme-toggle";
 import { authState } from "@/state/auth";
+import { useSnapshot } from "valtio";
 
 export default function Page() {
   const [loginResult, setLoginResult] = React.useState<LoginStatus>(
@@ -24,6 +25,7 @@ export default function Page() {
   const [isLoading, setIsLoading] = React.useState(false);
   const [otpCode, setOtpCode] = React.useState("");
   const { toast } = useToast();
+  const { version } = useSnapshot(appState);
 
   function onLogin(formData: FormData) {
     setIsLoading(true);
@@ -161,20 +163,28 @@ export default function Page() {
         </div>
       )}
 
-      <ThemeToggleIcon className="fixed bottom-4 left-4" />
+      {/* bottom */}
+      <div className="w-full fixed bottom-4">
+        <div className="flex flex-row justify-between items-center px-4">
+          <ThemeToggleIcon />
 
-      <Button
-        className="fixed bottom-4 right-4"
-        variant="outline"
-        size="sm"
-        onClick={() => {
-          clearAvatars();
-          clearApp();
-          toast({ title: "已清空数据" });
-        }}
-      >
-        清空数据
-      </Button>
+          <div className="absolute left-0 right-0 text-center text-sm">
+            {version}
+          </div>
+
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              clearAvatars();
+              clearApp();
+              toast({ title: "已清空数据" });
+            }}
+          >
+            清空数据
+          </Button>
+        </div>
+      </div>
     </main>
   );
 }

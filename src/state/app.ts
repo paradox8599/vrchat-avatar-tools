@@ -11,7 +11,7 @@ export type AppState = {
   init?: boolean;
   updated?: boolean;
   reachable?: boolean;
-  version: string;
+  version?: string;
   filter?: string;
   settings: {
     avatarFetchInterval: number;
@@ -22,7 +22,6 @@ export type AppState = {
 };
 
 const initAppState = {
-  version: "0.0.0",
   init: false,
   updated: false,
   reachable: undefined, // set reachable to undefined to allow check in init step

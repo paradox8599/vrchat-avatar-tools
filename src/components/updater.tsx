@@ -18,7 +18,7 @@ export function Updater() {
     "updater",
     async () => {
       const update = await check();
-      appState.version = await getVersion();
+      appState.version = "v" + (await getVersion());
       if (!update) {
         appState.updated = true;
         return;

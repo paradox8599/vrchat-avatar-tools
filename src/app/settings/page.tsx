@@ -155,7 +155,7 @@ export default function Page() {
         </ScrollArea>
       </div>
 
-      <div className="py-1 w-full text-center text-sm">v{version}</div>
+      <div className="py-1 w-full text-center text-sm">{version}</div>
     </main>
   );
 }

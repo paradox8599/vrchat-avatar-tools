@@ -5,7 +5,7 @@ import { appState } from "@/state/app";
 
 export async function checkAndUpdate() {
   try {
-    appState.version = await getVersion();
+    appState.version = "v" + (await getVersion());
     const update = await check();
     if (!update) return;
     await update.downloadAndInstall();
