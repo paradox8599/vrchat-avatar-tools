@@ -24,10 +24,11 @@
 
 - avatar
 
-  - {error message}: user id
-  - fetch: avatar id
-  - userFetch: user id
-  - notFound: avatar id
+  <!-- - {error message}: user id -->
+  <!-- - fetch: avatar id -->
+  <!-- - userFetch: user id -->
+  <!-- - notFound: avatar id -->
+
   - public: {author_id:avatar_id}
 
   - add: avatar id

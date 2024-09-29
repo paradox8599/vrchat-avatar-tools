@@ -1,6 +1,6 @@
 {
   "name": "avatar_pub_check",
-  "version": "0.1.22",
+  "version": "0.1.23",
   "private": true,
   "scripts": {
     "dev:next": "next dev",
@@ -16,7 +16,7 @@
     "env": "cd $(git rev-parse --show-toplevel) && bun run scripts/env.ts",
     "push": "cd $(git rev-parse --show-toplevel) && bun run scripts/push.ts",
     "deploy": "cd $(git rev-parse --show-toplevel) && bun run build && bun run push",
-    "release": "cd $(git rev-parse --show-toplevel) && bun run ver patch && bun run deploy"
+    "release": "cd $(git rev-parse --show-toplevel) && bun run lint && bun run ver patch && bun run deploy"
   },
   "dependencies": {
     "@aptabase/tauri": "https://github.com/aptabase/tauri-plugin-aptabase#v2",

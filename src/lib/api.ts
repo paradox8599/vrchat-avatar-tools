@@ -12,7 +12,7 @@ import {
 } from "@tauri-apps/api/core";
 import { parseError } from "./err";
 import { authState, clearAuth } from "@/state/auth";
-import { track, trackId } from "./aptabase";
+import { track } from "./aptabase";
 
 export const API_NAMES = {
   vrchatLogin: "vrchat_login",
@@ -143,7 +143,7 @@ export async function vrchatVerifyOtp(code: string) {
 
 export async function vrchatGetAvatarInfo(avatarId: string) {
   try {
-    track("avatar", { fetch: avatarId, userFetch: trackId() });
+    // track("avatar", { fetch: avatarId, userFetch: trackId() });
     const avatarInfo: Avatar["info"] = await invoke(
       API_NAMES.vrchatGetAvatarInfo,
       { avatarId },
@@ -151,11 +151,11 @@ export async function vrchatGetAvatarInfo(avatarId: string) {
     return avatarInfo;
   } catch (e) {
     const err = parseError(e);
-    track("avatar", { [err.message]: trackId() });
+    // track("avatar", { [err.message]: trackId() });
     switch (err.type) {
       case "StatusError":
         if (err.status === 404) {
-          track("avatar", { notFound: avatarId });
+          // track("avatar", { notFound: avatarId });
           return undefined;
         } else if (err.status === 401) {
           clearAuth();
