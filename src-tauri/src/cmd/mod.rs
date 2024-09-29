@@ -12,7 +12,7 @@ where
     T: serde::Serialize,
 {
     let json = serde_json::json!({ "status": e.status.to_string(), "content": e.content });
-    AppError::UnknownError(json.to_string())
+    AppError::Unknown(json.to_string())
 }
 
 /**
@@ -29,13 +29,13 @@ where
             on_status(e.status);
             match e.status {
                 StatusCode::TOO_MANY_REQUESTS => {
-                    AppError::StatusError(e.status.as_u16(), "too many requests".to_owned())
+                    AppError::UnsuccessfulStatus(e.status.as_u16(), "too many requests".to_owned())
                 }
                 StatusCode::NOT_FOUND => {
-                    AppError::StatusError(e.status.as_u16(), e.content.to_string())
+                    AppError::UnsuccessfulStatus(e.status.as_u16(), e.content.to_string())
                 }
                 StatusCode::UNAUTHORIZED => {
-                    AppError::StatusError(e.status.as_u16(), e.content.to_string())
+                    AppError::UnsuccessfulStatus(e.status.as_u16(), e.content.to_string())
                 }
 
                 _ => match e.entity.as_ref() {
@@ -44,6 +44,12 @@ where
                 },
             }
         }
-        e => AppError::UnknownError(e.to_string()),
+        Error::Reqwest(error) => {
+            println!("unknown error in handler: {:?}", e);
+            AppError::NoConnection(error.to_string())
+        }
+        e => AppError::Unknown(e.to_string()),
+        // Error::Serde(error) => todo!(),
+        // Error::Io(error) => todo!(),
     }
 }

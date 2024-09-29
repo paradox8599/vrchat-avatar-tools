@@ -2,7 +2,8 @@ use tauri::command;
 use vrchatapi::{
     apis::{
         authentication_api::{
-            GetCurrentUserError, LogoutError, Verify2FaEmailCodeError, Verify2FaError,
+            CheckUserExistsError, GetCurrentUserError, LogoutError, Verify2FaEmailCodeError,
+            Verify2FaError,
         },
         configuration::Configuration,
     },
@@ -31,6 +32,33 @@ pub async fn vrchat_login(
 }
 
 #[command]
+pub async fn vrchat_is_reachable(
+    config: tauri::State<'_, Arw<Configuration>>,
+) -> Result<bool, AppError> {
+    let config = config.write().await;
+    vrchatapi::apis::authentication_api::check_user_exists(
+        &config,
+        None,
+        None,
+        Some("username"),
+        None,
+    )
+    .await
+    .map_err(|e| {
+        handle_api_error(
+            e,
+            |e| match e {
+                CheckUserExistsError::Status400(_) => unreachable!(),
+                CheckUserExistsError::UnknownValue(v) => AppError::Unknown(v.to_string()),
+            },
+            |_| {},
+        )
+    })?;
+
+    Ok(true)
+}
+
+#[command]
 pub async fn vrchat_get_me(
     app: tauri::AppHandle,
     config: tauri::State<'_, Arw<Configuration>>,
@@ -46,7 +74,7 @@ pub async fn vrchat_get_me(
             e,
             |e| match e {
                 GetCurrentUserError::Status401(_) => unreachable!(),
-                GetCurrentUserError::UnknownValue(v) => AppError::UnknownError(v.to_string()),
+                GetCurrentUserError::UnknownValue(v) => AppError::Unknown(v.to_string()),
             },
             |_| {},
         )
@@ -72,7 +100,7 @@ pub async fn vrchat_verify_emailotp(
             e,
             |e| match e {
                 Verify2FaEmailCodeError::Status401(_) => unreachable!(),
-                Verify2FaEmailCodeError::UnknownValue(v) => AppError::UnknownError(v.to_string()),
+                Verify2FaEmailCodeError::UnknownValue(v) => AppError::Unknown(v.to_string()),
             },
             |_| {},
         )
@@ -102,7 +130,7 @@ pub async fn vrchat_verify_otp(
             e,
             |e| match e {
                 Verify2FaError::Status401(_) => unreachable!(),
-                Verify2FaError::UnknownValue(v) => AppError::UnknownError(v.to_string()),
+                Verify2FaError::UnknownValue(v) => AppError::Unknown(v.to_string()),
             },
             |_| {},
         )
@@ -128,7 +156,7 @@ pub async fn vrchat_logout(
                 e,
                 |e| match e {
                     LogoutError::Status401(_) => unreachable!(),
-                    LogoutError::UnknownValue(v) => AppError::UnknownError(v.to_string()),
+                    LogoutError::UnknownValue(v) => AppError::Unknown(v.to_string()),
                 },
                 |_| {},
             )

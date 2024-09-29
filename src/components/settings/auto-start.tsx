@@ -9,6 +9,7 @@ import { track } from "@/lib/aptabase";
 export function AutoStartToggle() {
   const { settings } = useSnapshot(appState);
   const [loading, setLoading] = React.useState(false);
+
   return (
     <Label className="w-full flex items-center justify-between">
       <span>开机时启动</span>

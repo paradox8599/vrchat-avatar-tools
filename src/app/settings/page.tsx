@@ -40,6 +40,7 @@ export default function Page() {
             className="absolute left-0 flex items-center w-fit"
             variant="ghost"
             size="sm"
+            // use router.back()
             onClick={() => router.replace(ROUTE_HOME)}
           >
             <ChevronLeft />

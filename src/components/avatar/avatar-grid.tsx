@@ -7,8 +7,8 @@ import {
   Avatar as AvatarIcon,
   AvatarImage,
 } from "@/components/ui/avatar";
-import useAvatars from "@/hooks/useAvatars";
-import { useAvatarFetcher } from "@/hooks/useAvatarFetcher";
+import useAvatars from "@/hooks/use-avatars";
+import { useAvatarFetcher } from "@/hooks/use-avatar-fetcher";
 import { Button } from "../ui/button";
 import {
   Box,

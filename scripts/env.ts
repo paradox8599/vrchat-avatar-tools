@@ -63,6 +63,8 @@ const envs = [
 ////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////
 
+console.log("\n\n");
+
 const files = [new TextFile("src-tauri/src/constants.rs")];
 
 for (const env of envs) {
@@ -70,3 +72,5 @@ for (const env of envs) {
     .map((f) => f.replace(env.tmpl, env.value))
     .forEach((f) => f.write(f.text));
 }
+
+console.log("\n\n");

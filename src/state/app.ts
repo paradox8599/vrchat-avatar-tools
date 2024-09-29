@@ -1,6 +1,7 @@
 import { Store } from "@tauri-apps/plugin-store";
 import { proxy, subscribe } from "valtio";
 import { track, trackId } from "@/lib/aptabase";
+import { isEnabled } from "@tauri-apps/plugin-autostart";
 
 const APP_STORE_KEY = "appStore";
 
@@ -9,18 +10,22 @@ const appStore = new Store("store");
 export type AppState = {
   init?: boolean;
   updated?: boolean;
+  reachable?: boolean;
   version: string;
+  filter?: string;
   settings: {
     avatarFetchInterval: number;
     avatarStatusExpiresHr: number;
     notifications: boolean;
     autoStart: boolean;
   };
-  filter?: string;
 };
 
 const initAppState = {
   version: "0.0.0",
+  init: false,
+  updated: false,
+  reachable: undefined, // set reachable to undefined to allow check in init step
   settings: {
     avatarFetchInterval: 1,
     avatarStatusExpiresHr: 1,
@@ -40,7 +45,10 @@ subscribe(appState, async () => {
 export async function loadAppState() {
   const stored: AppState | null = await appStore.get(APP_STORE_KEY);
   if (!stored) return;
-  Object.assign(appState, { settings: stored.settings });
+  // only store settings as other values need to be updated on startup
+  Object.assign(appState, { ...initAppState, settings: stored.settings });
+  // load auto start state and save to settings
+  await isEnabled().then((v) => (appState.settings.autoStart = v));
 }
 
 export function clearApp() {

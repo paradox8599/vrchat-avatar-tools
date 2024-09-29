@@ -10,11 +10,13 @@ import {
   InvokeArgs,
   InvokeOptions,
 } from "@tauri-apps/api/core";
-import { parseError } from "./err";
+import { ErrorName, parseError } from "./err";
 import { authState, clearAuth } from "@/state/auth";
 import { track } from "./aptabase";
+import { appState } from "@/state/app";
 
 export const API_NAMES = {
+  vrchatIsReachable: "vrchat_is_reachable",
   vrchatLogin: "vrchat_login",
   vrchatVerifyEmailOtp: "vrchat_verify_emailotp",
   vrchatVerifyOtp: "vrchat_verify_otp",
@@ -29,11 +31,20 @@ async function invoke<T>(
   options?: InvokeOptions,
 ): Promise<T> {
   try {
-    return await _invoke<T>(cmd, args, options);
+    const result = await _invoke<T>(cmd, args, options);
+    appState.reachable = true;
+    return result;
   } catch (e) {
-    // console.error(JSON.stringify(e));
+    const err = parseError(e);
+    if (err.type === ErrorName.ConnectionError) {
+      appState.reachable = false;
+    }
     throw e;
   }
+}
+
+export async function vrchatIsReachable() {
+  return await invoke<boolean>(API_NAMES.vrchatIsReachable).catch(() => false);
 }
 
 /**
@@ -83,7 +94,7 @@ export async function vrchatGetMe() {
     const err = parseError(e);
     track("login", { getMeError: err.message });
     switch (err.type) {
-      case "StatusError":
+      case ErrorName.StatusError:
         if (err.status === 429) return authState.status;
     }
     authState.status = LoginStatus.NotLoggedIn;
@@ -115,7 +126,7 @@ export async function vrchatVerifyEmailOtp(code: string) {
     const err = parseError(e);
     track("login", { verifyEmailError: err.message });
     switch (err.type) {
-      case "StatusError":
+      case ErrorName.StatusError:
         if (err.status === 429) return authState.status;
     }
     console.error(`caught at vrchatVerifyEmailOtp ${JSON.stringify(e)}`);
@@ -132,7 +143,7 @@ export async function vrchatVerifyOtp(code: string) {
     const err = parseError(e);
     track("login", { verifyOtpError: err.message });
     switch (err.type) {
-      case "StatusError":
+      case ErrorName.StatusError:
         if (err.status === 429) return authState.status;
     }
     console.error(`caught at vrchatVerifyOtp ${JSON.stringify(e)}`);
@@ -153,14 +164,14 @@ export async function vrchatGetAvatarInfo(avatarId: string) {
     const err = parseError(e);
     // track("avatar", { [err.message]: trackId() });
     switch (err.type) {
-      case "StatusError":
+      case ErrorName.StatusError:
         if (err.status === 404) {
           // track("avatar", { notFound: avatarId });
           return undefined;
         } else if (err.status === 401) {
           clearAuth();
         }
-      case "UnknownError":
+      case ErrorName.UnknownError:
         throw err;
     }
   }

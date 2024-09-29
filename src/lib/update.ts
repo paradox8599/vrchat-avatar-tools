@@ -11,6 +11,6 @@ export async function checkAndUpdate() {
     await update.downloadAndInstall();
     await relaunch();
   } catch (e) {
-    console.log({ title: "App 更新失败", description: String(e) });
+    alert({ title: "App 更新失败", description: String(e) });
   }
 }

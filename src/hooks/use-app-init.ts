@@ -1,22 +1,14 @@
 "use client";
 import { appState, loadAppState } from "@/state/app";
 import { loadAvatarState } from "@/state/avatars";
-import { usePathname, useRouter } from "next/navigation";
-import React from "react";
 import { useSnapshot } from "valtio";
-import { isEnabled } from "@tauri-apps/plugin-autostart";
-import { vrchatLogin } from "@/lib/api";
-import useAppUpdater from "./useAppUpdater";
-import { ROUTE_HOME, ROUTES } from "@/routes";
 import { toast } from "./use-toast";
 import useSWRImmutable from "swr/immutable";
 import { track, trackId } from "@/lib/aptabase";
-import { authState, loadAuthState } from "@/state/auth";
+import { loadAuthState } from "@/state/auth";
 
 export default function useAppInit() {
   const { init, updated } = useSnapshot(appState);
-  const path = usePathname();
-  const router = useRouter();
 
   useSWRImmutable(
     // do not init if:
@@ -32,21 +24,15 @@ export default function useAppInit() {
         disableContextMenu();
 
         // load app data & settings
-
-        await loadAuthState();
         await loadAppState();
+        await loadAuthState();
         await loadAvatarState();
-        if (authState.credentials) await vrchatLogin();
-
-        // load auto start state
-        isEnabled().then((v) => (appState.settings.autoStart = v));
 
         ////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////
         track("init", { success: trackId() });
         appState.init = true;
-        router.replace(ROUTE_HOME);
       } catch (e) {
         track("init", { error: String(e) });
         toast({
@@ -56,12 +42,6 @@ export default function useAppInit() {
       }
     },
   );
-
-  useAppUpdater({ interval: 1000 * 60 * 60 });
-
-  React.useEffect(() => {
-    if (!appState.init) router.replace(ROUTES.start);
-  }, [init, path, router]);
 }
 
 function disableContextMenu() {

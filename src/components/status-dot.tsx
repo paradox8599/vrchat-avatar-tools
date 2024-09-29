@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 import { appState } from "@/state/app";
 import { Tooltip } from "./tooltip";
 import { Avatar } from "@/types";
-import { fetchAvatarInfo } from "@/hooks/useAvatarFetcher";
+import { fetchAvatarInfo } from "@/hooks/use-avatar-fetcher";
 import React from "react";
 
 const EXPIRING_MS = appState.settings.avatarStatusExpiresHr * 60 * 60 * 1000;

@@ -24,7 +24,7 @@ pub async fn vrchat_get_avatar_info(
                 |e| match e {
                     GetAvatarError::Status401(_) => unreachable!(),
                     GetAvatarError::Status404(_) => unreachable!(),
-                    GetAvatarError::UnknownValue(v) => AppError::UnknownError(v.to_string()),
+                    GetAvatarError::UnknownValue(v) => AppError::Unknown(v.to_string()),
                 },
                 |_| {},
             )

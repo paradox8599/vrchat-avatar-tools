@@ -11,7 +11,10 @@ use constants::{ENV_APTABASE_HOST, ENV_APTABASE_KEY, ENV_APTABASE_MATCH};
 use cookies::cookies_init;
 
 use cmd::{
-    auth::{vrchat_get_me, vrchat_login, vrchat_logout, vrchat_verify_emailotp, vrchat_verify_otp},
+    auth::{
+        vrchat_get_me, vrchat_is_reachable, vrchat_login, vrchat_logout, vrchat_verify_emailotp,
+        vrchat_verify_otp,
+    },
     avatar::vrchat_get_avatar_info,
 };
 use std::sync::Arc;
@@ -42,6 +45,7 @@ pub fn run() {
         .plugin(tauri_plugin_store::Builder::new().build())
         .invoke_handler(tauri::generate_handler![
             vrchat_login,
+            vrchat_is_reachable,
             vrchat_verify_emailotp,
             vrchat_verify_otp,
             vrchat_get_me,

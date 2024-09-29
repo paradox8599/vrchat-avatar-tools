@@ -18,7 +18,7 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
-import useAvatars from "@/hooks/useAvatars";
+import useAvatars from "@/hooks/use-avatars";
 import { useSnapshot } from "valtio";
 import { appState } from "@/state/app";
 import { track } from "@/lib/aptabase";
