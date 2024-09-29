@@ -20,14 +20,14 @@ export default function useRoutes() {
     if (init === undefined) return;
     if (status === undefined) return;
 
-    // console.log("-------- start route check --------");
+    console.log("-------- start route check --------");
 
     // check connectivity, before everything else
 
-    // console.log("reachable", reachable, "at", path);
+    console.log("reachable", reachable, "at", path);
     if (!appState.reachable) {
       if (path !== ROUTES.start) {
-        // console.log("redirecting to start");
+        console.log("redirecting to start");
         router.replace(ROUTES.start);
       }
       return;
@@ -35,10 +35,10 @@ export default function useRoutes() {
 
     // if internet is connected, make sure updated
 
-    // console.log("updated", updated, "at", path);
+    console.log("updated", updated, "at", path);
     if (!appState.updated) {
       if (path !== ROUTES.start) {
-        // console.log("redirecting to start");
+        console.log("redirecting to start");
         router.replace(ROUTES.start);
       }
       return;
@@ -46,10 +46,10 @@ export default function useRoutes() {
 
     // then make sure app is initialized
 
-    // console.log("initialized", init, "at", path);
+    console.log("initialized", init, "at", path);
     if (!appState.init) {
       if (path !== ROUTES.start) {
-        // console.log("redirecting to start");
+        console.log("redirecting to start");
         router.replace(ROUTES.start);
       }
       return;
@@ -57,15 +57,15 @@ export default function useRoutes() {
 
     // if not logged in, redirect to login page
 
-    // console.log(
-    //   "logged in",
-    //   authState.status === LoginStatus.Success,
-    //   "at",
-    //   path,
-    // );
+    console.log(
+      "logged in",
+      authState.status === LoginStatus.Success,
+      "at",
+      path,
+    );
     if (authState.status !== LoginStatus.Success) {
-      if (path !== ROUTES.login && path !== ROUTES.start) {
-        // console.log("redirecting to login");
+      if (path !== ROUTES.login) {
+        console.log("redirecting to login");
         router.replace(ROUTES.login);
       }
       return;
@@ -73,13 +73,13 @@ export default function useRoutes() {
 
     // if everything is fine and at init/login page, redirect to home
 
-    // console.log("path", path);
+    console.log("path", path);
     if (path === ROUTES.start || path === ROUTES.login) {
-      // console.log("redirecting to home");
+      console.log("redirecting to home");
       router.replace(ROUTE_HOME);
       return;
     }
 
-    // console.log("-------- all good --------");
+    console.log("-------- all good --------");
   }, [path, reachable, updated, init, status, router]);
 }
