@@ -33,7 +33,7 @@ export async function loadAuthState() {
 }
 
 export async function logout() {
-  track("logout");
+  track("logout", { user: trackId() });
   clearAuth();
   invoke("vrchat_logout");
 }

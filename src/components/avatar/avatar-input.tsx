@@ -19,7 +19,7 @@ export default function AvatarInput() {
 
     if (!avatarMapState.get(idToAdd)) {
       avatarMapState.set(idToAdd, { id: idToAdd });
-      track("avatar#add", { id: idToAdd, user: trackId() });
+      track("avatar", { add: idToAdd, userAdd: trackId() });
     }
     setAddAvatarId("");
   }

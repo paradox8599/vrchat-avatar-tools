@@ -56,7 +56,7 @@ export async function vrchatGetMe() {
     // needs verify but not available verify method
     else {
       for (const method of me.requiresTwoFactorAuth) {
-        track("login#verify", { [method]: authState.credentials.username });
+        track("login", { [method]: authState.credentials.username });
       }
       if (me.requiresTwoFactorAuth.length === 0) {
         authState.status = LoginStatus.NotLoggedIn;
@@ -81,11 +81,10 @@ export async function vrchatGetMe() {
     }
   } catch (e) {
     const err = parseError(e);
-    track("login#error", { [err.name]: authState.credentials.username });
-    switch (err.name) {
-      // 429 Too many requests, do not change status
-      case "TooManyRequests":
-        return authState.status;
+    track("login", { getMeError: err.message });
+    switch (err.type) {
+      case "StatusError":
+        if (err.status === 429) return authState.status;
     }
     authState.status = LoginStatus.NotLoggedIn;
     return authState.status;
@@ -113,6 +112,12 @@ export async function vrchatVerifyEmailOtp(code: string) {
     await invoke(API_NAMES.vrchatVerifyEmailOtp, { code });
     return await checkAuth();
   } catch (e) {
+    const err = parseError(e);
+    track("login", { verifyEmailError: err.message });
+    switch (err.type) {
+      case "StatusError":
+        if (err.status === 429) return authState.status;
+    }
     console.error(`caught at vrchatVerifyEmailOtp ${JSON.stringify(e)}`);
     authState.status = LoginStatus.NotLoggedIn;
     return authState.status;
@@ -124,6 +129,12 @@ export async function vrchatVerifyOtp(code: string) {
     await invoke(API_NAMES.vrchatVerifyOtp, { code });
     return await checkAuth();
   } catch (e) {
+    const err = parseError(e);
+    track("login", { verifyOtpError: err.message });
+    switch (err.type) {
+      case "StatusError":
+        if (err.status === 429) return authState.status;
+    }
     console.error(`caught at vrchatVerifyOtp ${JSON.stringify(e)}`);
     authState.status = LoginStatus.NotLoggedIn;
     return authState.status;
@@ -132,22 +143,24 @@ export async function vrchatVerifyOtp(code: string) {
 
 export async function vrchatGetAvatarInfo(avatarId: string) {
   try {
-    track("avatar_info", { avatar: avatarId });
+    track("avatar", { fetch: avatarId, userFetch: trackId() });
     const avatarInfo: Avatar["info"] = await invoke(
       API_NAMES.vrchatGetAvatarInfo,
       { avatarId },
     );
-    track("avatar_info", { fetched: trackId() });
     return avatarInfo;
   } catch (e) {
     const err = parseError(e);
-    track("avatar_info", { [err.name]: trackId() });
-    switch (err.name) {
-      case "AvatarNotFound":
-        return undefined;
-      case "AuthFailed":
-        clearAuth();
-      default:
+    track("avatar", { [err.message]: trackId() });
+    switch (err.type) {
+      case "StatusError":
+        if (err.status === 404) {
+          track("avatar", { notFound: avatarId });
+          return undefined;
+        } else if (err.status === 401) {
+          clearAuth();
+        }
+      case "UnknownError":
         throw err;
     }
   }

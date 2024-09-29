@@ -44,11 +44,11 @@ export default function useAppInit() {
         ////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////
-        track("app_init#success", { id: trackId() });
+        track("init", { success: trackId() });
         appState.init = true;
         router.replace(ROUTE_HOME);
       } catch (e) {
-        track("app_init#error", { error: String(e) });
+        track("init", { error: String(e) });
         toast({
           title: "初始化失败，请稍后重启 App 再试",
           description: String(e),

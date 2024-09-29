@@ -81,10 +81,9 @@ export default function AvatarGrid() {
                         size="sm"
                         onClick={() => {
                           if (!avatar.info?.authorId) return;
-                          track("open#author", {
-                            id: avatar.info.authorId,
-                            user: trackId(),
-                            // [trackId()]: avatar.info.authorId,
+                          track("author", {
+                            open: avatar.info.authorId,
+                            userOpen: trackId(),
                           });
                           open(
                             `https://vrchat.com/home/user/${avatar.info?.authorId}`,
@@ -106,10 +105,9 @@ export default function AvatarGrid() {
                         size="sm"
                         onClick={() => {
                           if (!avatar.info) return;
-                          track("avatar#open", {
-                            id: avatar.id,
-                            user: trackId(),
-                            // [trackId()]: avatar.id,
+                          track("avatar", {
+                            open: avatar.id,
+                            userOpen: trackId(),
                           });
                           open(`https://vrchat.com/home/avatar/${avatar.id}`);
                         }}
@@ -135,10 +133,9 @@ export default function AvatarGrid() {
                       )}
                       variant="outline"
                       onClick={() => {
-                        track("avatar#copy", {
-                          id: avatar.id,
-                          user: trackId(),
-                          // [trackId()]: avatar.id,
+                        track("avatar", {
+                          copy: avatar.id,
+                          userCopy: trackId(),
                         });
                         writeText(avatar.id).then(() =>
                           toast({
@@ -166,9 +163,9 @@ export default function AvatarGrid() {
                           <Box size={13} />
                           {avatar.info && avatar.public
                             ? format(
-                              avatar.info?.created_at,
-                              "yyyy/MM/dd HH:mm",
-                            )
+                                avatar.info?.created_at,
+                                "yyyy/MM/dd HH:mm",
+                              )
                             : "----/--/-- --:--"}
                         </p>
                       </Tooltip>
@@ -178,9 +175,9 @@ export default function AvatarGrid() {
                           <CloudUpload size={14} />
                           {avatar.info && avatar.public
                             ? format(
-                              avatar.info?.updated_at,
-                              "yyyy/MM/dd HH:mm",
-                            )
+                                avatar.info?.updated_at,
+                                "yyyy/MM/dd HH:mm",
+                              )
                             : "----/--/-- --:--"}
                         </p>
                       </Tooltip>
@@ -192,10 +189,9 @@ export default function AvatarGrid() {
                         variant="ghost"
                         size="sm"
                         onClick={() => {
-                          track("avatar#delete", {
-                            id: avatar.id,
-                            user: trackId(),
-                            // [trackId()]: avatar.id,
+                          track("avatar", {
+                            delete: avatar.id,
+                            userDelete: trackId(),
                           });
                           avatarMapState.delete(avatar.id);
                         }}

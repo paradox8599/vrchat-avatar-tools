@@ -50,11 +50,11 @@ export function AvatarExport() {
       ].join(","),
     );
 
-    track("avatar#export", {
-      count: trackId(),
-      size: avatars.length,
-      format: exportIdsOnly ? "txt" : "csv",
-      dateFormat: dateFmt,
+    track("avatar", {
+      userExport: trackId(),
+      exportSize: avatars.length,
+      exportFileFormat: exportIdsOnly ? "txt" : "csv",
+      exportDateFormat: dateFmt,
     });
 
     exportFile([HEADERS, ...avatars], "模型.csv", "text/csv");

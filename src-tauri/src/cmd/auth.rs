@@ -1,4 +1,3 @@
-use reqwest::StatusCode;
 use tauri::command;
 use vrchatapi::{
     apis::{
@@ -6,7 +5,6 @@ use vrchatapi::{
             GetCurrentUserError, LogoutError, Verify2FaEmailCodeError, Verify2FaError,
         },
         configuration::Configuration,
-        Error,
     },
     models::EitherUserOrTwoFactor,
 };
@@ -17,7 +15,7 @@ use crate::{
     Arw,
 };
 
-use super::{auth_error, unknown_response_err};
+use super::handle_api_error;
 
 #[command]
 pub async fn vrchat_login(
@@ -42,18 +40,16 @@ pub async fn vrchat_get_me(
 
     cookies_save(&app)?;
 
-    me.map_err(|e| match &e {
-        Error::ResponseError(e) if e.status == StatusCode::TOO_MANY_REQUESTS => {
-            AppError::TooManyRequests
-        }
-        Error::ResponseError(e) => match e.entity.as_ref() {
-            None => unknown_response_err(e),
-            Some(entity) => match entity {
-                GetCurrentUserError::Status401(e) => auth_error(e),
+    me.map_err(|e| {
+        let _ = cookies_save(&app);
+        handle_api_error(
+            e,
+            |e| match e {
+                GetCurrentUserError::Status401(_) => unreachable!(),
                 GetCurrentUserError::UnknownValue(v) => AppError::UnknownError(v.to_string()),
             },
-        },
-        e => AppError::UnknownError(e.to_string()),
+            |_| {},
+        )
     })
 }
 
@@ -69,15 +65,17 @@ pub async fn vrchat_verify_emailotp(
         vrchatapi::models::TwoFactorEmailCode { code },
     )
     .await;
-    let verify_result = verify_result.map_err(|e| match &e {
-        Error::ResponseError(e) => match &e.entity {
-            None => unknown_response_err(e),
-            Some(entity) => match entity {
-                Verify2FaEmailCodeError::Status401(e) => auth_error(e),
+
+    let verify_result = verify_result.map_err(|e| {
+        let _ = cookies_save(&app);
+        handle_api_error(
+            e,
+            |e| match e {
+                Verify2FaEmailCodeError::Status401(_) => unreachable!(),
                 Verify2FaEmailCodeError::UnknownValue(v) => AppError::UnknownError(v.to_string()),
             },
-        },
-        e => AppError::UnknownError(e.to_string()),
+            |_| {},
+        )
     })?;
 
     cookies_save(&app)?;
@@ -97,15 +95,17 @@ pub async fn vrchat_verify_otp(
         vrchatapi::models::TwoFactorAuthCode { code },
     )
     .await;
-    let verify_result = verify_result.map_err(|e| match &e {
-        Error::ResponseError(e) => match &e.entity {
-            None => unknown_response_err(e),
-            Some(entity) => match entity {
-                Verify2FaError::Status401(e) => auth_error(e),
+
+    let verify_result = verify_result.map_err(|e| {
+        let _ = cookies_save(&app);
+        handle_api_error(
+            e,
+            |e| match e {
+                Verify2FaError::Status401(_) => unreachable!(),
                 Verify2FaError::UnknownValue(v) => AppError::UnknownError(v.to_string()),
             },
-        },
-        e => AppError::UnknownError(e.to_string()),
+            |_| {},
+        )
     })?;
 
     cookies_save(&app)?;
@@ -122,15 +122,16 @@ pub async fn vrchat_logout(
     let config = config.write().await;
     vrchatapi::apis::authentication_api::logout(&config)
         .await
-        .map_err(|e| match &e {
-            Error::ResponseError(e) => match &e.entity {
-                None => unknown_response_err(e),
-                Some(entity) => match entity {
-                    LogoutError::Status401(e) => auth_error(e),
+        .map_err(|e| {
+            let _ = cookies_save(&app);
+            handle_api_error(
+                e,
+                |e| match e {
+                    LogoutError::Status401(_) => unreachable!(),
                     LogoutError::UnknownValue(v) => AppError::UnknownError(v.to_string()),
                 },
-            },
-            e => AppError::UnknownError(e.to_string()),
+                |_| {},
+            )
         })?;
     Ok(())
 }

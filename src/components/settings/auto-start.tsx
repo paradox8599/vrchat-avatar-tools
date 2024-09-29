@@ -23,7 +23,7 @@ export function AutoStartToggle() {
           } else {
             disable();
           }
-          track("autostart", { [`${checked}`]: trackId() });
+          track("settings", { autostart: checked ? "On" : "Off" });
           appState.settings.autoStart = await isEnabled();
           setLoading(false);
         }}

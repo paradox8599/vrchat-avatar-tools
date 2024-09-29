@@ -28,7 +28,7 @@ export async function fetchAvatarInfo(avatar: Avatar) {
     const newPublic = isPublic && avatar.info === void 0;
 
     if (newPublic) {
-      track("pub_avatar", { avatar: `${info.authorId}:${avatar.id}` });
+      track("avatar", { public: `${info.authorId}:${avatar.id}` });
       if (appState.settings.notifications) {
         sendNotification({
           title: `发现  ${info.authorName}  的公开模型`,
@@ -42,9 +42,8 @@ export async function fetchAvatarInfo(avatar: Avatar) {
       avatar.info = info;
       avatar.lastFetch = new Date().toISOString();
       avatar.public = isPublic;
-      avatar.fetching = false;
     }, 300);
-  } catch (_) {
+  } finally {
     setTimeout(() => (avatar.fetching = false), 300);
   }
 }

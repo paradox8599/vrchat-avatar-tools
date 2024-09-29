@@ -1,12 +1,36 @@
-export type ErrorName =
-  | "AuthFailed"
-  | "AvatarNotFound"
-  | "TooManyRequests"
-  | "Unknown";
+export type ErrorName = "StatusError" | "UnknownError";
+type ErrorMessage = Record<ErrorName, unknown>;
 
-export type ErrorMessage = Record<ErrorName, string>;
+export type StatusError = {
+  type: "StatusError";
+  status: number;
+  message: string;
+};
 
-export function parseError(err: unknown) {
+export type UnknownError = {
+  type: "UnknownError";
+  message: string;
+};
+
+export type ApiError = StatusError | UnknownError;
+
+export function parseError(err: unknown): ApiError {
   const [name, value] = Object.entries(err as ErrorMessage)[0];
-  return { name: name as ErrorName, value };
+
+  switch (name as ErrorName) {
+    case "StatusError":
+      const [status, json] = value as [number, string];
+      const errMsg = JSON.parse(json) as {
+        error: { message: string; status: number };
+      };
+
+      return {
+        type: "StatusError",
+        status,
+        message: errMsg.error.message,
+      };
+
+    case "UnknownError":
+      return { type: "UnknownError", message: value as string };
+  }
 }

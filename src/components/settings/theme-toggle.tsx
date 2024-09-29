@@ -12,10 +12,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import ClientOnly from "../client-only";
-import { track, trackId } from "@/lib/aptabase";
+import { track } from "@/lib/aptabase";
 
 function trackTheme(theme: string) {
-  track("theme", { [theme]: trackId(), total: theme });
+  track("settings", { theme });
 }
 
 export function ThemeToggle() {
@@ -24,7 +24,7 @@ export function ThemeToggle() {
   const themeName = React.useMemo(
     () =>
       ({ system: "跟随系统", light: "总是关闭", dark: "总是开启" })[
-      theme ?? ""
+        theme ?? ""
       ],
     [theme],
   );
