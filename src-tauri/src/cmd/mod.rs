@@ -14,7 +14,7 @@ fn auth_error(e: &vrchatapi::models::error::Error) -> AppError {
     )
 }
 
-fn unknown_error<T>(e: &ResponseContent<T>) -> AppError
+fn unknown_response_err<T>(e: &ResponseContent<T>) -> AppError
 where
     T: serde::Serialize,
 {

@@ -17,7 +17,7 @@ use crate::{
     Arw,
 };
 
-use super::{auth_error, unknown_error};
+use super::{auth_error, unknown_response_err};
 
 #[command]
 pub async fn vrchat_login(
@@ -43,15 +43,15 @@ pub async fn vrchat_get_me(
     cookies_save(&app)?;
 
     me.map_err(|e| match &e {
-        Error::ResponseError(e) => match e.status {
-            StatusCode::TOO_MANY_REQUESTS => AppError::TooManyRequests,
-            _ => e.entity.as_ref().map_or_else(
-                || unknown_error(e),
-                |entity| match entity {
-                    GetCurrentUserError::Status401(e) => auth_error(e),
-                    GetCurrentUserError::UnknownValue(v) => AppError::UnknownError(v.to_string()),
-                },
-            ),
+        Error::ResponseError(e) if e.status == StatusCode::TOO_MANY_REQUESTS => {
+            AppError::TooManyRequests
+        }
+        Error::ResponseError(e) => match e.entity.as_ref() {
+            None => unknown_response_err(e),
+            Some(entity) => match entity {
+                GetCurrentUserError::Status401(e) => auth_error(e),
+                GetCurrentUserError::UnknownValue(v) => AppError::UnknownError(v.to_string()),
+            },
         },
         e => AppError::UnknownError(e.to_string()),
     })
@@ -71,7 +71,7 @@ pub async fn vrchat_verify_emailotp(
     .await;
     let verify_result = verify_result.map_err(|e| match &e {
         Error::ResponseError(e) => match &e.entity {
-            None => unknown_error(e),
+            None => unknown_response_err(e),
             Some(entity) => match entity {
                 Verify2FaEmailCodeError::Status401(e) => auth_error(e),
                 Verify2FaEmailCodeError::UnknownValue(v) => AppError::UnknownError(v.to_string()),
@@ -99,7 +99,7 @@ pub async fn vrchat_verify_otp(
     .await;
     let verify_result = verify_result.map_err(|e| match &e {
         Error::ResponseError(e) => match &e.entity {
-            None => unknown_error(e),
+            None => unknown_response_err(e),
             Some(entity) => match entity {
                 Verify2FaError::Status401(e) => auth_error(e),
                 Verify2FaError::UnknownValue(v) => AppError::UnknownError(v.to_string()),
@@ -124,7 +124,7 @@ pub async fn vrchat_logout(
         .await
         .map_err(|e| match &e {
             Error::ResponseError(e) => match &e.entity {
-                None => unknown_error(e),
+                None => unknown_response_err(e),
                 Some(entity) => match entity {
                     LogoutError::Status401(e) => auth_error(e),
                     LogoutError::UnknownValue(v) => AppError::UnknownError(v.to_string()),

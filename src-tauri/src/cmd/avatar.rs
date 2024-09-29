@@ -7,7 +7,7 @@ use vrchatapi::{
 
 use crate::{cookies::cookies_save, err::AppError, Arw};
 
-use super::{auth_error, unknown_error};
+use super::{auth_error, unknown_response_err};
 
 #[command]
 pub async fn vrchat_get_avatar_info(
@@ -22,7 +22,7 @@ pub async fn vrchat_get_avatar_info(
             Error::ResponseError(e) => match e.status {
                 StatusCode::NOT_FOUND => AppError::AvatarNotFound(format!("{:?}", e)),
                 _ => match &e.entity {
-                    None => unknown_error(e),
+                    None => unknown_response_err(e),
                     Some(entity) => match entity {
                         GetAvatarError::Status401(e) => {
                             let _ = cookies_save(&app);
