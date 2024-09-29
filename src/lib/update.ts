@@ -1,16 +1,18 @@
 import { check } from "@tauri-apps/plugin-updater";
-import { relaunch } from "@tauri-apps/plugin-process";
 import { getVersion } from "@tauri-apps/api/app";
 import { appState } from "@/state/app";
 
-export async function checkAndUpdate() {
+export async function getAppVersion() {
+  appState.version = "v" + (await getVersion());
+}
+
+export async function checkUpdate() {
   try {
-    appState.version = "v" + (await getVersion());
+    await getAppVersion();
     const update = await check();
+    appState.updated = !update;
     if (!update) return;
-    await update.downloadAndInstall();
-    await relaunch();
   } catch (e) {
-    alert({ title: "App 更新失败", description: String(e) });
+    console.log(e);
   }
 }

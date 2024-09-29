@@ -36,10 +36,10 @@ export default function useRoutes() {
     // if internet is connected, make sure updated
 
     console.log("updated", updated, "at", path);
-    if (!appState.updated) {
-      if (path !== ROUTES.start) {
-        console.log("redirecting to start");
-        router.replace(ROUTES.start);
+    if (!appState.updated && !appState.version) {
+      if (path !== ROUTES.update) {
+        console.log("redirecting to update");
+        router.replace(ROUTES.update);
       }
       return;
     }
@@ -54,6 +54,9 @@ export default function useRoutes() {
       }
       return;
     }
+
+    // do not redirect on manual update
+    if (!appState.updated) return;
 
     // if not logged in, redirect to login page
 
@@ -74,7 +77,11 @@ export default function useRoutes() {
     // if everything is fine and at init/login page, redirect to home
 
     console.log("path", path);
-    if (path === ROUTES.start || path === ROUTES.login) {
+    if (
+      path === ROUTES.start ||
+      path === ROUTES.login ||
+      path === ROUTES.update
+    ) {
       console.log("redirecting to home");
       router.replace(ROUTE_HOME);
       return;

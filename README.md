@@ -2,13 +2,9 @@
 
 ## TODO
 
-- check connection at start
-- usage analytics
+- ctrl + A
+- check update button
 
 - multiple tags
 - hall of shame ( for whom published private avatars )
-- update check
-  - channels
-  - update server (allow rollback)
-
 - avatar uploading
