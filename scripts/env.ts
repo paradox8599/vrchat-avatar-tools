@@ -32,8 +32,14 @@ class TextFile {
     if (text !== "") {
       if (action === Action.Replace) {
         this.text = this.text.replaceAll(template, text);
+        console.log(
+          `[${this.filename}] ${action} "${template}" with "${text}"`,
+        );
       } else {
         this.text = this.text.replaceAll(text, template);
+        console.log(
+          `[${this.filename}] ${action} to "${template}" from "${text}"`,
+        );
       }
     }
     return this;

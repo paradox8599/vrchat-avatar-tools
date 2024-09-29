@@ -4,7 +4,7 @@ import { appState } from "@/state/app";
 import { Label } from "../ui/label";
 import { enable, isEnabled, disable } from "@tauri-apps/plugin-autostart";
 import React from "react";
-import { track, trackId } from "@/lib/aptabase";
+import { track } from "@/lib/aptabase";
 
 export function AutoStartToggle() {
   const { settings } = useSnapshot(appState);

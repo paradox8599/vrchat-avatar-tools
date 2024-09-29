@@ -34,7 +34,7 @@ export default function Page() {
         const result = await vrchatLogin({ username, password });
         switch (result) {
           case LoginStatus.Success:
-            toast({ title: "登录成功" });
+            // toast({ title: "登录成功" });
             break;
           case LoginStatus.NotLoggedIn:
             toast({ title: "登录失败" });
@@ -69,7 +69,7 @@ export default function Page() {
         }
         switch (result) {
           case LoginStatus.Success:
-            toast({ title: "登录成功" });
+            // toast({ title: "登录成功" });
             break;
           case LoginStatus.NotLoggedIn:
             toast({ title: "登录失败" });

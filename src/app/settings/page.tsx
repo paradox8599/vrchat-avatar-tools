@@ -104,7 +104,7 @@ export default function Page() {
                   <DialogTitle>清空数据</DialogTitle>
 
                   <DialogDescription className="py-4">
-                    确定要清空数据？这将清空所有添加的模型ID，并登出账号。
+                    确定要清空数据？这将清空所有添加的模型ID
                   </DialogDescription>
 
                   <DialogFooter>
@@ -112,8 +112,8 @@ export default function Page() {
                       variant="outline"
                       onClick={() => {
                         clearAvatars();
-                        clearApp();
-                        logout();
+                        // clearApp();
+                        // logout();
                         toast({ title: "已清空数据" });
                       }}
                     >
