@@ -37,7 +37,7 @@ export default function Page() {
               className="object-cover"
             />
           )}
-          <AvatarFallback>{auth?.me?.displayName || 'User'}</AvatarFallback>
+          <AvatarFallback>{auth?.me?.displayName || "User"}</AvatarFallback>
         </Avatar>
 
         <TagFilter />
