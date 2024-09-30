@@ -20,7 +20,10 @@ export async function loadAvatarState() {
   const storedAvatars: [string, Avatar][] | null =
     await avatarStore.get(AVATAR_STORE_KEY);
   avatarMapState.clear();
-  storedAvatars?.forEach(([id, avatar]) => avatarMapState.set(id, avatar));
+  storedAvatars?.forEach(([id, avatar]) => {
+    avatar.fetching = false;
+    avatarMapState.set(id, avatar);
+  });
 }
 
 export function clearAvatars() {
