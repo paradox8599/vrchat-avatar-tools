@@ -111,18 +111,19 @@ export default function Page() {
                   </DialogDescription>
 
                   <DialogFooter>
-                    <Button
-                      variant="outline"
-                      onClick={() => {
-                        clearAvatars();
-                        // clearApp();
-                        // logout();
-                        toast({ title: "已清空数据" });
-                      }}
-                    >
-                      确认
-                    </Button>
-
+                    <DialogClose asChild>
+                      <Button
+                        variant="outline"
+                        onClick={() => {
+                          clearAvatars();
+                          // clearApp();
+                          // logout();
+                          toast({ title: "已清空数据" });
+                        }}
+                      >
+                        确认
+                      </Button>
+                    </DialogClose>
                     <DialogClose asChild>
                       <Button variant="default">取消</Button>
                     </DialogClose>
