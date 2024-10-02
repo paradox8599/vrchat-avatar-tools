@@ -9,7 +9,7 @@ const appStore = new Store("store");
 
 export type AppState = {
   init?: boolean;
-  updated?: boolean;
+  updated?: boolean | null;
   reachable?: boolean;
   version?: string;
   filter?: string;
@@ -23,7 +23,7 @@ export type AppState = {
 
 const initAppState = {
   init: false,
-  updated: false,
+  updated: null,
   reachable: undefined, // set reachable to undefined to allow check in init step
   settings: {
     avatarFetchInterval: 1,

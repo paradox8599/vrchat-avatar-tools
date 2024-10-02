@@ -2,6 +2,7 @@
 import { AutoStartToggle } from "@/components/settings/auto-start";
 import { NotificationToggle } from "@/components/settings/notification-toggle";
 import { ThemeToggle } from "@/components/settings/theme-toggle";
+import UpdateButton from "@/components/settings/update-button";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -17,19 +18,17 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "@/hooks/use-toast";
-import { checkUpdate } from "@/lib/update";
-import { ROUTE_HOME, ROUTES } from "@/routes";
+import { ROUTE_HOME } from "@/routes";
 import { appState } from "@/state/app";
 import { logout } from "@/state/auth";
 import { clearAvatars } from "@/state/avatars";
-import { ChevronLeft, LoaderCircle } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useSnapshot } from "valtio";
 
 export default function Page() {
-  const { settings, version, updated } = useSnapshot(appState);
-  const [checkingUpdate, setCheckingUpdate] = React.useState(false);
+  const { settings } = useSnapshot(appState);
   const router = useRouter();
   return (
     <main className="h-full w-full pt-4 flex flex-col items-center">
@@ -150,28 +149,7 @@ export default function Page() {
               </DialogContent>
             </Dialog>
 
-            <div className="py-4 w-full text-center text-sm flex justify-center items-center gap-4 h-8">
-              <span>{version}</span>
-              {checkingUpdate ? (
-                <LoaderCircle className="animate-spin" />
-              ) : (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={async () => {
-                    if (updated === false) {
-                      router.push(ROUTES.update);
-                    } else {
-                      setCheckingUpdate(true);
-                      await checkUpdate();
-                      setCheckingUpdate(false);
-                    }
-                  }}
-                >
-                  {updated === false ? "发现更新，点击安装" : "检查更新"}
-                </Button>
-              )}{" "}
-            </div>
+            <UpdateButton />
           </div>
         </ScrollArea>
       </div>
