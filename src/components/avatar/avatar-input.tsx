@@ -1,27 +1,30 @@
 import { avatarMapState } from "@/state/avatars";
 import React from "react";
 import { Input } from "../ui/input";
-import { Button } from "../ui/button";
-import { track, trackId } from "@/lib/aptabase";
-
-const AVATAR_URL_PREFIX = "https://vrchat.com/home/avatar/";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+  DialogTrigger,
+} from "../ui/dialog";
+import { AvatarImport, reId } from "./avatar-import";
+import { AvatarExport } from "./avatar-export";
+import SplitButton from "../split-button";
 
 export default function AvatarInput() {
-  const [addAvatarId, setAddAvatarId] = React.useState("");
-  function onAvatarIdAdd() {
-    if (
-      !addAvatarId.startsWith("avtr_") &&
-      !addAvatarId.startsWith(AVATAR_URL_PREFIX)
-    ) {
-      return;
-    }
-    const idToAdd = addAvatarId.replace(AVATAR_URL_PREFIX, "");
+  const [avatarIdInput, setAvatarIdInput] = React.useState("");
+  const [exportOpen, setExportOpen] = React.useState(false);
 
-    if (!avatarMapState.get(idToAdd)) {
-      avatarMapState.set(idToAdd, { id: idToAdd });
-      track("avatar", { add: idToAdd, userAdd: trackId() });
+  function onAvatarIdAdd() {
+    const idMatch = avatarIdInput.match(reId);
+    if (idMatch === null) return;
+    const id = idMatch[1];
+    if (!avatarMapState.get(id)) {
+      avatarMapState.set(id, { id: id });
+      // track("avatar", { add: id, userAdd: trackId() });
     }
-    setAddAvatarId("");
+    setAvatarIdInput("");
   }
 
   return (
@@ -30,17 +33,31 @@ export default function AvatarInput() {
         autoComplete="off"
         className="rounded-full text-xs"
         name="avatarId"
-        value={addAvatarId}
-        onChange={(e) => setAddAvatarId(e.target.value.trim())}
+        value={avatarIdInput}
+        onChange={(e) => setAvatarIdInput(e.target.value.trim())}
         placeholder="输入模型蓝图 ID ..."
       />
 
-      <Button
+      <SplitButton
         type="submit"
-        className="w-full max-w-14 md:max-w-32 rounded-full"
+        onClick={() => console.log("Import clicked")}
+        dropdownItems={[
+          { label: "批量导入/导出", onClick: () => setExportOpen(true) },
+        ]}
       >
         添加
-      </Button>
+      </SplitButton>
+
+      <Dialog open={exportOpen} onOpenChange={(open) => setExportOpen(open)}>
+        <DialogTrigger></DialogTrigger>
+        <DialogContent>
+          <DialogTitle>模型 ID 批量导入/导出</DialogTitle>
+          <DialogDescription>
+            <AvatarImport />
+            <AvatarExport />
+          </DialogDescription>
+        </DialogContent>
+      </Dialog>
     </form>
   );
 }

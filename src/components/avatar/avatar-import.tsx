@@ -70,7 +70,7 @@ avtr_b69eddca-db02-4be8-9c07-396d865f8c53
 const reIdTag =
   /(avtr_[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})[ ,，]+([^#\n]+)/;
 // match id only
-const reId =
+export const reId =
   /.*(avtr_[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}).*/;
 
 type ImportId = { id: string; tag?: string };

@@ -1,7 +1,5 @@
 "use client";
 import { AutoStartToggle } from "@/components/settings/auto-start";
-import { AvatarExport } from "@/components/settings/avatar-export";
-import { AvatarImport } from "@/components/settings/avatar-import";
 import { NotificationToggle } from "@/components/settings/notification-toggle";
 import { ThemeToggle } from "@/components/settings/theme-toggle";
 import { Button } from "@/components/ui/button";
@@ -58,9 +56,6 @@ export default function Page() {
             <NotificationToggle />
             <AutoStartToggle />
             <ThemeToggle />
-
-            <AvatarImport />
-            <AvatarExport />
 
             {/* avatar fetch interval */}
             <div className="w-full">
