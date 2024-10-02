@@ -3,6 +3,7 @@
   "version": "0.1.28",
   "private": true,
   "scripts": {
+    "postinstall": "git config core.hooksPath .git-hooks",
     "dev:next": "next dev",
     "build:next": "next build",
     "start:next": "next start",
@@ -68,9 +69,17 @@
     "eslint": "^8",
     "eslint-config-next": "14.2.8",
     "eslint-plugin-valtio": "^0.6.4",
+    "lint-staged": "^15.2.10",
     "postcss": "^8",
+    "prettier": "^3.3.3",
     "semver": "^7.6.3",
     "tailwindcss": "^3.4.1",
     "typescript": "^5"
+  },
+  "lint-staged": {
+    "*.{tsx,jsx,ts,js}": [
+      "eslint --fix",
+      "prettier --write"
+    ]
   }
 }
