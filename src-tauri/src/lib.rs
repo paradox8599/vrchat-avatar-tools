@@ -8,7 +8,7 @@ mod store;
 mod tray;
 
 use constants::{ENV_APTABASE_HOST, ENV_APTABASE_KEY, ENV_APTABASE_MATCH};
-use cookies::cookies_init;
+use cookies::ConfigCookies;
 
 use cmd::{
     auth::{
@@ -18,6 +18,7 @@ use cmd::{
     avatar::vrchat_get_avatar_info,
 };
 use std::sync::Arc;
+use store::Store;
 use tauri::Manager;
 use tauri_plugin_cli::CliExt;
 use tokio::sync::RwLock;
@@ -77,8 +78,8 @@ fn show_window(app: &tauri::AppHandle) {
 pub fn init(app: &mut tauri::App) -> StdResult<()> {
     let handle = app.handle();
 
-    // cookies
-    cookies_init(handle)?;
+    Store::init(handle)?;
+    ConfigCookies::init(handle)?;
 
     #[cfg(desktop)]
     {
