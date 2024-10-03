@@ -1,17 +1,16 @@
 import { Avatar } from "@/types";
 import { ErrorName, parseError } from "./err";
-import { authState, clearAuth } from "@/state/auth";
+import { clearAuth, getAuth } from "@/state/auth";
 import { API_NAMES, invoke } from "./base";
 
 async function vrchatGetAvatarInfo(avatarId: string) {
+  const auth = getAuth();
+  if (!auth.credentials) return;
   try {
     // track("avatar", { fetch: avatarId, userFetch: trackId() });
     const avatarInfo: Avatar["info"] = await invoke(
       API_NAMES.vrchatGetAvatarInfo,
-      {
-        username: authState.credentials?.username,
-        avatarId,
-      },
+      { username: auth.credentials.username, avatarId },
     );
     return avatarInfo;
   } catch (e) {
@@ -23,7 +22,7 @@ async function vrchatGetAvatarInfo(avatarId: string) {
           // track("avatar", { notFound: avatarId });
           return undefined;
         } else if (err.status === 401) {
-          clearAuth();
+          clearAuth(auth.credentials.username);
         }
       case ErrorName.UnknownError:
         throw err;

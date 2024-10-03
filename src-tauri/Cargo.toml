@@ -2,7 +2,7 @@ cargo-features = ["profile-rustflags", "trim-paths"]
 
 [package]
 name = "vrchat-avatar-tools"
-version = "0.1.31"
+version = "0.1.32"
 description = "VRChat avatar tools"
 authors = ["you"]
 license = ""

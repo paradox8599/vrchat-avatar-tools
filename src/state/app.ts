@@ -3,9 +3,9 @@ import { proxy, subscribe } from "valtio";
 import { track, trackId } from "@/lib/aptabase";
 import { isEnabled } from "@tauri-apps/plugin-autostart";
 
-const APP_STORE_KEY = "appStore";
+const APP_STORE_KEY = "settings";
 
-const appStore = new Store("store");
+const appStore = new Store("app");
 
 export type AppState = {
   init?: boolean;
@@ -37,7 +37,7 @@ export const appState: AppState = proxy(initAppState);
 
 subscribe(appState, async () => {
   if (!appState.init) return;
-  await appStore.set(APP_STORE_KEY, appState);
+  await appStore.set(APP_STORE_KEY, appState.settings);
   await appStore.save();
 });
 
@@ -45,7 +45,7 @@ export async function loadAppState() {
   const stored: AppState | null = await appStore.get(APP_STORE_KEY);
   if (!stored) return;
   // only store settings as other values need to be updated on startup
-  Object.assign(appState, { ...initAppState, settings: stored.settings });
+  Object.assign(appState, { settings: stored });
   // load auto start state and save to settings
   await isEnabled().then((v) => (appState.settings.autoStart = v));
 }

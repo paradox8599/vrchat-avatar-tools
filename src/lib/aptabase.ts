@@ -1,4 +1,4 @@
-import { authState } from "@/state/auth";
+import { myAuthState } from "@/state/auth";
 import { EventProps } from "@/types";
 import { trackEvent } from "@aptabase/tauri";
 
@@ -7,5 +7,5 @@ export async function track(name: string, props?: EventProps) {
 }
 
 export function trackId() {
-  return authState.me?.id ?? "_";
+  return myAuthState.info?.id ?? "_";
 }

@@ -19,8 +19,8 @@ import { LoaderCircle } from "lucide-react";
 import { appState, clearApp } from "@/state/app";
 import { clearAvatars } from "@/state/avatars";
 import { ThemeToggleIcon } from "@/components/settings/theme-toggle";
-import { authState } from "@/state/auth";
 import { useSnapshot } from "valtio";
+import { myAuthState } from "@/state/auth";
 
 export default function Page() {
   const [loginResult, setLoginResult] = React.useState<LoginStatus>(
@@ -30,29 +30,30 @@ export default function Page() {
   const [otpCode, setOtpCode] = React.useState("");
   const { toast } = useToast();
   const { version } = useSnapshot(appState);
+  const auth = useSnapshot(myAuthState);
 
-  function onLogin(formData: FormData) {
+  async function onLogin(formData: FormData) {
     setIsLoading(true);
-    (async () => {
-      try {
-        const username = formData.get("username") as string;
-        const password = formData.get("password") as string;
-        const result = await vrchatLogin({ username, password });
-        switch (result) {
-          case LoginStatus.Success:
-            // toast({ title: "登录成功" });
-            break;
-          case LoginStatus.NotLoggedIn:
-            toast({ title: "登录失败" });
-            break;
-        }
-
-        setLoginResult(result);
-      } catch (e) {
-        toast({ title: e as string });
+    try {
+      const username = formData.get("username") as string;
+      const password = formData.get("password") as string;
+      const cred = { username, password };
+      myAuthState.credentials = cred;
+      const result = await vrchatLogin(cred);
+      switch (result) {
+        case LoginStatus.Success:
+          // toast({ title: "登录成功" });
+          break;
+        case LoginStatus.NotLoggedIn:
+          toast({ title: "登录失败" });
+          break;
       }
-      setIsLoading(false);
-    })();
+
+      setLoginResult(result);
+    } catch (e) {
+      toast({ title: e as string });
+    }
+    setIsLoading(false);
   }
 
   async function onOtpInput(code: string) {
@@ -60,46 +61,44 @@ export default function Page() {
     if (code.length !== 6) return;
 
     setIsLoading(true);
-    (async () => {
-      try {
-        if (!authState.credentials) throw "未登录";
-
-        let result: LoginStatus;
-        switch (authState.status) {
-          case LoginStatus.NeedsVerify:
-            result = await vrchatVerifyOtp({
-              username: authState.credentials.username,
-              code,
-            });
-            break;
-          case LoginStatus.NeedsEmailVerify:
-            result = await vrchatVerifyEmailOtp({
-              username: authState.credentials.username,
-              code,
-            });
-            break;
-          default:
-            throw "暂无支持的验证方式";
-        }
-        switch (result) {
-          case LoginStatus.Success:
-            // toast({ title: "登录成功" });
-            break;
-          case LoginStatus.NotLoggedIn:
-            toast({ title: "登录失败" });
-            break;
-          case LoginStatus.NeedsVerify:
-          case LoginStatus.NeedsEmailVerify:
-            toast({ title: "验证码错误" });
-            break;
-        }
-      } catch (e) {
-        toast({ title: e as string });
+    try {
+      if (!auth.credentials) throw "未登录";
+      let result: LoginStatus;
+      switch (auth.status) {
+        case LoginStatus.NeedsVerify:
+          result = await vrchatVerifyOtp({
+            username: auth.credentials.username,
+            code,
+          });
+          break;
+        case LoginStatus.NeedsEmailVerify:
+          result = await vrchatVerifyEmailOtp({
+            username: auth.credentials.username,
+            code,
+          });
+          break;
+        default:
+          throw "暂无支持的验证方式";
       }
-      setLoginResult(authState.status);
+      switch (result) {
+        case LoginStatus.Success:
+          // toast({ title: "登录成功" });
+          break;
+        case LoginStatus.NotLoggedIn:
+          toast({ title: "登录失败" });
+          break;
+        case LoginStatus.NeedsVerify:
+        case LoginStatus.NeedsEmailVerify:
+          toast({ title: "验证码错误" });
+          break;
+      }
+    } catch (e) {
+      toast({ title: e as string });
+    } finally {
+      setLoginResult(auth.status);
       setOtpCode("");
       setIsLoading(false);
-    })();
+    }
   }
 
   return (
@@ -118,7 +117,7 @@ export default function Page() {
             required
             readOnly={isLoading}
             disabled={isLoading}
-            defaultValue={authState.credentials?.username}
+            defaultValue={auth.credentials?.username}
             name="username"
             type="text"
             placeholder="用户名"
@@ -127,7 +126,7 @@ export default function Page() {
             required
             readOnly={isLoading}
             disabled={isLoading}
-            defaultValue={authState.credentials?.password}
+            defaultValue={auth.credentials?.password}
             name="password"
             type="password"
             placeholder="密码"

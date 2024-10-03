@@ -138,7 +138,7 @@ export default function Page() {
                   <DialogTitle>退出登录</DialogTitle>
                   <DialogDescription>是否退出登录？</DialogDescription>
                   <DialogFooter>
-                    <Button variant="outline" onClick={logout}>
+                    <Button variant="outline" onClick={() => logout()}>
                       确认
                     </Button>
                     <DialogClose asChild>

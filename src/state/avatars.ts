@@ -1,29 +1,28 @@
 import { track, trackId } from "@/lib/aptabase";
 import { Avatar } from "@/types";
 import { Store } from "@tauri-apps/plugin-store";
-import { subscribe } from "valtio";
+import { proxy, subscribe } from "valtio";
 import { proxyMap } from "valtio/utils";
 
 const AVATAR_STORE_KEY = "avatarStore";
 
-const avatarStore = new Store("store");
+const avatarStore = new Store("avatars");
 
 export const avatarMapState = proxyMap<string, Avatar>();
 
 subscribe(avatarMapState, async () => {
-  const avatars = Array.from(avatarMapState.entries());
-  await avatarStore.set(AVATAR_STORE_KEY, avatars);
+  await avatarStore.set(AVATAR_STORE_KEY, avatarMapState);
   await avatarStore.save();
 });
 
 export async function loadAvatarState() {
-  const storedAvatars: [string, Avatar][] | null =
-    await avatarStore.get(AVATAR_STORE_KEY);
-  avatarMapState.clear();
-  storedAvatars?.forEach(([id, avatar]) => {
-    avatar.fetching = false;
-    avatarMapState.set(id, avatar);
-  });
+  const storedAvatars = await avatarStore.get(AVATAR_STORE_KEY);
+  if (storedAvatars) {
+    for (const [id, avatar] of Object.entries(storedAvatars)) {
+      avatar.fetching = false;
+      avatarMapState.set(id, proxy(avatar));
+    }
+  }
 }
 
 export function clearAvatars() {

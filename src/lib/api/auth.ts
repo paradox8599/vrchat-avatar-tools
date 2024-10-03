@@ -5,9 +5,9 @@ import {
   LoginStatus,
 } from "@/types";
 import { ErrorName, parseError } from "./err";
-import { authState, clearAuth } from "@/state/auth";
 import { track } from "../aptabase";
 import { API_NAMES, invoke } from "./base";
+import { clearAuth, getAuth } from "@/state/auth";
 
 async function vrchatIsReachable() {
   return await invoke<boolean>(API_NAMES.vrchatIsReachable).catch(() => false);
@@ -16,45 +16,50 @@ async function vrchatIsReachable() {
 /**
  * @returns [LoginStatus]
  */
-async function vrchatGetMe(username?: string) {
-  if (!authState.credentials) {
-    authState.status = LoginStatus.NotLoggedIn;
-    return authState.status;
+async function vrchatGetMe(username: string) {
+  const auth = getAuth(username);
+
+  if (!auth.credentials) {
+    auth.status = LoginStatus.NotLoggedIn;
+    return auth.status;
   }
+
   try {
-    username ??= authState.credentials.username;
-    const me: GetMeResult = await invoke(API_NAMES.vrchatGetMe, { username });
+    const info: GetMeResult = await invoke(API_NAMES.vrchatGetMe, {
+      username: auth.credentials.username,
+    });
 
     // Login succeeded and got user info
-    if (isLoginSuccess(me)) {
-      authState.me = me;
-      authState.status = LoginStatus.Success;
-      return authState.status;
+    if (isLoginSuccess(info)) {
+      auth.info = info;
+      auth.status = LoginStatus.Success;
+      return auth.status;
     }
+
     // needs verify but not available verify method
     else {
-      for (const method of me.requiresTwoFactorAuth) {
-        track("login", { [method]: authState.credentials.username });
+      for (const method of info.requiresTwoFactorAuth) {
+        track("login", { [method]: auth.credentials.username });
       }
-      if (me.requiresTwoFactorAuth.length === 0) {
-        authState.status = LoginStatus.NotLoggedIn;
-        return authState.status;
+      if (info.requiresTwoFactorAuth.length === 0) {
+        auth.status = LoginStatus.NotLoggedIn;
+        return auth.status;
       }
       // needs emailotp verify
-      else if (me.requiresTwoFactorAuth.includes("emailOtp")) {
-        authState.status = LoginStatus.NeedsEmailVerify;
-        return authState.status;
+      else if (info.requiresTwoFactorAuth.includes("emailOtp")) {
+        auth.status = LoginStatus.NeedsEmailVerify;
+        return auth.status;
       }
       // needs totp verify
-      else if (me.requiresTwoFactorAuth.includes("totp")) {
-        authState.status = LoginStatus.NeedsVerify;
-        return authState.status;
+      else if (info.requiresTwoFactorAuth.includes("totp")) {
+        auth.status = LoginStatus.NeedsVerify;
+        return auth.status;
       }
       // unsupported verify method
       else {
-        alert(`尚未支持的验证方式: ${me.requiresTwoFactorAuth}`);
-        authState.status = LoginStatus.NotLoggedIn;
-        return authState.status;
+        alert(`尚未支持的验证方式: ${info.requiresTwoFactorAuth}`);
+        auth.status = LoginStatus.NotLoggedIn;
+        return auth.status;
       }
     }
   } catch (e) {
@@ -62,27 +67,32 @@ async function vrchatGetMe(username?: string) {
     track("login", { getMeError: err.message });
     switch (err.type) {
       case ErrorName.StatusError:
-        if (err.status === 429) return authState.status;
+        if (err.status === 429) return auth.status;
     }
-    authState.status = LoginStatus.NotLoggedIn;
-    return authState.status;
+    auth.status = LoginStatus.NotLoggedIn;
+    return auth.status;
   }
 }
 
-async function checkAuth() {
-  const me = await vrchatGetMe();
-  switch (me) {
+async function checkAuth(username: string) {
+  const loginStatus = await vrchatGetMe(username);
+  switch (loginStatus) {
     case LoginStatus.NotLoggedIn:
-      clearAuth();
+      clearAuth(username);
   }
-  return me;
+  return loginStatus;
 }
 
 async function vrchatLogin(credentials?: LoginCredentials) {
-  authState.credentials ??= credentials;
-  if (!authState.credentials) throw new Error("no credentials provided");
-  await invoke(API_NAMES.vrchatLogin, authState.credentials);
-  return await checkAuth();
+  if (!credentials) {
+    throw new Error("No credentials provided");
+  }
+
+  await invoke(API_NAMES.vrchatLogin, credentials);
+
+  const auth = getAuth(credentials.username);
+  auth.credentials = credentials;
+  return await checkAuth(credentials.username);
 }
 
 async function vrchatVerifyEmailOtp({
@@ -94,17 +104,18 @@ async function vrchatVerifyEmailOtp({
 }) {
   try {
     await invoke(API_NAMES.vrchatVerifyEmailOtp, { username, code });
-    return await checkAuth();
+    return await checkAuth(username);
   } catch (e) {
+    const auth = getAuth(username);
     const err = parseError(e);
     track("login", { verifyEmailError: err.message });
     switch (err.type) {
       case ErrorName.StatusError:
-        if (err.status === 429) return authState.status;
+        if (err.status === 429) throw err.message;
     }
     console.error(`caught at vrchatVerifyEmailOtp ${JSON.stringify(e)}`);
-    authState.status = LoginStatus.NotLoggedIn;
-    return authState.status;
+    auth.status = LoginStatus.NotLoggedIn;
+    return auth.status;
   }
 }
 
@@ -117,17 +128,18 @@ async function vrchatVerifyOtp({
 }) {
   try {
     await invoke(API_NAMES.vrchatVerifyOtp, { username, code });
-    return await checkAuth();
+    return await checkAuth(username);
   } catch (e) {
+    const auth = getAuth(username);
     const err = parseError(e);
     track("login", { verifyOtpError: err.message });
     switch (err.type) {
       case ErrorName.StatusError:
-        if (err.status === 429) return authState.status;
+        if (err.status === 429) throw err.message;
     }
     console.error(`caught at vrchatVerifyOtp ${JSON.stringify(e)}`);
-    authState.status = LoginStatus.NotLoggedIn;
-    return authState.status;
+    auth.status = LoginStatus.NotLoggedIn;
+    return auth.status;
   }
 }
 

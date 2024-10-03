@@ -40,7 +40,7 @@ export default function AvatarInput() {
 
       <SplitButton
         type="submit"
-        onClick={() => console.log("Import clicked")}
+        onClick={onAvatarIdAdd}
         dropdownItems={[
           { label: "批量导入/导出", onClick: () => setExportOpen(true) },
         ]}

@@ -8,6 +8,6 @@ export default function usePath() {
   React.useEffect(() => {
     if (path === ref.current) return;
     ref.current = path;
-    console.log(path);
+    // console.log(path);
   }, [path]);
 }

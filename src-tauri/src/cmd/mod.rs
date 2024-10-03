@@ -3,6 +3,7 @@ pub mod avatar;
 
 use reqwest::StatusCode;
 use serde::Serialize;
+use serde_json::json;
 use vrchatapi::apis::{Error, ResponseContent};
 
 use crate::err::AppError;
@@ -28,9 +29,11 @@ where
         Error::ResponseError(e) => {
             on_status(e.status);
             match e.status {
-                StatusCode::TOO_MANY_REQUESTS => {
-                    AppError::UnsuccessfulStatus(e.status.as_u16(), "too many requests".to_owned())
-                }
+                StatusCode::TOO_MANY_REQUESTS => AppError::UnsuccessfulStatus(
+                    e.status.as_u16(),
+                    json!({ "error": { "status": 429, "message": "对 VRChat 请求过于频繁，请稍后再试" } })
+                        .to_string(),
+                ),
                 StatusCode::NOT_FOUND => {
                     AppError::UnsuccessfulStatus(e.status.as_u16(), e.content.to_string())
                 }
@@ -38,10 +41,13 @@ where
                     AppError::UnsuccessfulStatus(e.status.as_u16(), e.content.to_string())
                 }
 
-                _ => match e.entity.as_ref() {
-                    None => unknown_response_err(e),
-                    Some(entity) => on_api_error(entity),
-                },
+                _ => {
+                    println!("e: {e:?}");
+                    match e.entity.as_ref() {
+                        None => unknown_response_err(e),
+                        Some(entity) => on_api_error(entity),
+                    }
+                }
             }
         }
         Error::Reqwest(error) => {

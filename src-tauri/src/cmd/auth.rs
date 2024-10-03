@@ -1,3 +1,4 @@
+use serde_json::json;
 use tauri::command;
 use vrchatapi::{
     apis::authentication_api::{
@@ -67,7 +68,10 @@ pub async fn vrchat_get_me(
         handle_api_error(
             e,
             |e| match e {
-                GetCurrentUserError::Status401(_) => unreachable!(),
+                GetCurrentUserError::Status401(_) => AppError::UnsuccessfulStatus(
+                    401,
+                    json!({ "error": { "status": 401, "message": "unauthorized" } }).to_string(),
+                ),
                 GetCurrentUserError::UnknownValue(v) => AppError::Unknown(v.to_string()),
             },
             |_| {},
@@ -91,11 +95,13 @@ pub async fn vrchat_verify_emailotp(
     cc.save();
 
     let verify_result = verify_result.map_err(|e| {
-        cc.save();
         handle_api_error(
             e,
             |e| match e {
-                Verify2FaEmailCodeError::Status401(_) => unreachable!(),
+                Verify2FaEmailCodeError::Status401(_) => AppError::UnsuccessfulStatus(
+                    401,
+                    json!({ "error": { "status": 401, "message": "unauthorized" } }).to_string(),
+                ),
                 Verify2FaEmailCodeError::UnknownValue(v) => AppError::Unknown(v.to_string()),
             },
             |_| {},
@@ -125,7 +131,10 @@ pub async fn vrchat_verify_otp(
         handle_api_error(
             e,
             |e| match e {
-                Verify2FaError::Status401(_) => unreachable!(),
+                Verify2FaError::Status401(_) => AppError::UnsuccessfulStatus(
+                    401,
+                    json!({ "error": { "status": 401, "message": "unauthorized" } }).to_string(),
+                ),
                 Verify2FaError::UnknownValue(v) => AppError::Unknown(v.to_string()),
             },
             |_| {},
@@ -149,7 +158,11 @@ pub async fn vrchat_logout(
                 handle_api_error(
                     e,
                     |e| match e {
-                        LogoutError::Status401(_) => unreachable!(),
+                        LogoutError::Status401(_) => AppError::UnsuccessfulStatus(
+                            401,
+                            json!({ "error": { "status": 401, "message": "unauthorized" } })
+                                .to_string(),
+                        ),
                         LogoutError::UnknownValue(v) => AppError::Unknown(v.to_string()),
                     },
                     |_| {},

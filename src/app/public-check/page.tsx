@@ -12,10 +12,10 @@ import AvatarInput from "@/components/avatar/avatar-input";
 import AvatarGrid from "@/components/avatar/avatar-grid";
 import { TagFilter } from "@/components/avatar/tag-selector";
 import { ROUTES } from "@/routes";
-import { authState } from "@/state/auth";
+import { myAuthState } from "@/state/auth";
 
 export default function Page() {
-  const auth = useSnapshot(authState);
+  const auth = useSnapshot(myAuthState);
 
   return (
     <main className="py-2 h-full flex flex-col">
@@ -31,13 +31,13 @@ export default function Page() {
         </Tooltip>
 
         <Avatar className="relative avatar-btn">
-          {auth?.me?.currentAvatarThumbnailImageUrl && (
+          {auth.info?.currentAvatarThumbnailImageUrl && (
             <AvatarImage
-              src={auth.me.currentAvatarThumbnailImageUrl}
+              src={auth.info.currentAvatarThumbnailImageUrl}
               className="object-cover"
             />
           )}
-          <AvatarFallback>{auth?.me?.displayName || "User"}</AvatarFallback>
+          <AvatarFallback>{auth?.info?.displayName || "User"}</AvatarFallback>
         </Avatar>
 
         <TagFilter />
