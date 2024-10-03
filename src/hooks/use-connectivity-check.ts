@@ -1,4 +1,4 @@
-import { vrchatIsReachable } from "@/lib/api";
+import { vrchatIsReachable } from "@/lib/api/auth";
 import { appState } from "@/state/app";
 import useSWR from "swr";
 import { useSnapshot } from "valtio";

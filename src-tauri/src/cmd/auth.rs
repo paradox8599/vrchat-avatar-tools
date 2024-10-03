@@ -7,24 +7,28 @@ use vrchatapi::{
     models::EitherUserOrTwoFactor,
 };
 
-use crate::{cookies::ConfigCookies, err::AppError};
+use crate::{cookies::ConfigCookieMap, err::AppError};
 
 use super::handle_api_error;
 
 #[command]
 pub async fn vrchat_login(
-    cc: tauri::State<'_, ConfigCookies>,
+    ccmap: tauri::State<'_, ConfigCookieMap>,
     username: String,
     password: String,
 ) -> Result<(), AppError> {
-    cc.clear();
+    let cc = ccmap.get_or_load(&username).await;
     let mut config = cc.config.write().await;
     config.basic_auth = Some((username, Some(password)));
+    cc.save();
     Ok(())
 }
 
 #[command]
-pub async fn vrchat_is_reachable(cc: tauri::State<'_, ConfigCookies>) -> Result<bool, AppError> {
+pub async fn vrchat_is_reachable(
+    ccmap: tauri::State<'_, ConfigCookieMap>,
+) -> Result<bool, AppError> {
+    let cc = ccmap.get_or_load("default").await;
     let config = cc.config.write().await;
     vrchatapi::apis::authentication_api::check_user_exists(
         &config,
@@ -50,8 +54,10 @@ pub async fn vrchat_is_reachable(cc: tauri::State<'_, ConfigCookies>) -> Result<
 
 #[command]
 pub async fn vrchat_get_me(
-    cc: tauri::State<'_, ConfigCookies>,
+    ccmap: tauri::State<'_, ConfigCookieMap>,
+    username: String,
 ) -> Result<EitherUserOrTwoFactor, AppError> {
+    let cc = ccmap.get_or_load(&username).await;
     let config = cc.config.write().await;
     let me = vrchatapi::apis::authentication_api::get_current_user(&config).await;
 
@@ -71,15 +77,18 @@ pub async fn vrchat_get_me(
 
 #[command]
 pub async fn vrchat_verify_emailotp(
-    cc: tauri::State<'_, ConfigCookies>,
+    ccmap: tauri::State<'_, ConfigCookieMap>,
+    username: String,
     code: String,
 ) -> Result<bool, AppError> {
-    let config = cc.config.read().await;
+    let cc = ccmap.get_or_load(&username).await;
+    let config = cc.config.write().await;
     let verify_result = vrchatapi::apis::authentication_api::verify2_fa_email_code(
         &config,
         vrchatapi::models::TwoFactorEmailCode { code },
     )
     .await;
+    cc.save();
 
     let verify_result = verify_result.map_err(|e| {
         cc.save();
@@ -98,15 +107,19 @@ pub async fn vrchat_verify_emailotp(
 
 #[command]
 pub async fn vrchat_verify_otp(
-    cc: tauri::State<'_, ConfigCookies>,
+    ccmap: tauri::State<'_, ConfigCookieMap>,
+    username: String,
     code: String,
 ) -> Result<bool, AppError> {
-    let config = cc.config.read().await;
+    let cc = ccmap.get_or_load(&username).await;
+    let config = cc.config.write().await;
     let verify_result = vrchatapi::apis::authentication_api::verify2_fa(
         &config,
         vrchatapi::models::TwoFactorAuthCode { code },
     )
     .await;
+
+    cc.save();
 
     let verify_result = verify_result.map_err(|e| {
         handle_api_error(
@@ -119,26 +132,30 @@ pub async fn vrchat_verify_otp(
         )
     })?;
 
-    cc.save();
-
     Ok(verify_result.verified)
 }
 
 #[command]
-pub async fn vrchat_logout(cc: tauri::State<'_, ConfigCookies>) -> Result<(), AppError> {
-    let config = cc.config.write().await;
-    cc.clear();
-    vrchatapi::apis::authentication_api::logout(&config)
-        .await
-        .map_err(|e| {
-            handle_api_error(
-                e,
-                |e| match e {
-                    LogoutError::Status401(_) => unreachable!(),
-                    LogoutError::UnknownValue(v) => AppError::Unknown(v.to_string()),
-                },
-                |_| {},
-            )
-        })?;
+pub async fn vrchat_logout(
+    ccmap: tauri::State<'_, ConfigCookieMap>,
+    username: String,
+) -> Result<(), AppError> {
+    let cc = ccmap.delete(&username).await;
+    if let Some(cc) = cc {
+        let config = cc.config.write().await;
+        vrchatapi::apis::authentication_api::logout(&config)
+            .await
+            .map_err(|e| {
+                handle_api_error(
+                    e,
+                    |e| match e {
+                        LogoutError::Status401(_) => unreachable!(),
+                        LogoutError::UnknownValue(v) => AppError::Unknown(v.to_string()),
+                    },
+                    |_| {},
+                )
+            })?;
+        cc.save();
+    }
     Ok(())
 }

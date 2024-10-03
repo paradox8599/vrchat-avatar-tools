@@ -8,7 +8,6 @@ mod store;
 mod tray;
 
 use constants::{ENV_APTABASE_HOST, ENV_APTABASE_KEY, ENV_APTABASE_MATCH};
-use cookies::ConfigCookies;
 
 use cmd::{
     auth::{
@@ -17,6 +16,7 @@ use cmd::{
     },
     avatar::vrchat_get_avatar_info,
 };
+use cookies::ConfigCookieMap;
 use std::sync::Arc;
 use store::Store;
 use tauri::Manager;
@@ -79,7 +79,7 @@ pub fn init(app: &mut tauri::App) -> StdResult<()> {
     let handle = app.handle();
 
     Store::init(handle)?;
-    ConfigCookies::init(handle)?;
+    ConfigCookieMap::init(handle);
 
     #[cfg(desktop)]
     {

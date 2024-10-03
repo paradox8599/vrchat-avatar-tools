@@ -1,10 +1,10 @@
 import { appState } from "@/state/app";
 import React from "react";
-import { vrchatGetAvatarInfo } from "@/lib/api";
 import { avatarMapState } from "@/state/avatars";
 import { sendNotification } from "@tauri-apps/plugin-notification";
 import { Avatar } from "@/types";
 import { track } from "@/lib/aptabase";
+import { vrchatGetAvatarInfo } from "@/lib/api/avatar";
 
 function hasOutdated(date?: Date | string) {
   return (

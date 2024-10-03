@@ -5,6 +5,5 @@ pub const ENV_APTABASE_KEY: &str = "{{APTABASE_KEY}}";
 pub const ENV_APTABASE_HOST: &str = "{{APTABASE_HOST}}";
 pub const ENV_APTABASE_MATCH: &str = "APTABASE_MATCH";
 
-pub const STORE_REQWEST_KEY: &str = "store.reqwest";
 pub const STORE_COOKIES_KEY: &str = "cookies";
 

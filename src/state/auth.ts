@@ -4,15 +4,17 @@ import { proxy, subscribe } from "valtio";
 import { invoke } from "@tauri-apps/api/core";
 import { track, trackId } from "@/lib/aptabase";
 import { appState } from "./app";
-import { vrchatLogin } from "@/lib/api";
+import { vrchatLogin } from "@/lib/api/auth";
 
 const AUTH_STORE_KEY = "authStore";
 
 const authStore = new Store("store");
 
+type Credentials = { username: string; password: string };
+
 export type AuthState = {
   status: LoginStatus;
-  credentials?: { username: string; password: string };
+  credentials?: Credentials;
   me?: UserInfo;
 };
 
@@ -41,7 +43,9 @@ export async function loadAuthState() {
 export async function logout() {
   track("logout", { user: trackId() });
   clearAuth();
-  invoke("vrchat_logout");
+  if (authState.credentials) {
+    invoke("vrchat_logout", { username: authState.credentials.username });
+  }
 }
 
 export function clearAuth() {

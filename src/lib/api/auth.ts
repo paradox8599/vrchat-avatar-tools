@@ -1,62 +1,29 @@
 import {
-  Avatar,
   GetMeResult,
   isLoginSuccess,
   LoginCredentials,
   LoginStatus,
 } from "@/types";
-import {
-  invoke as _invoke,
-  InvokeArgs,
-  InvokeOptions,
-} from "@tauri-apps/api/core";
 import { ErrorName, parseError } from "./err";
 import { authState, clearAuth } from "@/state/auth";
-import { track } from "./aptabase";
-import { appState } from "@/state/app";
+import { track } from "../aptabase";
+import { API_NAMES, invoke } from "./base";
 
-export const API_NAMES = {
-  vrchatIsReachable: "vrchat_is_reachable",
-  vrchatLogin: "vrchat_login",
-  vrchatVerifyEmailOtp: "vrchat_verify_emailotp",
-  vrchatVerifyOtp: "vrchat_verify_otp",
-  vrchatGetMe: "vrchat_get_me",
-  vrchatLogout: "vrchat_logout",
-  vrchatGetAvatarInfo: "vrchat_get_avatar_info",
-};
-
-async function invoke<T>(
-  cmd: string,
-  args?: InvokeArgs,
-  options?: InvokeOptions,
-): Promise<T> {
-  try {
-    const result = await _invoke<T>(cmd, args, options);
-    appState.reachable = true;
-    return result;
-  } catch (e) {
-    const err = parseError(e);
-    if (err.type === ErrorName.ConnectionError) {
-      appState.reachable = false;
-    }
-    throw e;
-  }
-}
-
-export async function vrchatIsReachable() {
+async function vrchatIsReachable() {
   return await invoke<boolean>(API_NAMES.vrchatIsReachable).catch(() => false);
 }
 
 /**
  * @returns [LoginStatus]
  */
-export async function vrchatGetMe() {
+async function vrchatGetMe(username?: string) {
   if (!authState.credentials) {
     authState.status = LoginStatus.NotLoggedIn;
     return authState.status;
   }
   try {
-    const me: GetMeResult = await invoke(API_NAMES.vrchatGetMe);
+    username ??= authState.credentials.username;
+    const me: GetMeResult = await invoke(API_NAMES.vrchatGetMe, { username });
 
     // Login succeeded and got user info
     if (isLoginSuccess(me)) {
@@ -102,7 +69,7 @@ export async function vrchatGetMe() {
   }
 }
 
-export async function checkAuth() {
+async function checkAuth() {
   const me = await vrchatGetMe();
   switch (me) {
     case LoginStatus.NotLoggedIn:
@@ -111,16 +78,22 @@ export async function checkAuth() {
   return me;
 }
 
-export async function vrchatLogin(credentials?: LoginCredentials) {
+async function vrchatLogin(credentials?: LoginCredentials) {
   authState.credentials ??= credentials;
   if (!authState.credentials) throw new Error("no credentials provided");
   await invoke(API_NAMES.vrchatLogin, authState.credentials);
   return await checkAuth();
 }
 
-export async function vrchatVerifyEmailOtp(code: string) {
+async function vrchatVerifyEmailOtp({
+  username,
+  code,
+}: {
+  username: string;
+  code: string;
+}) {
   try {
-    await invoke(API_NAMES.vrchatVerifyEmailOtp, { code });
+    await invoke(API_NAMES.vrchatVerifyEmailOtp, { username, code });
     return await checkAuth();
   } catch (e) {
     const err = parseError(e);
@@ -135,9 +108,15 @@ export async function vrchatVerifyEmailOtp(code: string) {
   }
 }
 
-export async function vrchatVerifyOtp(code: string) {
+async function vrchatVerifyOtp({
+  username,
+  code,
+}: {
+  username: string;
+  code: string;
+}) {
   try {
-    await invoke(API_NAMES.vrchatVerifyOtp, { code });
+    await invoke(API_NAMES.vrchatVerifyOtp, { username, code });
     return await checkAuth();
   } catch (e) {
     const err = parseError(e);
@@ -152,27 +131,10 @@ export async function vrchatVerifyOtp(code: string) {
   }
 }
 
-export async function vrchatGetAvatarInfo(avatarId: string) {
-  try {
-    // track("avatar", { fetch: avatarId, userFetch: trackId() });
-    const avatarInfo: Avatar["info"] = await invoke(
-      API_NAMES.vrchatGetAvatarInfo,
-      { avatarId },
-    );
-    return avatarInfo;
-  } catch (e) {
-    const err = parseError(e);
-    // track("avatar", { [err.message]: trackId() });
-    switch (err.type) {
-      case ErrorName.StatusError:
-        if (err.status === 404) {
-          // track("avatar", { notFound: avatarId });
-          return undefined;
-        } else if (err.status === 401) {
-          clearAuth();
-        }
-      case ErrorName.UnknownError:
-        throw err;
-    }
-  }
-}
+export {
+  vrchatIsReachable,
+  vrchatLogin,
+  vrchatVerifyEmailOtp,
+  vrchatVerifyOtp,
+  vrchatGetMe,
+};

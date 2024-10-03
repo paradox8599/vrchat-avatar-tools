@@ -9,7 +9,11 @@ import {
 import { REGEXP_ONLY_DIGITS } from "input-otp";
 import React from "react";
 import { LoginStatus } from "../../types";
-import { vrchatLogin, vrchatVerifyEmailOtp, vrchatVerifyOtp } from "@/lib/api";
+import {
+  vrchatLogin,
+  vrchatVerifyEmailOtp,
+  vrchatVerifyOtp,
+} from "@/lib/api/auth";
 import { useToast } from "@/hooks/use-toast";
 import { LoaderCircle } from "lucide-react";
 import { appState, clearApp } from "@/state/app";
@@ -58,13 +62,21 @@ export default function Page() {
     setIsLoading(true);
     (async () => {
       try {
+        if (!authState.credentials) throw "未登录";
+
         let result: LoginStatus;
         switch (authState.status) {
           case LoginStatus.NeedsVerify:
-            result = await vrchatVerifyOtp(code);
+            result = await vrchatVerifyOtp({
+              username: authState.credentials.username,
+              code,
+            });
             break;
           case LoginStatus.NeedsEmailVerify:
-            result = await vrchatVerifyEmailOtp(code);
+            result = await vrchatVerifyEmailOtp({
+              username: authState.credentials.username,
+              code,
+            });
             break;
           default:
             throw "暂无支持的验证方式";
