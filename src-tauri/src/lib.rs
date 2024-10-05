@@ -14,7 +14,7 @@ use cmd::{
         vrchat_get_me, vrchat_is_reachable, vrchat_login, vrchat_logout, vrchat_verify_emailotp,
         vrchat_verify_otp,
     },
-    avatar::vrchat_get_avatar_info,
+    avatar::{vrchat_get_avatar_info, vrchat_get_own_avatars},
 };
 use cookies::ConfigCookieMap;
 use std::sync::Arc;
@@ -45,13 +45,16 @@ pub fn run() {
         .plugin(tauri_plugin_clipboard_manager::init())
         .plugin(tauri_plugin_store::Builder::new().build())
         .invoke_handler(tauri::generate_handler![
+            // auth
             vrchat_login,
             vrchat_is_reachable,
             vrchat_verify_emailotp,
             vrchat_verify_otp,
             vrchat_get_me,
             vrchat_logout,
+            // avatars
             vrchat_get_avatar_info,
+            vrchat_get_own_avatars
         ])
         .setup(init)
         // close to hide

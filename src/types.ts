@@ -76,20 +76,53 @@ export type UserInfo = {
   username: string;
 };
 
+export type AvatarInfo = {
+  assetUrl: string;
+  authorId: string;
+  authorName: string;
+  created_at: string;
+  description: string;
+  featured: boolean;
+  id: string;
+  imageUrl: string;
+  name: string;
+  releaseStatus: "public" | "private" | "hidden" | "all";
+  tags: string[];
+  thumbnailImageUrl: string;
+  unityPackageUrl: string;
+  unityPackages: {
+    id: string;
+    assetUrl: string;
+    assetVersion: number;
+    created_at: string;
+    impostorizerVersion: string;
+    performanceRating:
+      | "None"
+      | "Excellent"
+      | "Good"
+      | "Medium"
+      | "Poor"
+      | "VeryPoor";
+    platform: string;
+    pluginUrl: string;
+    unitySortNumber: number;
+    unityVersion: string;
+    worldSignature: string;
+    impostorUrl: string;
+    scanStatus: string;
+    variant: string;
+  }[];
+  updated_at: string;
+  version: number;
+};
+
 export type Avatar = {
   id: string;
   lastFetch?: string;
   fetching?: boolean;
   tag?: string;
   public?: boolean;
-  info?: {
-    authorName: string;
-    authorId: string;
-    thumbnailImageUrl: string;
-    created_at: string;
-    updated_at: string;
-    releaseStatus: "public";
-  };
+  info?: AvatarInfo;
 };
 
 export type LoginCredentials = { username: string; password: string };
