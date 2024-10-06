@@ -2,12 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-}
-
 @layer utilities {
   .text-balance {
     text-wrap: balance;
@@ -72,9 +66,7 @@ body {
     --card-hl: #551d23;
     --card-hl-foreground: #09090b;
   }
-}
 
-@layer base {
   * {
     @apply border-border;
   }
@@ -82,6 +74,9 @@ body {
   body {
     @apply bg-background text-foreground h-screen overflow-hidden antialiased unselectable;
     scrollbar-color: var(--ring) var(--background);
+    color: var(--foreground);
+    background: var(--background);
+    font-family: Arial, Helvetica, sans-serif;
   }
 }
 

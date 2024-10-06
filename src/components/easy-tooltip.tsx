@@ -5,7 +5,7 @@ import {
 } from "@/components/ui/tooltip";
 import { TooltipContentProps } from "@radix-ui/react-tooltip";
 
-export function Tooltip({
+export function EasyTooltip({
   children,
   tooltip,
   ...props

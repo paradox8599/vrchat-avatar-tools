@@ -21,7 +21,7 @@ import { writeText } from "@tauri-apps/plugin-clipboard-manager";
 import { toast } from "@/hooks/use-toast";
 import { AvatarTagSelector } from "./tag-selector";
 import { avatarMapState } from "@/state/avatars";
-import { Tooltip } from "../tooltip";
+import { EasyTooltip } from "../easy-tooltip";
 import { StatusDot } from "../status-dot";
 import { ScrollArea } from "../ui/scroll-area";
 import { track, trackId } from "@/lib/aptabase";
@@ -72,7 +72,7 @@ export default function AvatarGrid() {
                   <div className="w-full flex items-center justify-end gap-2">
                     {/* avatar author name  */}
 
-                    <Tooltip
+                    <EasyTooltip
                       tooltip={`上传者${avatar.info ? `: ${avatar.info.authorName}` : ""}`}
                     >
                       <Button
@@ -93,10 +93,10 @@ export default function AvatarGrid() {
                         {avatar.info?.authorName}
                         {avatar.info && <SquareArrowOutUpRight size={12} />}
                       </Button>
-                    </Tooltip>
+                    </EasyTooltip>
 
                     {/* avatar status */}
-                    <Tooltip tooltip="公开状态">
+                    <EasyTooltip tooltip="公开状态">
                       <Button
                         className={cn(
                           "uppercase w-24 rounded-full font-bold flex gap-2",
@@ -115,7 +115,7 @@ export default function AvatarGrid() {
                         {avatar.public ? "已公开" : "未知"}
                         <SquareArrowOutUpRight size={12} />
                       </Button>
-                    </Tooltip>
+                    </EasyTooltip>
                   </div>
                 </div>
 
@@ -158,7 +158,7 @@ export default function AvatarGrid() {
                     {/* dates & delete row */}
 
                     <div className="pl-1 font-mono flex flex-col items-center justify-between text-sm gap-0.5">
-                      <Tooltip tooltip="首次上传时间">
+                      <EasyTooltip tooltip="首次上传时间">
                         <p className="flex-center gap-2 bg-background border border-secondary text-accent-foreground px-2 rounded-full">
                           <Box size={13} />
                           {avatar.info && avatar.public
@@ -168,9 +168,9 @@ export default function AvatarGrid() {
                               )
                             : "----/--/-- --:--"}
                         </p>
-                      </Tooltip>
+                      </EasyTooltip>
 
-                      <Tooltip tooltip="最后修改时间" side="bottom">
+                      <EasyTooltip tooltip="最后修改时间" side="bottom">
                         <p className="flex-center gap-2 bg-background border border-secondary text-accent-foreground px-2 rounded-full">
                           <CloudUpload size={14} />
                           {avatar.info && avatar.public
@@ -180,11 +180,11 @@ export default function AvatarGrid() {
                               )
                             : "----/--/-- --:--"}
                         </p>
-                      </Tooltip>
+                      </EasyTooltip>
                     </div>
 
                     {/* delete button */}
-                    <Tooltip tooltip="删除">
+                    <EasyTooltip tooltip="删除">
                       <Button
                         variant="ghost"
                         size="sm"
@@ -198,7 +198,7 @@ export default function AvatarGrid() {
                       >
                         <TrashIcon size={16} />
                       </Button>
-                    </Tooltip>
+                    </EasyTooltip>
                   </div>
                 </div>
               </Card>

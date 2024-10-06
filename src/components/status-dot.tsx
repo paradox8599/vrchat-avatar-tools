@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import { appState } from "@/state/app";
-import { Tooltip } from "./tooltip";
+import { EasyTooltip } from "./easy-tooltip";
 import { Avatar } from "@/types";
 import { fetchAvatarInfo } from "@/hooks/use-avatar-fetcher";
 import React from "react";
@@ -21,7 +21,7 @@ function getColor(lastFetch: string | undefined): StatusColor {
 export function StatusDot({ avatar }: { avatar: Avatar }) {
   const color = getColor(avatar.lastFetch);
   return (
-    <Tooltip
+    <EasyTooltip
       tooltip={
         `${avatar.lastFetch ? `【${Math.floor((Date.now() - new Date(avatar.lastFetch!).getTime()) / 1000 / 60)} 分钟前】` : ""}  ` +
         {
@@ -47,6 +47,6 @@ export function StatusDot({ avatar }: { avatar: Avatar }) {
           }[color],
         )}
       />
-    </Tooltip>
+    </EasyTooltip>
   );
 }

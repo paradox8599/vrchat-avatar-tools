@@ -1,0 +1,45 @@
+"use client";
+import React from "react";
+import { useSnapshot } from "valtio";
+import { Settings } from "lucide-react";
+
+import { AvatarFallback, Avatar, AvatarImage } from "@/components/ui/avatar";
+import { ROUTES } from "@/routes";
+import { myAuthState } from "@/state/auth";
+import PageLink from "./page-link";
+
+export default function NavBar() {
+  const auth = useSnapshot(myAuthState);
+
+  return (
+    <div className="w-14 flex flex-col items-center justify-between py-2 shadow">
+      {/* top */}
+      <div className="">
+        {/* avatar icon */}
+        <Avatar className="relative avatar-btn">
+          {auth.info?.currentAvatarThumbnailImageUrl && (
+            <AvatarImage
+              src={auth.info.currentAvatarThumbnailImageUrl}
+              className="object-cover"
+            />
+          )}
+          <AvatarFallback>{auth?.info?.displayName || "User"}</AvatarFallback>
+        </Avatar>
+      </div>
+
+      {/* pages */}
+      <div className="flex-1 py-2 flex flex-col items-center">
+        <PageLink tooltip="公开检测" href={ROUTES.publicCheck}>
+          <Settings />
+        </PageLink>
+      </div>
+
+      {/* bottom */}
+      <div className="flex flex-col items-center justify-end">
+        <PageLink tooltip="设置" href={ROUTES.settings}>
+          <Settings />
+        </PageLink>
+      </div>
+    </div>
+  );
+}
