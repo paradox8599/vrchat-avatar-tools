@@ -4,7 +4,6 @@ import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import { EasyTooltip } from "@/components/easy-tooltip";
-import { ROUTES } from "@/routes";
 
 export default function PageLink({
   tooltip,
@@ -15,7 +14,7 @@ export default function PageLink({
   side = "right",
   align = "center",
 }: {
-  href: ROUTES;
+  href: string;
   tooltip?: string;
   children: React.ReactNode;
   size?: "sm" | "lg" | "icon" | "default";

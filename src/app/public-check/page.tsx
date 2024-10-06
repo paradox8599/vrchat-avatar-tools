@@ -1,8 +1,8 @@
 "use client";
 import React from "react";
-import AvatarInput from "@/components/avatar/avatar-input";
-import AvatarGrid from "@/components/avatar/avatar-grid";
-import { TagFilter } from "@/components/avatar/tag-selector";
+import AvatarInput from "@/components/public-check/avatar-input";
+import AvatarGrid from "@/components/public-check/avatar-grid";
+import { TagFilter } from "@/components/public-check/tag-selector";
 
 export default function Page() {
   return (

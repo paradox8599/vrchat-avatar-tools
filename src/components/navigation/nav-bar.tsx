@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { useSnapshot } from "valtio";
-import { Radar, Settings } from "lucide-react";
+import { Layers3, Radar, Settings } from "lucide-react";
 
 import { AvatarFallback, Avatar, AvatarImage } from "@/components/ui/avatar";
 import { ROUTES } from "@/routes";
@@ -31,6 +31,10 @@ export default function NavBar() {
       <div className="flex-1 py-4 flex flex-col items-center">
         <PageLink tooltip="公开检测" href={ROUTES.publicCheck}>
           <Radar />
+        </PageLink>
+
+        <PageLink tooltip="模型管理" href={ROUTES.avatars}>
+          <Layers3 />
         </PageLink>
       </div>
 
