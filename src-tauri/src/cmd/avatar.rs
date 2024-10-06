@@ -1,7 +1,7 @@
 use tauri::command;
 use vrchatapi::{
     apis::avatars_api::{GetAvatarError, SearchAvatarsError},
-    models::{self, release_status::ReleaseStatus, Avatar, SortOption},
+    models::{release_status::ReleaseStatus, Avatar, SortOption},
 };
 
 use crate::{cookies::ConfigCookieMap, err::AppError};
