@@ -1,5 +1,5 @@
 {
-  "productName": "VRChat 模型公开检测",
+  "productName": "VRChat 模型工具",
   "version": "0.1.32",
   "identifier": "io.paradox8599.vrchat-avatar-tools",
   "build": {
@@ -11,7 +11,7 @@
   "app": {
     "windows": [
       {
-        "title": "VRChat 模型公开检测",
+        "title": "VRChat 模型工具",
         "width": 1280,
         "height": 720,
         "resizable": true,
