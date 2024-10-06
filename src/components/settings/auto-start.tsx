@@ -1,13 +1,13 @@
 import { useSnapshot } from "valtio";
 import { Switch } from "../ui/switch";
-import { appState } from "@/state/app";
 import { Label } from "../ui/label";
 import { enable, isEnabled, disable } from "@tauri-apps/plugin-autostart";
 import React from "react";
 import { track } from "@/lib/aptabase";
+import { settingsState } from "@/state/settings";
 
 export function AutoStartToggle() {
-  const { settings } = useSnapshot(appState);
+  const settings = useSnapshot(settingsState);
   const [loading, setLoading] = React.useState(false);
 
   return (
@@ -25,7 +25,7 @@ export function AutoStartToggle() {
             disable();
           }
           track("settings", { autostart: checked ? "On" : "Off" });
-          appState.settings.autoStart = await isEnabled();
+          settingsState.autoStart = await isEnabled();
           setLoading(false);
         }}
       />

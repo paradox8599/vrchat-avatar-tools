@@ -1,11 +1,11 @@
 import { cn } from "@/lib/utils";
-import { appState } from "@/state/app";
 import { EasyTooltip } from "./easy-tooltip";
 import { Avatar } from "@/types";
 import { fetchAvatarInfo } from "@/hooks/use-avatar-fetcher";
 import React from "react";
+import { settingsState } from "@/state/settings";
 
-const EXPIRING_MS = appState.settings.avatarStatusExpiresHr * 60 * 60 * 1000;
+const EXPIRING_MS = settingsState.avatarStatusExpiresHr * 60 * 60 * 1000;
 const HALF_EXPIRING_MS = EXPIRING_MS / 2;
 
 type StatusColor = "red" | "yellow" | "green" | "gray";

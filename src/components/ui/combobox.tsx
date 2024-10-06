@@ -16,24 +16,37 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
+import _ from "lodash";
+
+type Option = {
+  label: string;
+  value: string;
+};
+
+function optionHasLabel(options: Option[] | string[]): options is Option[] {
+  return typeof options[0] === "object";
+}
 
 export function Combobox({
   onSelect,
   value,
   options = [],
-  allowCreate = false,
-  align = "start",
   placeholder,
+  noCreate = false,
 }: {
-  onSelect?: (tag: string) => void;
+  onSelect?: (value: string) => void;
   value?: string;
-  options: string[];
-  allowCreate?: boolean;
-  align?: "start" | "center" | "end";
+  options: string[] | Option[];
   placeholder?: string;
+  noCreate?: boolean;
 }) {
   const [open, setOpen] = React.useState(false);
   const [search, setSearch] = React.useState("");
+
+  const hasLabels = optionHasLabel(options);
+  const allowCreate = !hasLabels && !noCreate;
+  const labels = hasLabels ? _.map(options, "label") : options;
+  const values = hasLabels ? _.map(options, "value") : options;
 
   function select(value: string) {
     value = value.trim();
@@ -42,7 +55,7 @@ export function Combobox({
     if (allowCreate) {
       onSelect?.(value);
     } else {
-      onSelect?.(options.includes(value) ? value : "");
+      onSelect?.(values.includes(value) ? value : "");
     }
     setOpen(false);
     setSearch("");
@@ -64,7 +77,7 @@ export function Combobox({
           <ChevronsUpDown size={14} className="ml-2 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0" side="bottom" align={align}>
+      <PopoverContent className="w-[200px] p-0" side="bottom" align="center">
         <Command>
           <CommandInput
             className="text-xs"
@@ -92,26 +105,26 @@ export function Combobox({
             )}
 
             <CommandGroup>
-              {options
+              {labels
                 .sort((a, b) => {
                   if (a === value) return -1;
                   if (b === value) return 1;
                   return a.localeCompare(b);
                 })
-                .map((tag) => (
+                .map((label, i) => (
                   <CommandItem
-                    key={`${tag ?? ""}`}
-                    value={tag}
+                    key={`${label ?? ""}`}
+                    value={values[i]}
                     onSelect={select}
                     className="cursor-pointer"
                   >
                     <Check
                       className={cn(
                         "mr-2 h-4 w-4",
-                        value === tag ? "opacity-100" : "opacity-0",
+                        value === values[i] ? "opacity-100" : "opacity-0",
                       )}
                     />
-                    {tag}
+                    {label}
                   </CommandItem>
                 ))}
             </CommandGroup>

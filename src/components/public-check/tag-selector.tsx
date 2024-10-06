@@ -16,22 +16,15 @@ export function AvatarTagSelector({ avatar }: { avatar: Avatar }) {
     mutAvatar.tag = exists ? undefined : tag;
     if (!exists) track("tag", { set: tag });
   }
-  return (
-    <Combobox
-      onSelect={setTag}
-      value={mutAvatar?.tag}
-      options={tags}
-      allowCreate
-    />
-  );
+  return <Combobox onSelect={setTag} value={mutAvatar?.tag} options={tags} />;
 }
 
 export function TagFilter() {
   const { tags } = useAvatars();
-  const { filter } = useSnapshot(appState);
+  const { publicCheckTagFilter: filter } = useSnapshot(appState);
   function setTag(tag: string) {
     const filtering = filter === tag;
-    appState.filter = filtering ? undefined : tag;
+    appState.publicCheckTagFilter = filtering ? undefined : tag;
     if (!filtering) track("tag", { filter: tag });
   }
 
@@ -41,6 +34,7 @@ export function TagFilter() {
       value={filter}
       placeholder="标签过滤"
       options={tags}
+      noCreate
     />
   );
 }

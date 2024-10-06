@@ -1,11 +1,12 @@
 "use client";
-import { appState, loadAppState } from "@/state/app";
+import { appState } from "@/state/app";
 import { loadAvatarState } from "@/state/avatars";
 import { useSnapshot } from "valtio";
 import { toast } from "./use-toast";
 import useSWRImmutable from "swr/immutable";
 import { track, trackId } from "@/lib/aptabase";
 import { loadAuthState } from "@/state/auth";
+import { loadSettingsState } from "@/state/settings";
 
 export default function useAppInit() {
   const { init, updated } = useSnapshot(appState);
@@ -23,7 +24,7 @@ export default function useAppInit() {
         disableContextMenu();
 
         // load app data & settings
-        await loadAppState();
+        await loadSettingsState();
         await loadAuthState();
         await loadAvatarState();
 

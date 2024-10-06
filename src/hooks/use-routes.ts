@@ -56,7 +56,7 @@ export default function useRoutes() {
     }
 
     // do not redirect on manual update
-    if (!appState.updated) return;
+    if (appState.updated === false) return;
 
     // if not logged in, redirect to login page
 

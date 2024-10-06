@@ -22,6 +22,9 @@ export type MyAuthState = Auth;
 
 const initAuth: Auth = { status: LoginStatus.NotLoggedIn };
 
+////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
+
 export const myAuthState: MyAuthState = proxy(initAuth);
 subscribe(myAuthState, async () => {
   await authStore.set(AUTH_STORE_ME_KEY, myAuthState);
@@ -30,10 +33,9 @@ subscribe(myAuthState, async () => {
 
 ////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////
 
 export type AuthMapState = Map<string, Auth>;
-const authMapState: AuthMapState = proxyMap();
+export const authMapState: AuthMapState = proxyMap();
 subscribe(authMapState, async () => {
   await authStore.set(AUTH_STORE_OTHERS_KEY, authMapState);
   await authStore.save();
@@ -41,8 +43,7 @@ subscribe(authMapState, async () => {
 
 ////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////
-//
+
 export async function loadAuthState() {
   const storedMe: MyAuthState | null = await authStore.get(AUTH_STORE_ME_KEY);
   if (storedMe) {

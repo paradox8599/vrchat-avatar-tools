@@ -19,16 +19,16 @@ import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "@/hooks/use-toast";
 import { ROUTE_HOME } from "@/routes";
-import { appState } from "@/state/app";
 import { logout } from "@/state/auth";
 import { clearAvatars } from "@/state/avatars";
+import { settingsState } from "@/state/settings";
 import { ChevronLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useSnapshot } from "valtio";
 
 export default function Page() {
-  const { settings } = useSnapshot(appState);
+  const settings = useSnapshot(settingsState);
   const router = useRouter();
   return (
     <main className="h-full w-full pt-4 flex flex-col items-center">
@@ -63,7 +63,7 @@ export default function Page() {
                 type="number"
                 value={settings.avatarFetchInterval}
                 onChange={(e) => {
-                  appState.settings.avatarFetchInterval = Number.parseInt(
+                  settingsState.avatarFetchInterval = Number.parseInt(
                     e.target.value,
                   );
                 }}
@@ -84,7 +84,7 @@ export default function Page() {
                   const parsed = Number.parseInt(e.target.value);
                   if (Number.isNaN(parsed)) return;
                   if (parsed < 1) return;
-                  appState.settings.avatarStatusExpiresHr = parsed;
+                  settingsState.avatarStatusExpiresHr = parsed;
                 }}
               />
             </div>

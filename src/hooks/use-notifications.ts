@@ -5,24 +5,24 @@ import {
   isPermissionGranted,
   requestPermission,
 } from "@tauri-apps/plugin-notification";
-import { appState } from "@/state/app";
 import { useSnapshot } from "valtio";
 import { toast } from "@/hooks/use-toast";
+import { settingsState } from "@/state/settings";
 
 export default function useNotification() {
-  const { settings } = useSnapshot(appState);
+  const settings = useSnapshot(settingsState);
   const { notifications } = settings;
 
   React.useEffect(() => {
     (async () => {
-      if (!appState.settings.notifications) return;
+      if (!settingsState.notifications) return;
 
       let granted: boolean = await isPermissionGranted();
       if (!granted) {
         const permission = await requestPermission();
         granted = permission === "granted";
       }
-      appState.settings.notifications = granted;
+      settingsState.notifications = granted;
 
       if (!granted) {
         toast({

@@ -6,7 +6,7 @@ import { useSnapshot } from "valtio";
 export default function useAvatars() {
   const avatarMap = useSnapshot(avatarMapState);
   const avatars = Array.from(avatarMapState.values());
-  const { filter } = useSnapshot(appState);
+  const { publicCheckTagFilter: filter } = useSnapshot(appState);
 
   const sortedAvatars = React.useMemo(() => {
     const filteredAvatars = filter
