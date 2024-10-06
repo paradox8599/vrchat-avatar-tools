@@ -12,8 +12,8 @@
     "windows": [
       {
         "title": "VRChat 模型工具",
-        "width": 1336,
-        "height": 768,
+        "width": 860,
+        "height": 720,
         "resizable": true,
         "fullscreen": false,
         "visible": false
