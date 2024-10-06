@@ -7,7 +7,7 @@ mod store;
 #[cfg(desktop)]
 mod tray;
 
-use constants::{ENV_APTABASE_HOST, ENV_APTABASE_KEY, ENV_APTABASE_MATCH};
+use constants::{ENV_APTABASE_HOST, ENV_APTABASE_HOST_MATCH, ENV_APTABASE_KEY};
 
 use cmd::{
     auth::{
@@ -29,7 +29,7 @@ pub type Arw<T> = Arc<RwLock<T>>;
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     let mut aptabase = tauri_plugin_aptabase::Builder::new(ENV_APTABASE_KEY);
-    if !ENV_APTABASE_HOST.contains(ENV_APTABASE_MATCH) {
+    if !ENV_APTABASE_HOST.contains(ENV_APTABASE_HOST_MATCH) {
         aptabase = aptabase.with_options(tauri_plugin_aptabase::InitOptions {
             host: Some(ENV_APTABASE_HOST.to_owned()),
             flush_interval: None,
