@@ -1,7 +1,7 @@
 use tauri::command;
 use vrchatapi::{
     apis::avatars_api::{GetAvatarError, SearchAvatarsError},
-    models::{self, Avatar, SortOption},
+    models::{self, release_status::ReleaseStatus, Avatar, SortOption},
 };
 
 use crate::{cookies::ConfigCookieMap, err::AppError};
@@ -55,7 +55,7 @@ pub async fn vrchat_get_own_avatars(
             Some(offset),                //     offset: Option<i32>,
             None,                        //     tag: Option<&str>,
             None,                        //     notag: Option<&str>,
-            None,                        //     release_status: Option<models::ReleaseStatus>,
+            Some(ReleaseStatus::All),    //     release_status: Option<models::ReleaseStatus>,
             None,                        //     max_unity_version: Option<&str>,
             None,                        //     min_unity_version: Option<&str>,
             None,                        //     platform: Option<&str>,
