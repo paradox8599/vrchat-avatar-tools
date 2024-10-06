@@ -112,7 +112,7 @@ export default function AvatarGrid() {
                           open(`https://vrchat.com/home/avatar/${avatar.id}`);
                         }}
                       >
-                        {avatar.public ? "已公开" : "未知"}
+                        {avatar.info?.releaseStatus ?? "未知状态"}
                         <SquareArrowOutUpRight size={12} />
                       </Button>
                     </EasyTooltip>
