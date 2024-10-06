@@ -8,7 +8,6 @@ import {
   AvatarImage,
 } from "@/components/ui/avatar";
 import useAvatars from "@/hooks/use-avatars";
-import { useAvatarFetcher } from "@/hooks/use-avatar-fetcher";
 import { Button } from "../ui/button";
 import {
   Box,
@@ -28,8 +27,6 @@ import { track, trackId } from "@/lib/aptabase";
 //
 export default function AvatarGrid() {
   const { sortedAvatars } = useAvatars();
-
-  useAvatarFetcher();
 
   return (
     <ScrollArea className="h-full">
