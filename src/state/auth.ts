@@ -1,5 +1,5 @@
 import { LoginStatus, UserInfo } from "@/types";
-import { Store } from "@tauri-apps/plugin-store";
+import { createStore, Store } from "@tauri-apps/plugin-store";
 import { proxy, subscribe } from "valtio";
 import { invoke } from "@tauri-apps/api/core";
 import { track, trackId } from "@/lib/aptabase";
@@ -9,7 +9,7 @@ import { proxyMap } from "valtio/utils";
 const AUTH_STORE_ME_KEY = "me";
 const AUTH_STORE_OTHERS_KEY = "others";
 
-const authStore = new Store("auth");
+let store: Store;
 
 type Credentials = { username: string; password: string };
 type Auth = {
@@ -27,8 +27,7 @@ const initAuth: Auth = { status: LoginStatus.NotLoggedIn };
 
 export const myAuthState: MyAuthState = proxy(initAuth);
 subscribe(myAuthState, async () => {
-  await authStore.set(AUTH_STORE_ME_KEY, myAuthState);
-  await authStore.save();
+  await store.set(AUTH_STORE_ME_KEY, myAuthState);
 });
 
 ////////////////////////////////////////////////////////////////
@@ -37,20 +36,21 @@ subscribe(myAuthState, async () => {
 export type AuthMapState = Map<string, Auth>;
 export const authMapState: AuthMapState = proxyMap();
 subscribe(authMapState, async () => {
-  await authStore.set(AUTH_STORE_OTHERS_KEY, authMapState);
-  await authStore.save();
+  await store.set(AUTH_STORE_OTHERS_KEY, authMapState);
 });
 
 ////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////
 
 export async function loadAuthState() {
-  const storedMe: MyAuthState | null = await authStore.get(AUTH_STORE_ME_KEY);
-  if (storedMe) {
-    Object.assign(myAuthState, storedMe);
-  }
+  store = await createStore("auth", { autoSave: true });
 
-  const storedOthers = await authStore.get(AUTH_STORE_OTHERS_KEY);
+  const storedMe = await store.get<MyAuthState>(AUTH_STORE_ME_KEY);
+  if (storedMe) Object.assign(myAuthState, storedMe);
+
+  const storedOthers = await store.get<Record<string, Auth>>(
+    AUTH_STORE_OTHERS_KEY,
+  );
   if (storedOthers) {
     for (const [key, value] of Object.entries(storedOthers)) {
       authMapState.set(key, proxy(value));
