@@ -50,8 +50,8 @@ tauri-plugin-prevent-default = "0.5.0"
 tauri-plugin-aptabase = { git = "https://github.com/aptabase/tauri-plugin-aptabase", branch = "v2" }
 
 [target.'cfg(not(any(target_os = "android", target_os = "ios")))'.dependencies]
-tauri-plugin-autostart = "2.0.0-rc"
-tauri-plugin-single-instance = "2.0.0-rc"
+tauri-plugin-autostart = "2.0.1"
+tauri-plugin-single-instance = "2.0.1"
 
 [target.'cfg(any(target_os = "macos", windows, target_os = "linux"))'.dependencies]
 tauri-plugin-autostart = "2.0.0-rc"
