@@ -100,3 +100,7 @@ export function clearAuth(username: string) {
     authMapState.delete(username);
   }
 }
+
+export function clearAuths() {
+  authMapState.clear();
+}

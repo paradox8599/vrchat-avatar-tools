@@ -16,11 +16,12 @@ import {
 } from "@/lib/api/auth";
 import { useToast } from "@/hooks/use-toast";
 import { LoaderCircle } from "lucide-react";
-import { appState, clearApp } from "@/state/app";
+import { appState } from "@/state/app";
 import { clearAvatars } from "@/state/avatars";
 import { ThemeToggleIcon } from "@/components/settings/theme-toggle";
 import { useSnapshot } from "valtio";
-import { myAuthState } from "@/state/auth";
+import { clearAuths, myAuthState } from "@/state/auth";
+import { clearSettings } from "@/state/settings";
 
 export default function Page() {
   const [loginResult, setLoginResult] = React.useState<LoginStatus>(
@@ -188,7 +189,8 @@ export default function Page() {
             size="sm"
             onClick={() => {
               clearAvatars();
-              clearApp();
+              clearSettings();
+              clearAuths();
               toast({ title: "已清空数据" });
             }}
           >

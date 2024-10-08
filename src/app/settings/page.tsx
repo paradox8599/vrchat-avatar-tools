@@ -19,9 +19,9 @@ import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "@/hooks/use-toast";
 import { ROUTE_HOME } from "@/routes";
-import { logout } from "@/state/auth";
+import { clearAuths, logout } from "@/state/auth";
 import { clearAvatars } from "@/state/avatars";
-import { settingsState } from "@/state/settings";
+import { clearSettings, settingsState } from "@/state/settings";
 import { ChevronLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";
@@ -101,7 +101,8 @@ export default function Page() {
                   <DialogTitle>清空数据</DialogTitle>
 
                   <DialogDescription className="py-4">
-                    确定要清空数据？这将清空所有添加的模型ID
+                    确定要清空数据？这将清空所有添加的模型ID，App
+                    设置，和登录的所有账号。
                   </DialogDescription>
 
                   <DialogFooter>
@@ -110,8 +111,8 @@ export default function Page() {
                         variant="outline"
                         onClick={() => {
                           clearAvatars();
-                          // clearApp();
-                          // logout();
+                          clearSettings();
+                          clearAuths();
                           toast({ title: "已清空数据" });
                         }}
                       >
