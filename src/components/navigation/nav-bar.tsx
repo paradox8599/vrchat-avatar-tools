@@ -29,7 +29,7 @@ export default function NavBar() {
 
       {/* pages */}
       <div className="flex-1 py-4 flex flex-col items-center gap-2">
-        <PageLink tooltip="公开检测" href={ROUTES.publicCheck}>
+        <PageLink tooltip="公开扫描" href={ROUTES.publicCheck}>
           <Radar />
         </PageLink>
 
