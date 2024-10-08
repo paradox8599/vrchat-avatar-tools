@@ -55,5 +55,5 @@ tauri-plugin-single-instance = "2.0.1"
 
 [target.'cfg(any(target_os = "macos", windows, target_os = "linux"))'.dependencies]
 tauri-plugin-autostart = "2.0.1"
-tauri-plugin-cli = "2.0.0-beta.0"
+tauri-plugin-cli = "2.0.1"
 tauri-plugin-updater = "2.0.2"
