@@ -5,7 +5,7 @@ import { isEnabled } from "@tauri-apps/plugin-autostart";
 
 const SETTINGS_STORE_KEY = "settings";
 
-let appStore: Store;
+let store: Store;
 
 export type SettingsState = {
   avatarFetchInterval: number;
@@ -25,12 +25,13 @@ export const settingsState: SettingsState = proxy(initSettingsState);
 
 subscribe(settingsState, async () => {
   if (!appState.init) return;
-  await appStore.set(SETTINGS_STORE_KEY, settingsState);
+  await store.set(SETTINGS_STORE_KEY, settingsState);
+  await store.save();
 });
 
 export async function loadSettingsState() {
-  appStore = await createStore("app", { autoSave: 1000 as unknown as boolean });
-  const stored = await appStore.get<SettingsState>(SETTINGS_STORE_KEY);
+  store = await createStore("app");
+  const stored = await store.get<SettingsState>(SETTINGS_STORE_KEY);
   if (!stored) return;
   Object.assign(settingsState, stored);
   settingsState.autoStart = await isEnabled();

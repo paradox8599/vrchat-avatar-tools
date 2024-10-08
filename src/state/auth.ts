@@ -19,16 +19,16 @@ type Auth = {
 };
 
 export type MyInfo = { username?: string };
+const initAuth = { status: LoginStatus.NotLoggedIn };
 
 ////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////
 
 export const me: MyInfo = proxy({});
 subscribe(me, async () => {
-  console.log("state: me", me);
   if (!appState.init) return;
-  console.log("state: me", me);
   await store.set(ME, me);
+  await store.save();
 });
 
 ////////////////////////////////////////////////////////////////
@@ -38,14 +38,15 @@ export type AuthState = Record<string, Auth>;
 export const authState: AuthState = proxy({});
 subscribe(authState, async () => {
   if (!appState.init) return;
-  await store.set(OTHERS, authState);
+  await store.set(OTHERS, { ...authState, _: void 0 });
+  await store.save();
 });
 
 ////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////
 
 export async function loadAuthState() {
-  store = await createStore("auth", { autoSave: 1000 as unknown as boolean });
+  store = await createStore("auth");
 
   const storedMe = await store.get<MyInfo>(ME);
   me.username = storedMe?.username;
@@ -63,20 +64,24 @@ export async function loadAuthState() {
 
 export function getAuth(username?: string) {
   username ??= me.username ?? "_";
-  authState[username] ??= proxy({ status: LoginStatus.NotLoggedIn });
+  authState[username] ??= initAuth;
   return authState[username];
 }
 
 export async function logout(username: string) {
   track("logout", { user: username });
-
-  const cred = getAuth(username).credentials;
-  if (cred) invoke("vrchat_logout", { username: cred.username });
+  const auth = getAuth(username);
+  if (auth.credentials) invoke("vrchat_logout", { username });
+  auth.status = LoginStatus.NotLoggedIn;
+  authState[username] = initAuth;
   clearAuth(username);
 }
 
 export function clearAuth(username: string) {
-  delete authState[username];
+  const auth = getAuth(username);
+  delete auth.info;
+  delete auth.credentials;
+  Object.assign(auth, initAuth);
 }
 
 export function clearAuths() {

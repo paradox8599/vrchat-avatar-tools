@@ -61,6 +61,7 @@ impl ConfigCookie {
             .collect::<Vec<String>>();
         let cookies_value = serde_json::json!(cookies_str);
         self.store.set(&self.name, cookies_value);
+        let _ = self.store.save();
     }
 
     pub fn delete(&self) -> bool {
@@ -75,7 +76,7 @@ pub struct ConfigCookieMap {
 
 // Config Cookies Map - stores cookies for all users
 
-impl<'a> ConfigCookieMap {
+impl ConfigCookieMap {
     pub fn init(app: &tauri::AppHandle) {
         let map = ConfigCookieMap::new(app);
         app.manage(map);
@@ -84,7 +85,7 @@ impl<'a> ConfigCookieMap {
     pub fn new(app: &tauri::AppHandle) -> Self {
         let store = app
             .store_builder(STORE_COOKIES_KEY)
-            .auto_save(std::time::Duration::from_secs(3))
+            // .auto_save(std::time::Duration::from_millis(300))
             .build();
         Self {
             map: RwLock::new(std::collections::HashMap::new()),

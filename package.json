@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "postinstall": "git config core.hooksPath .git-hooks",
-    "dev:next": "NODE_OPTIONS='--inspect' next dev",
+    "dev:next": "next dev",
+    "debug:next": "NODE_OPTIONS='--inspect' next dev",
     "build:next": "next build",
     "start:next": "next start",
     "lint": "next lint",

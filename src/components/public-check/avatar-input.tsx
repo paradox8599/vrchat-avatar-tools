@@ -6,7 +6,6 @@ import {
   DialogContent,
   DialogDescription,
   DialogTitle,
-  DialogTrigger,
 } from "../ui/dialog";
 import { AvatarImport, reId } from "./avatar-import";
 import { AvatarExport } from "./avatar-export";
@@ -49,7 +48,6 @@ export default function AvatarInput() {
       </SplitButton>
 
       <Dialog open={exportOpen} onOpenChange={(open) => setExportOpen(open)}>
-        <DialogTrigger></DialogTrigger>
         <DialogContent>
           <DialogTitle>模型 ID 批量导入/导出</DialogTitle>
           <DialogDescription>

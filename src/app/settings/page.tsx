@@ -138,7 +138,12 @@ export default function Page() {
                   <DialogFooter>
                     <Button
                       variant="outline"
-                      onClick={() => logout(me.username ?? "_")}
+                      onClick={async () => {
+                        if (me.username) {
+                          await logout(me.username);
+                          delete me.username;
+                        }
+                      }}
                     >
                       确认
                     </Button>

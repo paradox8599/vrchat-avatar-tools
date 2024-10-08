@@ -19,8 +19,7 @@ export default function useRoutes() {
     if (init === undefined) return;
     if (loggedIn === undefined) return;
 
-    console.log(`-------- start route check at ${path} --------`);
-    console.log("loggedIn", loggedIn);
+    // console.log(`-------- start route check at ${path} --------`);
 
     // check connectivity, before everything else
 

@@ -12,12 +12,11 @@ export const avatarMapState = proxyMap<string, Avatar>();
 
 subscribe(avatarMapState, async () => {
   await store.set(AVATAR_STORE_KEY, avatarMapState);
+  await store.save();
 });
 
 export async function loadAvatarState() {
-  store = await createStore("avatars", {
-    autoSave: 1000 as unknown as boolean,
-  });
+  store = await createStore("avatars");
 
   const storedAvatars =
     await store.get<Record<string, Avatar>>(AVATAR_STORE_KEY);
