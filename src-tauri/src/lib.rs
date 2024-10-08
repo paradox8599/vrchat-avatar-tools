@@ -108,7 +108,7 @@ pub fn init(app: &mut tauri::App) -> StdResult<()> {
 
     if let Ok(cli_matches) = handle.cli().matches() {
         // hidden flag
-        // [visible] in tauri.conf.json is set to false so app can start hidden at the very start
+        // [visible] in tauri.conf.json is set to false so app can start hidden at start
         // then if the --hidden flag is not set, show the window
         // if the --hidden flag is set, do nothing just like regular start
         let hidden = cli_matches
@@ -117,11 +117,7 @@ pub fn init(app: &mut tauri::App) -> StdResult<()> {
             .map_or(false, |v| v.value.as_bool().unwrap_or_default());
 
         if !hidden {
-            if let Some(window) = handle.get_webview_window("main") {
-                let _ = window.show();
-                let _ = window.set_focus();
-                let _ = window.unminimize();
-            }
+            show_window(handle);
         }
     }
 
