@@ -84,7 +84,7 @@ impl<'a> ConfigCookieMap {
     pub fn new(app: &tauri::AppHandle) -> Self {
         let store = app
             .store_builder(STORE_COOKIES_KEY)
-            .auto_save(std::time::Duration::from_secs(30))
+            .auto_save(std::time::Duration::from_secs(3))
             .build();
         Self {
             map: RwLock::new(std::collections::HashMap::new()),

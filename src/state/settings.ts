@@ -29,7 +29,7 @@ subscribe(settingsState, async () => {
 });
 
 export async function loadSettingsState() {
-  appStore = await createStore("app", { autoSave: 1 as unknown as boolean });
+  appStore = await createStore("app", { autoSave: 1000 as unknown as boolean });
   const stored = await appStore.get<SettingsState>(SETTINGS_STORE_KEY);
   if (!stored) return;
   Object.assign(settingsState, stored);
