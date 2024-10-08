@@ -23,7 +23,7 @@ import { avatarMapState } from "@/state/avatars";
 import { EasyTooltip } from "../easy-tooltip";
 import { StatusDot } from "../status-dot";
 import { ScrollArea } from "../ui/scroll-area";
-import { track, trackId } from "@/lib/aptabase";
+import { track, trackName } from "@/lib/aptabase";
 //
 export default function AvatarGrid() {
   const { sortedAvatars } = useAvatars();
@@ -80,7 +80,7 @@ export default function AvatarGrid() {
                           if (!avatar.info?.authorId) return;
                           track("author", {
                             open: avatar.info.authorId,
-                            userOpen: trackId(),
+                            userOpen: trackName(),
                           });
                           open(
                             `https://vrchat.com/home/user/${avatar.info?.authorId}`,
@@ -104,7 +104,7 @@ export default function AvatarGrid() {
                           if (!avatar.info) return;
                           track("avatar", {
                             open: avatar.id,
-                            userOpen: trackId(),
+                            userOpen: trackName(),
                           });
                           open(`https://vrchat.com/home/avatar/${avatar.id}`);
                         }}
@@ -132,7 +132,7 @@ export default function AvatarGrid() {
                       onClick={() => {
                         track("avatar", {
                           copy: avatar.id,
-                          userCopy: trackId(),
+                          userCopy: trackName(),
                         });
                         writeText(avatar.id).then(() =>
                           toast({
@@ -188,7 +188,7 @@ export default function AvatarGrid() {
                         onClick={() => {
                           track("avatar", {
                             delete: avatar.id,
-                            userDelete: trackId(),
+                            userDelete: trackName(),
                           });
                           avatarMapState.delete(avatar.id);
                         }}

@@ -22,7 +22,7 @@ export default function AvatarInput() {
     const id = idMatch[1];
     if (!avatarMapState.get(id)) {
       avatarMapState.set(id, { id: id });
-      // track("avatar", { add: id, userAdd: trackId() });
+      // track("avatar", { add: id, userAdd: trackName() });
     }
     setAvatarIdInput("");
   }

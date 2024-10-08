@@ -2,12 +2,12 @@ import { LoginStatus, UserInfo } from "@/types";
 import { createStore, Store } from "@tauri-apps/plugin-store";
 import { proxy, subscribe } from "valtio";
 import { invoke } from "@tauri-apps/api/core";
-import { track, trackId } from "@/lib/aptabase";
+import { track } from "@/lib/aptabase";
 import { vrchatLogin } from "@/lib/api/auth";
-import { proxyMap } from "valtio/utils";
+import { appState } from "./app";
 
-const AUTH_STORE_ME_KEY = "me";
-const AUTH_STORE_OTHERS_KEY = "others";
+const ME = "me";
+const OTHERS = "others";
 
 let store: Store;
 
@@ -18,25 +18,27 @@ type Auth = {
   info?: UserInfo;
 };
 
-export type MyAuthState = Auth;
-
-const initAuth: Auth = { status: LoginStatus.NotLoggedIn };
+export type MyInfo = { username?: string };
 
 ////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////
 
-export const myAuthState: MyAuthState = proxy(initAuth);
-subscribe(myAuthState, async () => {
-  await store.set(AUTH_STORE_ME_KEY, myAuthState);
+export const me: MyInfo = proxy({});
+subscribe(me, async () => {
+  console.log("state: me", me);
+  if (!appState.init) return;
+  console.log("state: me", me);
+  await store.set(ME, me);
 });
 
 ////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////
 
-export type AuthMapState = Map<string, Auth>;
-export const authMapState: AuthMapState = proxyMap();
-subscribe(authMapState, async () => {
-  await store.set(AUTH_STORE_OTHERS_KEY, authMapState);
+export type AuthState = Record<string, Auth>;
+export const authState: AuthState = proxy({});
+subscribe(authState, async () => {
+  if (!appState.init) return;
+  await store.set(OTHERS, authState);
 });
 
 ////////////////////////////////////////////////////////////////
@@ -45,62 +47,40 @@ subscribe(authMapState, async () => {
 export async function loadAuthState() {
   store = await createStore("auth", { autoSave: 1000 as unknown as boolean });
 
-  const storedMe = await store.get<MyAuthState>(AUTH_STORE_ME_KEY);
-  if (storedMe) Object.assign(myAuthState, storedMe);
+  const storedMe = await store.get<MyInfo>(ME);
+  me.username = storedMe?.username;
 
-  const storedOthers = await store.get<Record<string, Auth>>(
-    AUTH_STORE_OTHERS_KEY,
-  );
-  if (storedOthers) {
-    for (const [key, value] of Object.entries(storedOthers)) {
-      authMapState.set(key, proxy(value));
-    }
+  const storedOthers = await store.get<Record<string, Auth>>(OTHERS);
+  for (const [k, v] of Object.entries(storedOthers ?? {})) {
+    authState[k] = v;
   }
 
-  if (myAuthState.credentials) await vrchatLogin(myAuthState.credentials);
+  if (me.username) {
+    const auth = getAuth(me.username);
+    if (auth.credentials) await vrchatLogin(auth.credentials);
+  }
 }
 
 export function getAuth(username?: string) {
-  if (!username) return myAuthState;
-  if (!myAuthState.credentials?.username) {
-    return myAuthState;
-  }
-  if (username === myAuthState.credentials?.username) {
-    return myAuthState;
-  }
-  const auth = authMapState.get(username);
-  if (auth) {
-    return auth;
-  } else {
-    const auth: Auth = proxy({ status: LoginStatus.NotLoggedIn });
-    authMapState.set(username, auth);
-    return auth;
-  }
+  username ??= me.username ?? "_";
+  authState[username] ??= proxy({ status: LoginStatus.NotLoggedIn });
+  return authState[username];
 }
 
-export async function logout(username?: string) {
-  username ??= myAuthState.credentials?.username;
-  if (!username) return;
+export async function logout(username: string) {
+  track("logout", { user: username });
 
-  track("logout", { user: trackId() });
-
-  const auth = getAuth(username);
-  const cred = auth.credentials;
+  const cred = getAuth(username).credentials;
   if (cred) invoke("vrchat_logout", { username: cred.username });
   clearAuth(username);
 }
 
 export function clearAuth(username: string) {
-  if (username === myAuthState.credentials?.username) {
-    track("clear", { auth: trackId() });
-    delete myAuthState.credentials;
-    delete myAuthState.info;
-    myAuthState.status = LoginStatus.NotLoggedIn;
-  } else {
-    authMapState.delete(username);
-  }
+  delete authState[username];
 }
 
 export function clearAuths() {
-  authMapState.clear();
+  for (const k of Object.keys(authState)) {
+    clearAuth(k);
+  }
 }

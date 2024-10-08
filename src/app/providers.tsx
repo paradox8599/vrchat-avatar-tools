@@ -11,6 +11,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import useRoutes from "@/hooks/use-routes";
 import { useAvatarFetcher } from "@/hooks/use-avatar-fetcher";
+import React from "react";
 
 export default function AppProvider({ children }: React.PropsWithChildren) {
   useAppInit();

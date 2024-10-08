@@ -7,7 +7,7 @@ async function vrchatGetAvatarInfo(avatarId: string) {
   const auth = getAuth();
   if (!auth.credentials) return;
   try {
-    // track("avatar", { fetch: avatarId, userFetch: trackId() });
+    // track("avatar", { fetch: avatarId, userFetch: trackName() });
     const avatarInfo: AvatarInfo = await invoke(API_NAMES.vrchatGetAvatarInfo, {
       username: auth.credentials.username,
       avatarId,
@@ -15,7 +15,7 @@ async function vrchatGetAvatarInfo(avatarId: string) {
     return avatarInfo;
   } catch (e) {
     const err = parseError(e);
-    // track("avatar", { [err.message]: trackId() });
+    // track("avatar", { [err.message]: trackName() });
     switch (err.type) {
       case ErrorName.StatusError:
         if (err.status === 404) {

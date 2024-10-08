@@ -1,10 +1,11 @@
 import React from "react";
 import { avatarMapState } from "@/state/avatars";
 import { sendNotification } from "@tauri-apps/plugin-notification";
-import { Avatar } from "@/types";
+import { Avatar, LoginStatus } from "@/types";
 import { track } from "@/lib/aptabase";
 import { vrchatGetAvatarInfo } from "@/lib/api/avatar";
 import { settingsState } from "@/state/settings";
+import { getAuth } from "@/state/auth";
 
 function hasOutdated(date?: Date | string) {
   return (
@@ -20,6 +21,8 @@ function getOutdatedAvatar() {
 }
 
 export async function fetchAvatarInfo(avatar: Avatar) {
+  const auth = getAuth();
+  if (auth.status !== LoginStatus.Success) return;
   if (avatar.fetching) return;
   try {
     avatar.fetching = true;

@@ -4,7 +4,7 @@ import { avatarMapState } from "@/state/avatars";
 import { dt } from "@/lib/utils";
 import { Checkbox } from "../ui/checkbox";
 import { exportFile } from "@/lib/file";
-import { track, trackId } from "@/lib/aptabase";
+import { track, trackName } from "@/lib/aptabase";
 
 const HEADERS = [
   "\ufeff模型id",
@@ -51,7 +51,7 @@ export function AvatarExport() {
     );
 
     track("avatar", {
-      userExport: trackId(),
+      userExport: trackName(),
       exportSize: avatars.length,
       exportFileFormat: exportIdsOnly ? "txt" : "csv",
       exportDateFormat: dateFmt,

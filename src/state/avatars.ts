@@ -1,4 +1,4 @@
-import { track, trackId } from "@/lib/aptabase";
+import { track, trackName } from "@/lib/aptabase";
 import { Avatar } from "@/types";
 import { createStore, Store } from "@tauri-apps/plugin-store";
 import { proxy, subscribe } from "valtio";
@@ -29,6 +29,6 @@ export async function loadAvatarState() {
 }
 
 export function clearAvatars() {
-  track("clear", { avatars: trackId() });
+  track("clear", { avatars: trackName() });
   avatarMapState.clear();
 }

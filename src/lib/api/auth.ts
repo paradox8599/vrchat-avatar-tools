@@ -33,7 +33,6 @@ async function vrchatGetMe(username: string) {
     if (isLoginSuccess(info)) {
       auth.info = info;
       auth.status = LoginStatus.Success;
-      return auth.status;
     }
 
     // needs verify but not available verify method
@@ -43,25 +42,22 @@ async function vrchatGetMe(username: string) {
       }
       if (info.requiresTwoFactorAuth.length === 0) {
         auth.status = LoginStatus.NotLoggedIn;
-        return auth.status;
       }
       // needs emailotp verify
       else if (info.requiresTwoFactorAuth.includes("emailOtp")) {
         auth.status = LoginStatus.NeedsEmailVerify;
-        return auth.status;
       }
       // needs totp verify
       else if (info.requiresTwoFactorAuth.includes("totp")) {
         auth.status = LoginStatus.NeedsVerify;
-        return auth.status;
       }
       // unsupported verify method
       else {
         alert(`尚未支持的验证方式: ${info.requiresTwoFactorAuth}`);
         auth.status = LoginStatus.NotLoggedIn;
-        return auth.status;
       }
     }
+    return auth.status;
   } catch (e) {
     const err = parseError(e);
     track("login", { getMeError: err.message });

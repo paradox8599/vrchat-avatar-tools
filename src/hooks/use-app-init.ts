@@ -4,24 +4,24 @@ import { loadAvatarState } from "@/state/avatars";
 import { useSnapshot } from "valtio";
 import { toast } from "./use-toast";
 import useSWRImmutable from "swr/immutable";
-import { track, trackId } from "@/lib/aptabase";
+import { track, trackName } from "@/lib/aptabase";
 import { loadAuthState } from "@/state/auth";
 import { loadSettingsState } from "@/state/settings";
 
 export default function useAppInit() {
-  const { init, updated } = useSnapshot(appState);
+  const { init, updated, reachable } = useSnapshot(appState);
 
   useSWRImmutable(
     // do not init if:
     // - not updated
     // - already init
-    !updated || init ? null : "appInit",
+    !reachable || !updated || init ? null : "appInit",
     async () => {
       try {
         ////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////
 
-        disableContextMenu();
+        // disableContextMenu();
 
         // load app data & settings
         await loadSettingsState();
@@ -30,7 +30,7 @@ export default function useAppInit() {
 
         ////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////
-        track("init", { success: trackId() });
+        track("init", { success: trackName() });
         appState.init = true;
       } catch (e) {
         track("init", { error: String(e) });
@@ -43,24 +43,24 @@ export default function useAppInit() {
   );
 }
 
-function disableContextMenu() {
-  // if (window.location.hostname !== "tauri.localhost") return;
-
-  document.addEventListener(
-    "contextmenu",
-    (e) => {
-      e.preventDefault();
-      return false;
-    },
-    { capture: true },
-  );
-
-  document.addEventListener(
-    "selectstart",
-    (e) => {
-      e.preventDefault();
-      return false;
-    },
-    { capture: true },
-  );
-}
+// function disableContextMenu() {
+//   // if (window.location.hostname !== "tauri.localhost") return;
+//
+//   document.addEventListener(
+//     "contextmenu",
+//     (e) => {
+//       e.preventDefault();
+//       return false;
+//     },
+//     { capture: true },
+//   );
+//
+//   document.addEventListener(
+//     "selectstart",
+//     (e) => {
+//       e.preventDefault();
+//       return false;
+//     },
+//     { capture: true },
+//   );
+// }

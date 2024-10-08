@@ -20,8 +20,9 @@ import { appState } from "@/state/app";
 import { clearAvatars } from "@/state/avatars";
 import { ThemeToggleIcon } from "@/components/settings/theme-toggle";
 import { useSnapshot } from "valtio";
-import { clearAuths, myAuthState } from "@/state/auth";
+import { clearAuths, me } from "@/state/auth";
 import { clearSettings } from "@/state/settings";
+import useAuth from "@/hooks/use-auth";
 
 export default function Page() {
   const [loginResult, setLoginResult] = React.useState<LoginStatus>(
@@ -31,16 +32,19 @@ export default function Page() {
   const [otpCode, setOtpCode] = React.useState("");
   const { toast } = useToast();
   const { version } = useSnapshot(appState);
-  const auth = useSnapshot(myAuthState);
+  const { auth, authMut } = useAuth();
 
   async function onLogin(formData: FormData) {
     setIsLoading(true);
     try {
-      const username = formData.get("username") as string;
-      const password = formData.get("password") as string;
-      const cred = { username, password };
-      myAuthState.credentials = cred;
-      const result = await vrchatLogin(cred);
+      authMut.credentials = {
+        username: formData.get("username") as string,
+        password: formData.get("password") as string,
+      };
+      // me.username = "";
+      const result = await vrchatLogin(authMut.credentials);
+      me.username = authMut.credentials.username;
+      console.log("page login result", result);
       switch (result) {
         case LoginStatus.Success:
           // toast({ title: "登录成功" });
@@ -52,6 +56,7 @@ export default function Page() {
 
       setLoginResult(result);
     } catch (e) {
+      console.error(e);
       toast({ title: e as string });
     }
     setIsLoading(false);

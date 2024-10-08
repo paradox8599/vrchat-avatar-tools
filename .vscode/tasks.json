@@ -1,33 +1,29 @@
 {
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "build:debug",
+            "label": "ui:dev",
             "type": "shell",
-            "command": "cargo",
+            // `dev` keeps running in the background
+            // ideally you should also configure a `problemMatcher`
+            // see https://code.visualstudio.com/docs/editor/tasks#_can-a-background-task-be-used-as-a-prelaunchtask-in-launchjson
+            "isBackground": true,
+            // change this to your `beforeDevCommand`:
+            "command": "bun",
             "args": [
-                "build",
-                "--manifest-path=./src-tauri/Cargo.toml",
-                "--no-default-features"
+                "dev:next"
             ]
-        },
-        {
-            "label": "build:release",
-            "type": "shell",
-            "command": "cargo",
-            "args": [
-                "build",
-                "--release",
-                "--manifest-path=./src-tauri/Cargo.toml"
-            ],
-            "dependsOn": "ui:build"
         },
         {
             "label": "ui:build",
             "type": "shell",
+            // change this to your `beforeBuildCommand`:
             "command": "bun",
             "args": [
-                "build:next"
+                "run",
+                "build"
             ]
         }
     ]

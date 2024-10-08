@@ -1,15 +1,16 @@
 "use client";
 import React from "react";
-import { useSnapshot } from "valtio";
 import { Layers3, Radar, Settings } from "lucide-react";
 
 import { AvatarFallback, Avatar, AvatarImage } from "@/components/ui/avatar";
 import { ROUTES } from "@/routes";
-import { myAuthState } from "@/state/auth";
 import PageLink from "./page-link";
+import useAuth from "@/hooks/use-auth";
 
 export default function NavBar() {
-  const auth = useSnapshot(myAuthState);
+  const { auth, loggedIn } = useAuth();
+
+  if (!loggedIn) return null;
 
   return (
     <div className="w-14 flex flex-col items-center justify-between py-2 shadow">

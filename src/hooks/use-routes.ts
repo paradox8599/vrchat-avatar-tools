@@ -1,16 +1,15 @@
 import { ROUTE_HOME, ROUTES } from "@/routes";
 import { appState } from "@/state/app";
-import { myAuthState } from "@/state/auth";
-import { LoginStatus } from "@/types";
 import { usePathname, useRouter } from "next/navigation";
 import React from "react";
 import { useSnapshot } from "valtio";
+import useAuth from "./use-auth";
 
 export default function useRoutes() {
   const path = usePathname();
   const router = useRouter();
   const { init, reachable, updated } = useSnapshot(appState);
-  const auth = useSnapshot(myAuthState);
+  const { me, loggedIn, auth } = useAuth();
 
   React.useEffect(() => {
     if (router === undefined) return;
@@ -18,9 +17,11 @@ export default function useRoutes() {
     if (reachable === undefined) return;
     if (updated === undefined) return;
     if (init === undefined) return;
-    if (auth === undefined) return;
+    if (me === undefined) return;
+    if (loggedIn === undefined) return;
 
-    // console.log("-------- start route check --------");
+    console.log(`-------- start route check at ${path} --------`);
+    console.log("loggedIn", loggedIn);
 
     // check connectivity, before everything else
 
@@ -60,8 +61,8 @@ export default function useRoutes() {
 
     // if not logged in, redirect to login page
 
-    // console.log("logged in", auth.status === LoginStatus.Success, "at", path);
-    if (myAuthState.status !== LoginStatus.Success) {
+    // console.log("logged in", loggedIn, "at", path);
+    if (!loggedIn) {
       if (path !== ROUTES.login) {
         // console.log("redirecting to login");
         router.replace(ROUTES.login);
@@ -71,7 +72,7 @@ export default function useRoutes() {
 
     // if everything is fine and at init/login page, redirect to home
 
-    // console.log("path", path);
+    // console.log("-------- all good --------");
     if (
       path === ROUTES.start ||
       path === ROUTES.login ||
@@ -81,7 +82,5 @@ export default function useRoutes() {
       router.replace(ROUTE_HOME);
       return;
     }
-
-    // console.log("-------- all good --------");
-  }, [path, reachable, updated, init, auth, router]);
+  }, [path, reachable, updated, init, me, router, loggedIn, auth]);
 }
