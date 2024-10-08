@@ -9,7 +9,7 @@ export default function useRoutes() {
   const path = usePathname();
   const router = useRouter();
   const { init, reachable, updated } = useSnapshot(appState);
-  const { me, loggedIn, auth } = useAuth();
+  const { loggedIn, auth } = useAuth();
 
   React.useEffect(() => {
     if (router === undefined) return;
@@ -17,7 +17,6 @@ export default function useRoutes() {
     if (reachable === undefined) return;
     if (updated === undefined) return;
     if (init === undefined) return;
-    if (me === undefined) return;
     if (loggedIn === undefined) return;
 
     console.log(`-------- start route check at ${path} --------`);
@@ -82,5 +81,5 @@ export default function useRoutes() {
       router.replace(ROUTE_HOME);
       return;
     }
-  }, [path, reachable, updated, init, me, router, loggedIn, auth]);
+  }, [path, reachable, updated, init, router, loggedIn, auth]);
 }

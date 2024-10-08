@@ -6,8 +6,10 @@ import { AvatarFallback, Avatar, AvatarImage } from "@/components/ui/avatar";
 import { ROUTES } from "@/routes";
 import PageLink from "./page-link";
 import useAuth from "@/hooks/use-auth";
+import { usePathname } from "next/navigation";
 
 export default function NavBar() {
+  usePathname();
   const { auth, loggedIn } = useAuth();
 
   if (!loggedIn) return null;

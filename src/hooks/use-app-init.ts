@@ -19,16 +19,12 @@ export default function useAppInit() {
     async () => {
       try {
         ////////////////////////////////////////////////////////////////
-        ////////////////////////////////////////////////////////////////
-
-        // disableContextMenu();
 
         // load app data & settings
         await loadSettingsState();
         await loadAuthState();
         await loadAvatarState();
 
-        ////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////
         track("init", { success: trackName() });
         appState.init = true;
@@ -42,25 +38,3 @@ export default function useAppInit() {
     },
   );
 }
-
-// function disableContextMenu() {
-//   // if (window.location.hostname !== "tauri.localhost") return;
-//
-//   document.addEventListener(
-//     "contextmenu",
-//     (e) => {
-//       e.preventDefault();
-//       return false;
-//     },
-//     { capture: true },
-//   );
-//
-//   document.addEventListener(
-//     "selectstart",
-//     (e) => {
-//       e.preventDefault();
-//       return false;
-//     },
-//     { capture: true },
-//   );
-// }

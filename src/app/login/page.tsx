@@ -41,10 +41,8 @@ export default function Page() {
         username: formData.get("username") as string,
         password: formData.get("password") as string,
       };
-      // me.username = "";
       const result = await vrchatLogin(authMut.credentials);
       me.username = authMut.credentials.username;
-      console.log("page login result", result);
       switch (result) {
         case LoginStatus.Success:
           // toast({ title: "登录成功" });
@@ -88,6 +86,7 @@ export default function Page() {
       }
       switch (result) {
         case LoginStatus.Success:
+          me.username = auth.credentials.username;
           // toast({ title: "登录成功" });
           break;
         case LoginStatus.NotLoggedIn:

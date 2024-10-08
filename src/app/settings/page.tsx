@@ -18,32 +18,28 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "@/hooks/use-toast";
-import { ROUTE_HOME } from "@/routes";
-import { clearAuths, logout } from "@/state/auth";
+import { clearAuths, logout, me } from "@/state/auth";
 import { clearAvatars } from "@/state/avatars";
 import { clearSettings, settingsState } from "@/state/settings";
-import { ChevronLeft } from "lucide-react";
-import { useRouter } from "next/navigation";
 import React from "react";
 import { useSnapshot } from "valtio";
 
 export default function Page() {
   const settings = useSnapshot(settingsState);
-  const router = useRouter();
   return (
     <main className="h-full w-full pt-4 flex flex-col items-center">
       <div className="h-full max-w-lg w-full px-4">
         {/* header */}
-        <div className="relative flex items-center justify-center">
-          <Button
-            className="absolute left-0 flex items-center w-fit"
-            variant="ghost"
-            size="sm"
-            // use router.back()
-            onClick={() => router.replace(ROUTE_HOME)}
-          >
-            <ChevronLeft />
-          </Button>
+        <div className="relative flex items-center justify-start">
+          {/* <Button */}
+          {/*   className="absolute left-0 flex items-center w-fit" */}
+          {/*   variant="ghost" */}
+          {/*   size="sm" */}
+          {/*   // use router.back() */}
+          {/*   onClick={() => router.back()} */}
+          {/* > */}
+          {/*   <ChevronLeft /> */}
+          {/* </Button> */}
 
           <h1 className="font-semibold text-xl px-8">设置</h1>
         </div>
@@ -113,6 +109,7 @@ export default function Page() {
                           clearAvatars();
                           clearSettings();
                           clearAuths();
+                          delete me.username;
                           toast({ title: "已清空数据" });
                         }}
                       >
@@ -139,7 +136,10 @@ export default function Page() {
                   <DialogTitle>退出登录</DialogTitle>
                   <DialogDescription>是否退出登录？</DialogDescription>
                   <DialogFooter>
-                    <Button variant="outline" onClick={() => logout()}>
+                    <Button
+                      variant="outline"
+                      onClick={() => logout(me.username ?? "_")}
+                    >
                       确认
                     </Button>
                     <DialogClose asChild>
