@@ -72,20 +72,18 @@ export async function logout(username: string) {
   track("logout", { user: username });
   const auth = getAuth(username);
   if (auth.credentials) invoke("vrchat_logout", { username });
-  auth.status = LoginStatus.NotLoggedIn;
-  authState[username] = initAuth;
+  // auth.status = LoginStatus.NotLoggedIn;
+  // authState[username] = initAuth;
   clearAuth(username);
 }
 
 export function clearAuth(username: string) {
   const auth = getAuth(username);
-  delete auth.info;
-  delete auth.credentials;
+  // delete auth.info;
+  // delete auth.credentials;
   Object.assign(auth, initAuth);
 }
 
-export function clearAuths() {
-  for (const k of Object.keys(authState)) {
-    clearAuth(k);
-  }
+export async function clearAuths() {
+  Object.assign(authState, {});
 }

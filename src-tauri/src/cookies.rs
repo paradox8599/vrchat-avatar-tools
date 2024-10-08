@@ -59,13 +59,16 @@ impl ConfigCookie {
             .iter_any()
             .map(|c| format!("{}={}", c.name(), c.value()))
             .collect::<Vec<String>>();
+        println!("cookies: {:?}", cookies_str);
         let cookies_value = serde_json::json!(cookies_str);
         self.store.set(&self.name, cookies_value);
         let _ = self.store.save();
     }
 
     pub fn delete(&self) -> bool {
-        self.store.delete(&self.name)
+        let result = self.store.delete(&self.name);
+        let _ = self.store.save();
+        result
     }
 }
 

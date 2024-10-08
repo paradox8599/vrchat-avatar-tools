@@ -7,7 +7,7 @@ import {
 import { ErrorName, parseError } from "./err";
 import { track } from "../aptabase";
 import { API_NAMES, invoke } from "./base";
-import { clearAuth, getAuth } from "@/state/auth";
+import { getAuth } from "@/state/auth";
 
 async function vrchatIsReachable() {
   return await invoke<boolean>(API_NAMES.vrchatIsReachable).catch(() => false);
@@ -18,6 +18,7 @@ async function vrchatIsReachable() {
  */
 async function vrchatGetMe(username: string) {
   const auth = getAuth(username);
+  console.log("vrchat get me:", JSON.parse(JSON.stringify(auth)));
 
   if (!auth.credentials) {
     auth.status = LoginStatus.NotLoggedIn;
@@ -40,6 +41,7 @@ async function vrchatGetMe(username: string) {
       for (const method of info.requiresTwoFactorAuth) {
         track("login", { [method]: auth.credentials.username });
       }
+      console.log(info.requiresTwoFactorAuth);
       if (info.requiresTwoFactorAuth.length === 0) {
         auth.status = LoginStatus.NotLoggedIn;
       }
@@ -70,25 +72,17 @@ async function vrchatGetMe(username: string) {
   }
 }
 
-async function checkAuth(username: string) {
-  const loginStatus = await vrchatGetMe(username);
-  switch (loginStatus) {
-    case LoginStatus.NotLoggedIn:
-      clearAuth(username);
-  }
-  return loginStatus;
-}
-
 async function vrchatLogin(credentials?: LoginCredentials) {
   if (!credentials) {
     throw new Error("No credentials provided");
   }
 
+  console.log("vrchat login", credentials);
   await invoke(API_NAMES.vrchatLogin, credentials);
 
   const auth = getAuth(credentials.username);
   auth.credentials = credentials;
-  return await checkAuth(credentials.username);
+  return await vrchatGetMe(credentials.username);
 }
 
 async function vrchatVerifyEmailOtp({
@@ -100,7 +94,7 @@ async function vrchatVerifyEmailOtp({
 }) {
   try {
     await invoke(API_NAMES.vrchatVerifyEmailOtp, { username, code });
-    return await checkAuth(username);
+    return await vrchatGetMe(username);
   } catch (e) {
     const auth = getAuth(username);
     const err = parseError(e);
@@ -123,8 +117,9 @@ async function vrchatVerifyOtp({
   code: string;
 }) {
   try {
+    console.log("verify", username, JSON.parse(JSON.stringify(getAuth())));
     await invoke(API_NAMES.vrchatVerifyOtp, { username, code });
-    return await checkAuth(username);
+    return await vrchatGetMe(username);
   } catch (e) {
     const auth = getAuth(username);
     const err = parseError(e);

@@ -168,7 +168,7 @@ pub async fn vrchat_logout(
                     |_| {},
                 )
             })?;
-        cc.save();
+        cc.delete();
     }
     Ok(())
 }

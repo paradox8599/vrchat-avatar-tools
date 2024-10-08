@@ -81,8 +81,10 @@ export default function Page() {
             code,
           });
           break;
-        default:
-          throw "暂无支持的验证方式";
+        case LoginStatus.NotLoggedIn:
+          throw "未登录";
+        case LoginStatus.Success:
+          result = LoginStatus.Success;
       }
       switch (result) {
         case LoginStatus.Success:
