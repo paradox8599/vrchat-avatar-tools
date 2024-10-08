@@ -43,7 +43,7 @@ subscribe(authMapState, async () => {
 ////////////////////////////////////////////////////////////////
 
 export async function loadAuthState() {
-  store = await createStore("auth", { autoSave: true });
+  store = await createStore("auth", { autoSave: 1 as unknown as boolean });
 
   const storedMe = await store.get<MyAuthState>(AUTH_STORE_ME_KEY);
   if (storedMe) Object.assign(myAuthState, storedMe);

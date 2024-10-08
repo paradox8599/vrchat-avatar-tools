@@ -15,7 +15,7 @@ subscribe(avatarMapState, async () => {
 });
 
 export async function loadAvatarState() {
-  store = await createStore("avatars", { autoSave: true });
+  store = await createStore("avatars", { autoSave: 1 as unknown as boolean });
 
   const storedAvatars =
     await store.get<Record<string, Avatar>>(AVATAR_STORE_KEY);
