@@ -14,7 +14,7 @@ pub async fn vrchat_get_avatar_info(
     username: String,
     avatar_id: String,
 ) -> Result<Avatar, AppError> {
-    let cc = ccmap.get_or_load(&username).await;
+    let cc = ccmap.get(&username).await;
     let config = cc.config.write().await;
     let avatar: Avatar = vrchatapi::apis::avatars_api::get_avatar(&config, &avatar_id)
         .await
@@ -39,7 +39,7 @@ pub async fn vrchat_get_own_avatars(
     ccmap: tauri::State<'_, ConfigCookieMap>,
     username: String,
 ) -> Result<Vec<Avatar>, AppError> {
-    let cc = ccmap.get_or_load(&username).await;
+    let cc = ccmap.get(&username).await;
     let config = cc.config.write().await;
     let mut avatars: Vec<Avatar> = vec![];
     let mut offset = 0;

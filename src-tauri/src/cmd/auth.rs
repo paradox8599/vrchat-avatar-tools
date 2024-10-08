@@ -18,7 +18,7 @@ pub async fn vrchat_login(
     username: String,
     password: String,
 ) -> Result<(), AppError> {
-    let cc = ccmap.get_or_load(&username).await;
+    let cc = ccmap.get(&username).await;
     let mut config = cc.config.write().await;
     config.basic_auth = Some((username, Some(password)));
     cc.save();
@@ -29,7 +29,7 @@ pub async fn vrchat_login(
 pub async fn vrchat_is_reachable(
     ccmap: tauri::State<'_, ConfigCookieMap>,
 ) -> Result<bool, AppError> {
-    let cc = ccmap.get_or_load("default").await;
+    let cc = ccmap.get("default").await;
     let config = cc.config.write().await;
     vrchatapi::apis::authentication_api::check_user_exists(
         &config,
@@ -58,7 +58,7 @@ pub async fn vrchat_get_me(
     ccmap: tauri::State<'_, ConfigCookieMap>,
     username: String,
 ) -> Result<EitherUserOrTwoFactor, AppError> {
-    let cc = ccmap.get_or_load(&username).await;
+    let cc = ccmap.get(&username).await;
     let config = cc.config.write().await;
     let me = vrchatapi::apis::authentication_api::get_current_user(&config).await;
 
@@ -85,7 +85,7 @@ pub async fn vrchat_verify_emailotp(
     username: String,
     code: String,
 ) -> Result<bool, AppError> {
-    let cc = ccmap.get_or_load(&username).await;
+    let cc = ccmap.get(&username).await;
     let config = cc.config.write().await;
     let verify_result = vrchatapi::apis::authentication_api::verify2_fa_email_code(
         &config,
@@ -117,7 +117,7 @@ pub async fn vrchat_verify_otp(
     username: String,
     code: String,
 ) -> Result<bool, AppError> {
-    let cc = ccmap.get_or_load(&username).await;
+    let cc = ccmap.get(&username).await;
     let config = cc.config.write().await;
     let verify_result = vrchatapi::apis::authentication_api::verify2_fa(
         &config,

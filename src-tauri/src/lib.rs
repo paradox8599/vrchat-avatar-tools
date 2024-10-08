@@ -2,7 +2,6 @@ mod cmd;
 mod constants;
 mod cookies;
 mod err;
-mod store;
 
 #[cfg(desktop)]
 mod tray;
@@ -18,7 +17,6 @@ use cmd::{
 };
 use cookies::ConfigCookieMap;
 use std::sync::Arc;
-use store::Store;
 use tauri::Manager;
 use tauri_plugin_cli::CliExt;
 use tokio::sync::RwLock;
@@ -81,7 +79,6 @@ fn show_window(app: &tauri::AppHandle) {
 pub fn init(app: &mut tauri::App) -> StdResult<()> {
     let handle = app.handle();
 
-    Store::init(handle)?;
     ConfigCookieMap::init(handle);
 
     #[cfg(desktop)]

@@ -36,7 +36,7 @@ tauri-build = { version = "2.0.0-rc.9", features = [] }
 serde_json = "1.0"
 serde = { version = "1.0", features = ["derive"] }
 tauri = { version = "2.0.0-rc", features = ["tray-icon"] }
-tauri-plugin-store = "2.0.0-rc"
+tauri-plugin-store = "2.0.1"
 tauri-plugin-shell = "2.0.0-rc"
 tauri-plugin-clipboard-manager = "2.0.0-beta.0"
 vrchatapi = "1.18.1"
@@ -44,7 +44,7 @@ thiserror = "1.0.63"
 reqwest = { version = "0.12.7", features = ["cookies"] }
 tokio = { version = "1.40.0", features = ["full"] }
 reqwest_cookie_store = "0.8.0"
-tauri-plugin-notification = "2.0.0-rc"
+tauri-plugin-notification = "2.0.1"
 tauri-plugin-process = "2.0.0-beta.0"
 tauri-plugin-prevent-default = "0.5.0"
 tauri-plugin-aptabase = { git = "https://github.com/aptabase/tauri-plugin-aptabase", branch = "v2" }
