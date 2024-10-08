@@ -42,7 +42,7 @@ where
                 }
 
                 _ => {
-                    println!("e: {e:?}");
+                    eprintln!("e: {e:?}");
                     match e.entity.as_ref() {
                         None => unknown_response_err(e),
                         Some(entity) => on_api_error(entity),
@@ -51,7 +51,7 @@ where
             }
         }
         Error::Reqwest(error) => {
-            println!("unknown error in handler: {:?}", e);
+            eprintln!("unknown error in handler: {:?}", e);
             AppError::NoConnection(error.to_string())
         }
         e => AppError::Unknown(e.to_string()),
