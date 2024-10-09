@@ -38,7 +38,7 @@ serde = { version = "1.0", features = ["derive"] }
 tauri = { version = "2.0.2", features = ["tray-icon"] }
 tauri-plugin-store = "2.0.1"
 tauri-plugin-shell = "2.0.1"
-tauri-plugin-clipboard-manager = "2.0.0-beta.0"
+tauri-plugin-clipboard-manager = "2.0.1"
 vrchatapi = "1.18.5"
 thiserror = "1.0.64"
 reqwest = { version = "0.12.8", features = ["cookies"] }
