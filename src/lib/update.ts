@@ -13,6 +13,6 @@ export async function checkUpdate() {
     appState.updated = !update;
     if (!update) return;
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
 }

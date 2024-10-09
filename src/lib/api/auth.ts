@@ -18,7 +18,6 @@ async function vrchatIsReachable() {
  */
 async function vrchatGetMe(username: string) {
   const auth = getAuth(username);
-  console.log("vrchat get me:", JSON.parse(JSON.stringify(auth)));
 
   if (!auth.credentials) {
     auth.status = LoginStatus.NotLoggedIn;
@@ -41,7 +40,6 @@ async function vrchatGetMe(username: string) {
       for (const method of info.requiresTwoFactorAuth) {
         track("login", { [method]: auth.credentials.username });
       }
-      console.log(info.requiresTwoFactorAuth);
       if (info.requiresTwoFactorAuth.length === 0) {
         auth.status = LoginStatus.NotLoggedIn;
       }
@@ -77,7 +75,6 @@ async function vrchatLogin(credentials?: LoginCredentials) {
     throw new Error("No credentials provided");
   }
 
-  console.log("vrchat login", credentials);
   await invoke(API_NAMES.vrchatLogin, credentials);
 
   const auth = getAuth(credentials.username);
@@ -117,7 +114,6 @@ async function vrchatVerifyOtp({
   code: string;
 }) {
   try {
-    console.log("verify", username, JSON.parse(JSON.stringify(getAuth())));
     await invoke(API_NAMES.vrchatVerifyOtp, { username, code });
     return await vrchatGetMe(username);
   } catch (e) {
