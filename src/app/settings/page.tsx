@@ -24,7 +24,7 @@ import { clearSettings, settingsState } from "@/state/settings";
 import React from "react";
 import { useSnapshot } from "valtio";
 
-export default function Page() {
+export default function SettingsPage() {
   const settings = useSnapshot(settingsState);
   return (
     <main className="h-full w-full pt-4 flex flex-col items-center">

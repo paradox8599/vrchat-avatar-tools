@@ -24,7 +24,7 @@ import { clearAuths, me } from "@/state/auth";
 import { clearSettings } from "@/state/settings";
 import useAuth from "@/hooks/use-auth";
 
-export default function Page() {
+export default function LoginPage() {
   const [loginResult, setLoginResult] = React.useState<LoginStatus>(
     LoginStatus.NotLoggedIn,
   );
