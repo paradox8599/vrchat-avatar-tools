@@ -51,7 +51,7 @@ export async function fetchAvatarInfo(avatar: Avatar) {
   }
 }
 
-export function useAvatarFetcher() {
+export function useAvatarInfoFetcher() {
   React.useEffect(() => {
     const timer = setInterval(async () => {
       const avatar = getOutdatedAvatar();

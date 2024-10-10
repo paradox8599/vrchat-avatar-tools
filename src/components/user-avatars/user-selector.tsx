@@ -14,14 +14,17 @@ export default function UserSelector() {
     .map((u) => u.info as UserInfo)
     .map((u) => ({ label: u.displayName, value: u.username }));
 
+  function setUsername(un: string) {
+    appState.pages.userAvatars.selectedUsername = un;
+  }
+
   return (
-    <div>
-      <Combobox
-        options={options}
-        onSelect={(v) => (appState.pages.userAvatars.selectedUsername = v)}
-        value={selectedUsername}
-        placeholder="选择用户..."
-      />
-    </div>
+    <Combobox
+      options={options}
+      onSelect={setUsername}
+      value={selectedUsername}
+      placeholder="选择用户..."
+      noCreate
+    />
   );
 }

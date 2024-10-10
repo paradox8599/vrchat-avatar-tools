@@ -10,7 +10,7 @@ import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import useRoutes from "@/hooks/use-routes";
-import { useAvatarFetcher } from "@/hooks/use-avatar-fetcher";
+import { useAvatarInfoFetcher } from "@/hooks/use-avatar-info-fetcher";
 import React from "react";
 
 export default function AppProvider({ children }: React.PropsWithChildren) {
@@ -20,7 +20,8 @@ export default function AppProvider({ children }: React.PropsWithChildren) {
   useNotification();
   usePath();
   useRoutes();
-  useAvatarFetcher();
+
+  useAvatarInfoFetcher();
 
   return (
     <NextThemesProvider

@@ -1,10 +1,12 @@
 "use client";
-import UserSelector from "@/components/avatars/user-selector";
+import UserSelector from "@/components/user-avatars/user-selector";
 
 export default function AvatarPage() {
   return (
-    <main>
-      <UserSelector />
+    <main className="p-2 h-full flex flex-col">
+      <div>
+        <UserSelector />
+      </div>
     </main>
   );
 }
