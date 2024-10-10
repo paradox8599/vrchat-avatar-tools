@@ -1,14 +1,14 @@
 import fs from "fs";
 
 enum Action {
-  Replace = "replace",
-  Restore = "restore",
+  Replace = "on",
+  Restore = "off",
 }
 
 const action: Action = Bun.argv[2] as Action;
 
 if (action !== Action.Replace && action !== Action.Restore) {
-  console.log("invalid action: 'replace' or 'restore'");
+  console.log("invalid action: 'on' or 'off'");
   process.exit(1);
 }
 

@@ -1,3 +1,4 @@
 #!/bin/sh
+bun env off
 bunx lint-staged
 
