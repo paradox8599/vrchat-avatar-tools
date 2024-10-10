@@ -7,12 +7,19 @@ export type AppState = {
   version?: string;
 
   publicCheckTagFilter?: string;
-  avatarsSelectedUsername?: string;
+  pages: {
+    userAvatars: {
+      selectedUsername?: string;
+    };
+  };
 };
 
 const initAppState = {
   init: false,
   updated: false,
+  pages: {
+    userAvatars: {},
+  },
 };
 
 export const appState: AppState = proxy(initAppState);

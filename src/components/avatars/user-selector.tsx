@@ -5,7 +5,7 @@ import { appState } from "@/state/app";
 import { UserInfo } from "@/types";
 
 export default function UserSelector() {
-  const { avatarsSelectedUsername } = useSnapshot(appState);
+  const { selectedUsername } = useSnapshot(appState.pages.userAvatars);
   const auths = useSnapshot(authState);
   const users = Object.values(auths);
 
@@ -18,8 +18,8 @@ export default function UserSelector() {
     <div>
       <Combobox
         options={options}
-        onSelect={(v) => (appState.avatarsSelectedUsername = v)}
-        value={avatarsSelectedUsername}
+        onSelect={(v) => (appState.pages.userAvatars.selectedUsername = v)}
+        value={selectedUsername}
         placeholder="选择用户..."
       />
     </div>

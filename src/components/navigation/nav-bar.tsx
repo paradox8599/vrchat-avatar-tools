@@ -36,7 +36,7 @@ export default function NavBar() {
           <Radar />
         </PageLink>
 
-        <PageLink tooltip="模型管理" href={ROUTES.avatars}>
+        <PageLink tooltip="模型管理" href={ROUTES.userAvatars}>
           <Layers3 />
         </PageLink>
       </div>
