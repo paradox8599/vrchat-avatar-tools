@@ -1,7 +1,7 @@
 use tauri::command;
 use vrchatapi::{
-    apis::avatars_api::{GetAvatarError, SearchAvatarsError},
-    models::{release_status::ReleaseStatus, Avatar, SortOption},
+    apis::avatars_api::{GetAvatarError, SearchAvatarsError, UpdateAvatarError},
+    models::{release_status::ReleaseStatus, Avatar, SortOption, UpdateAvatarRequest},
 };
 
 use crate::{cookies::ConfigCookieMap, err::AppError};
@@ -80,4 +80,32 @@ pub async fn vrchat_get_own_avatars(
         offset += 100;
     }
     Ok(avatars)
+}
+
+#[command]
+pub async fn vrchat_update_avatar(
+    ccmap: tauri::State<'_, ConfigCookieMap>,
+    username: String,
+    avatar_id: String,
+    data: UpdateAvatarRequest,
+) -> Result<(), AppError> {
+    let cc = ccmap.get(&username).await;
+    let config = cc.config.write().await;
+    vrchatapi::apis::avatars_api::update_avatar(&config, &avatar_id, Some(data))
+        .await
+        .map_err(|e| {
+            cc.save();
+            handle_api_error(
+                e,
+                |e| match e {
+                    UpdateAvatarError::Status401(_) => unreachable!(),
+                    UpdateAvatarError::Status404(_) => {
+                        AppError::UnsuccessfulStatus(404, "Avatar not found".to_string())
+                    }
+                    UpdateAvatarError::UnknownValue(v) => AppError::Unknown(v.to_string()),
+                },
+                |_| {},
+            )
+        })?;
+    Ok(())
 }

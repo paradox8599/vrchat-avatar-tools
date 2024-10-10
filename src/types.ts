@@ -145,3 +145,14 @@ export enum LoginStatus {
 export type EventProps = {
   [key: string]: string | number;
 };
+
+export type UpdateAvatarRequest = {
+  assetUrl?: string;
+  name?: string;
+  description?: string;
+  imageUrl?: string;
+  releaseStatus?: "public" | "private" | "hidden";
+  version?: number;
+  unity_package_url?: string;
+  unity_version?: string;
+};

@@ -13,7 +13,7 @@ use cmd::{
         vrchat_get_me, vrchat_is_reachable, vrchat_login, vrchat_logout, vrchat_verify_emailotp,
         vrchat_verify_otp,
     },
-    avatar::{vrchat_get_avatar_info, vrchat_get_own_avatars},
+    avatar::{vrchat_get_avatar_info, vrchat_get_own_avatars, vrchat_update_avatar},
 };
 use cookies::ConfigCookieMap;
 use std::sync::Arc;
@@ -52,7 +52,8 @@ pub fn run() {
             vrchat_logout,
             // avatars
             vrchat_get_avatar_info,
-            vrchat_get_own_avatars
+            vrchat_get_own_avatars,
+            vrchat_update_avatar
         ])
         .setup(init)
         // close to hide

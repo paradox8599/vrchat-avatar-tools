@@ -1,7 +1,9 @@
-import { AvatarInfo } from "@/types";
+import { AvatarInfo, UpdateAvatarRequest } from "@/types";
 import { ErrorName, parseError } from "./err";
 import { clearAuth, getAuth } from "@/state/auth";
 import { API_NAMES, invoke } from "./base";
+
+// Get Avatar Info
 
 async function vrchatGetAvatarInfo(avatarId: string) {
   const auth = getAuth();
@@ -30,11 +32,13 @@ async function vrchatGetAvatarInfo(avatarId: string) {
   }
 }
 
+// Get Own Avatars
+
 async function vrchatGetOwnAvatars(username: string) {
   const auth = getAuth(username);
   if (!auth.credentials) return [];
   try {
-    const avatars: AvatarInfo[] = await invoke(API_NAMES.vrchatGetOwnAvatars, {
+    const avatars = await invoke<AvatarInfo[]>(API_NAMES.vrchatGetOwnAvatars, {
       username,
     });
     return avatars;
@@ -45,7 +49,7 @@ async function vrchatGetOwnAvatars(username: string) {
         if (err.status === 404) {
           // track("avatar", { notFound: avatarId });
         } else if (err.status === 401) {
-          clearAuth(auth.credentials.username);
+          clearAuth(username);
         }
       case ErrorName.UnknownError:
         throw err;
@@ -54,4 +58,28 @@ async function vrchatGetOwnAvatars(username: string) {
   }
 }
 
-export { vrchatGetAvatarInfo, vrchatGetOwnAvatars };
+// Update Avatar
+
+async function vrchatUpdateAvatar(
+  username: string,
+  avatarId: string,
+  data: UpdateAvatarRequest,
+) {
+  try {
+    await invoke(API_NAMES.vrchatUpdateAvatar, { username, avatarId, data });
+  } catch (e) {
+    const err = parseError(e);
+    switch (err.type) {
+      case ErrorName.StatusError:
+        if (err.status === 404) {
+          throw err.status;
+        } else if (err.status === 401) {
+          clearAuth(username);
+        }
+      case ErrorName.UnknownError:
+        throw err;
+    }
+  }
+}
+
+export { vrchatGetAvatarInfo, vrchatGetOwnAvatars, vrchatUpdateAvatar };
