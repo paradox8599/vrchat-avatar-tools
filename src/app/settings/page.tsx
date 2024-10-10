@@ -1,4 +1,5 @@
 "use client";
+import PageHeader from "@/components/page-header";
 import { AutoStartToggle } from "@/components/settings/auto-start";
 import { NotificationToggle } from "@/components/settings/notification-toggle";
 import { ThemeToggle } from "@/components/settings/theme-toggle";
@@ -29,19 +30,8 @@ export default function SettingsPage() {
   return (
     <main className="h-full w-full pt-4 flex flex-col items-center">
       <div className="h-full max-w-lg w-full px-4">
-        {/* header */}
-        <div className="relative flex items-center justify-start">
-          {/* <Button */}
-          {/*   className="absolute left-0 flex items-center w-fit" */}
-          {/*   variant="ghost" */}
-          {/*   size="sm" */}
-          {/*   // use router.back() */}
-          {/*   onClick={() => router.back()} */}
-          {/* > */}
-          {/*   <ChevronLeft /> */}
-          {/* </Button> */}
-
-          <h1 className="font-semibold text-xl px-8">设置</h1>
+        <div className="px-4">
+          <PageHeader title="设置" />
         </div>
 
         {/* options */}

@@ -47,7 +47,7 @@ pub async fn vrchat_get_own_avatars(
         let page = vrchatapi::apis::avatars_api::search_avatars(
             &config,                     //     configuration: &configuration::Configuration,
             None,                        //     featured: Option<bool>,
-            Some(SortOption::CreatedAt), //     sort: Option<models::SortOption>,
+            Some(SortOption::UpdatedAt), //     sort: Option<models::SortOption>,
             Some("me"),                  //     user: Option<&str>,
             None,                        //     user_id: Option<&str>,
             Some(100),                   //     n: Option<i32>,
