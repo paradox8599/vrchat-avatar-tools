@@ -72,13 +72,12 @@ pub async fn vrchat_get_own_avatars(
                 |_| {},
             )
         })?;
-
-        if page.len() < 100 {
+        let len = page.len();
+        avatars.extend(page);
+        if len < 100 {
             break;
         }
-
         offset += 100;
-        avatars.extend(page);
     }
     Ok(avatars)
 }

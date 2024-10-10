@@ -15,7 +15,7 @@ import { avatarMapState } from "@/state/avatars";
 import { Copy, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "../ui/badge";
-import { toast } from "@/hooks/use-toast";
+import { toast } from "@/hooks/app/use-toast";
 import { ScrollArea } from "../ui/scroll-area";
 import { writeText } from "@tauri-apps/plugin-clipboard-manager";
 import { track, trackName } from "@/lib/aptabase";

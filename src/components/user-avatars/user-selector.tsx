@@ -1,8 +1,9 @@
+"use client";
 import { authState } from "@/state/auth";
 import { useSnapshot } from "valtio";
 import { Combobox } from "../ui/combobox";
 import { appState } from "@/state/app";
-import { UserInfo } from "@/types";
+import { LoginStatus, UserInfo } from "@/types";
 
 export default function UserSelector() {
   const { selectedUsername } = useSnapshot(appState.pages.userAvatars);
@@ -10,18 +11,14 @@ export default function UserSelector() {
   const users = Object.values(auths);
 
   const options = users
-    .filter((u) => u.info)
+    .filter((u) => u.status === LoginStatus.Success)
     .map((u) => u.info as UserInfo)
     .map((u) => ({ label: u.displayName, value: u.username }));
-
-  function setUsername(un: string) {
-    appState.pages.userAvatars.selectedUsername = un;
-  }
 
   return (
     <Combobox
       options={options}
-      onSelect={setUsername}
+      onSelect={(v) => (appState.pages.userAvatars.selectedUsername = v)}
       value={selectedUsername}
       placeholder="选择用户..."
       noCreate

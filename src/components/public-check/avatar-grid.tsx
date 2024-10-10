@@ -7,7 +7,7 @@ import {
   Avatar as AvatarIcon,
   AvatarImage,
 } from "@/components/ui/avatar";
-import useAvatars from "@/hooks/use-avatars";
+import useAvatars from "@/hooks/avatars/use-avatars";
 import { Button } from "../ui/button";
 import {
   Box,
@@ -17,7 +17,7 @@ import {
   TrashIcon,
 } from "lucide-react";
 import { writeText } from "@tauri-apps/plugin-clipboard-manager";
-import { toast } from "@/hooks/use-toast";
+import { toast } from "@/hooks/app/use-toast";
 import { AvatarTagSelector } from "./tag-selector";
 import { avatarMapState } from "@/state/avatars";
 import { EasyTooltip } from "../easy-tooltip";

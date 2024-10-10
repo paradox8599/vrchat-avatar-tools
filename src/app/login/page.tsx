@@ -14,7 +14,7 @@ import {
   vrchatVerifyEmailOtp,
   vrchatVerifyOtp,
 } from "@/lib/api/auth";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks/app/use-toast";
 import { LoaderCircle } from "lucide-react";
 import { appState } from "@/state/app";
 import { clearAvatars } from "@/state/avatars";
@@ -22,7 +22,7 @@ import { ThemeToggleIcon } from "@/components/settings/theme-toggle";
 import { useSnapshot } from "valtio";
 import { clearAuths, me } from "@/state/auth";
 import { clearSettings } from "@/state/settings";
-import useAuth from "@/hooks/use-auth";
+import useAuth from "@/hooks/app/use-auth";
 
 export default function LoginPage() {
   const [loginResult, setLoginResult] = React.useState<LoginStatus>(

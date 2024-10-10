@@ -79,9 +79,9 @@ export async function logout(username: string) {
 
 export function clearAuth(username: string) {
   const auth = getAuth(username);
-  // delete auth.info;
-  // delete auth.credentials;
-  Object.assign(auth, initAuth);
+  delete auth.info;
+  delete auth.credentials;
+  auth.status = LoginStatus.NotLoggedIn;
 }
 
 export async function clearAuths() {

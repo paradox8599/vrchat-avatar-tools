@@ -6,7 +6,7 @@ import {
   requestPermission,
 } from "@tauri-apps/plugin-notification";
 import { useSnapshot } from "valtio";
-import { toast } from "@/hooks/use-toast";
+import { toast } from "@/hooks/app/use-toast";
 import { settingsState } from "@/state/settings";
 
 export default function useNotification() {

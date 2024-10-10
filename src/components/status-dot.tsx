@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import { EasyTooltip } from "./easy-tooltip";
 import { Avatar } from "@/types";
-import { fetchAvatarInfo } from "@/hooks/use-avatar-info-fetcher";
+import { fetchAvatarInfo } from "@/hooks/avatars/use-avatar-info-fetcher";
 import React from "react";
 import { settingsState } from "@/state/settings";
 
