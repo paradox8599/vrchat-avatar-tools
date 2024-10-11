@@ -43,6 +43,7 @@ pub async fn vrchat_get_own_avatars(
     let config = cc.config.write().await;
     let mut avatars: Vec<Avatar> = vec![];
     let mut offset = 0;
+    let n = 100;
     loop {
         let page = vrchatapi::apis::avatars_api::search_avatars(
             &config,                     //     configuration: &configuration::Configuration,
@@ -50,7 +51,7 @@ pub async fn vrchat_get_own_avatars(
             Some(SortOption::UpdatedAt), //     sort: Option<models::SortOption>,
             Some("me"),                  //     user: Option<&str>,
             None,                        //     user_id: Option<&str>,
-            Some(100),                   //     n: Option<i32>,
+            Some(n),                     //     n: Option<i32>,
             None,                        //     order: Option<models::OrderOption>,
             Some(offset),                //     offset: Option<i32>,
             None,                        //     tag: Option<&str>,
@@ -72,12 +73,14 @@ pub async fn vrchat_get_own_avatars(
                 |_| {},
             )
         })?;
-        let len = page.len();
+        let len = page.len() as i32;
+
         avatars.extend(page);
-        if len < 100 {
+
+        if len < n {
             break;
         }
-        offset += 100;
+        offset += len as i32;
     }
     Ok(avatars)
 }

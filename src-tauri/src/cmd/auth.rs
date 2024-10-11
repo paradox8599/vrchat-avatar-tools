@@ -30,6 +30,7 @@ pub async fn vrchat_is_reachable(
     ccmap: tauri::State<'_, ConfigCookieMap>,
 ) -> Result<bool, AppError> {
     let cc = ccmap.get("default").await;
+
     let config = cc.config.write().await;
     vrchatapi::apis::authentication_api::check_user_exists(
         &config,
