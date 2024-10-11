@@ -14,10 +14,12 @@ export enum API_NAMES {
   vrchatVerifyOtp = "vrchat_verify_otp",
   vrchatGetMe = "vrchat_get_me",
   vrchatLogout = "vrchat_logout",
-  // avatar
+  // avatars
   vrchatGetAvatarInfo = "vrchat_get_avatar_info",
   vrchatGetOwnAvatars = "vrchat_get_own_avatars",
   vrchatUpdateAvatar = "vrchat_update_avatar",
+  // files
+  vrchatGetFiles = "vrchat_get_files",
 }
 
 export async function invoke<T>(

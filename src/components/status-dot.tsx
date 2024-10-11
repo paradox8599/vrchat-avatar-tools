@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import { EasyTooltip } from "./easy-tooltip";
-import { Avatar } from "@/types";
+import { AvatarRecord } from "@/types";
 import { fetchAvatarInfo } from "@/hooks/avatars/use-avatar-info-fetcher";
 import React from "react";
 import { settingsState } from "@/state/settings";
@@ -18,7 +18,7 @@ function getColor(lastFetch: string | undefined): StatusColor {
   return "red";
 }
 
-export function StatusDot({ avatar }: { avatar: Avatar }) {
+export function StatusDot({ avatar }: { avatar: AvatarRecord }) {
   const color = getColor(avatar.lastFetch);
   return (
     <EasyTooltip

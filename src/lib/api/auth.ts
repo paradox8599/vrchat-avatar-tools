@@ -6,7 +6,7 @@ import {
 } from "@/types";
 import { ErrorName, parseError } from "./err";
 import { track } from "../aptabase";
-import { API_NAMES, invoke } from "./base";
+import { API_NAMES, invoke } from "./_base";
 import { getAuth } from "@/state/auth";
 
 async function vrchatIsReachable() {

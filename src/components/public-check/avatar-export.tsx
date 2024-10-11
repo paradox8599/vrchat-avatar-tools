@@ -3,7 +3,7 @@ import { Button } from "../ui/button";
 import { avatarMapState } from "@/state/avatars";
 import { dt } from "@/lib/utils";
 import { Checkbox } from "../ui/checkbox";
-import { exportFile } from "@/lib/file";
+import { exportFile } from "@/lib/system-file";
 import { track, trackName } from "@/lib/aptabase";
 
 const HEADERS = [

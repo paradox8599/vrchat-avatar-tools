@@ -1,14 +1,14 @@
 "use client";
 import React from "react";
 import { avatarMapState } from "@/state/avatars";
-import { Avatar } from "@/types";
+import { AvatarRecord } from "@/types";
 import useAvatars from "@/hooks/avatars/use-avatars";
 import { useSnapshot } from "valtio";
 import { appState } from "@/state/app";
 import { track } from "@/lib/aptabase";
 import { Combobox } from "../ui/combobox";
 
-export function AvatarTagSelector({ avatar }: { avatar: Avatar }) {
+export function AvatarTagSelector({ avatar }: { avatar: AvatarRecord }) {
   const { tags } = useAvatars();
   const mutAvatar = avatarMapState.get(avatar.id)!;
   function setTag(tag: string) {
