@@ -4,7 +4,7 @@ import {
   LoginCredentials,
   LoginStatus,
 } from "@/types";
-import { ErrorName, parseError } from "./err";
+import { ApiError, ErrorName } from "./_err";
 import { track } from "../aptabase";
 import { API_NAMES, invoke } from "./_base";
 import { getAuth } from "@/state/auth";
@@ -59,7 +59,7 @@ async function vrchatGetMe(username: string) {
     }
     return auth.status;
   } catch (e) {
-    const err = parseError(e);
+    const err = e as ApiError;
     track("login", { getMeError: err.message });
     switch (err.type) {
       case ErrorName.StatusError:
@@ -94,13 +94,12 @@ async function vrchatVerifyEmailOtp({
     return await vrchatGetMe(username);
   } catch (e) {
     const auth = getAuth(username);
-    const err = parseError(e);
+    const err = e as ApiError;
     track("login", { verifyEmailError: err.message });
     switch (err.type) {
       case ErrorName.StatusError:
         if (err.status === 429) throw err.message;
     }
-    console.error(`caught at vrchatVerifyEmailOtp ${JSON.stringify(e)}`);
     auth.status = LoginStatus.NotLoggedIn;
     return auth.status;
   }
@@ -118,13 +117,12 @@ async function vrchatVerifyOtp({
     return await vrchatGetMe(username);
   } catch (e) {
     const auth = getAuth(username);
-    const err = parseError(e);
+    const err = e as ApiError;
     track("login", { verifyOtpError: err.message });
     switch (err.type) {
       case ErrorName.StatusError:
         if (err.status === 429) throw err.message;
     }
-    console.error(`caught at vrchatVerifyOtp ${JSON.stringify(e)}`);
     auth.status = LoginStatus.NotLoggedIn;
     return auth.status;
   }

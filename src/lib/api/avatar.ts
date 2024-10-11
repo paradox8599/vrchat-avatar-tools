@@ -1,5 +1,5 @@
-import { ErrorName, parseError } from "./err";
-import { clearAuth, getAuth } from "@/state/auth";
+import { ApiError, ErrorName } from "./_err";
+import { getAuth } from "@/state/auth";
 import { API_NAMES, invoke } from "./_base";
 import vrchat from "vrchat";
 
@@ -19,17 +19,13 @@ async function vrchatGetAvatarInfo(avatarId: string) {
     );
     return avatarInfo;
   } catch (e) {
-    const err = parseError(e);
-    // track("avatar", { [err.message]: trackName() });
+    const err = e as ApiError;
     switch (err.type) {
       case ErrorName.StatusError:
         if (err.status === 404) {
-          // track("avatar", { notFound: avatarId });
           return undefined;
-        } else if (err.status === 401) {
-          clearAuth(auth.credentials.username);
         }
-      case ErrorName.UnknownError:
+      default:
         throw err;
     }
   }
@@ -49,14 +45,8 @@ async function vrchatGetOwnAvatars(username: string) {
     );
     return avatars;
   } catch (e) {
-    const err = parseError(e);
+    const err = e as ApiError;
     switch (err.type) {
-      case ErrorName.StatusError:
-        if (err.status === 404) {
-          // track("avatar", { notFound: avatarId });
-        } else if (err.status === 401) {
-          clearAuth(username);
-        }
       case ErrorName.UnknownError:
         throw err;
     }
@@ -71,21 +61,7 @@ async function vrchatUpdateAvatar(
   avatarId: string,
   data: vrchat.UpdateAvatarRequest,
 ) {
-  try {
-    await invoke(API_NAMES.vrchatUpdateAvatar, { username, avatarId, data });
-  } catch (e) {
-    const err = parseError(e);
-    switch (err.type) {
-      case ErrorName.StatusError:
-        if (err.status === 404) {
-          throw err.status;
-        } else if (err.status === 401) {
-          clearAuth(username);
-        }
-      case ErrorName.UnknownError:
-        throw err;
-    }
-  }
+  await invoke(API_NAMES.vrchatUpdateAvatar, { username, avatarId, data });
 }
 
 export { vrchatGetAvatarInfo, vrchatGetOwnAvatars, vrchatUpdateAvatar };

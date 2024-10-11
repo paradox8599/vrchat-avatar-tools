@@ -4,7 +4,7 @@ import {
   InvokeOptions,
 } from "@tauri-apps/api/core";
 import { appState } from "@/state/app";
-import { ErrorName, parseError } from "./err";
+import { ErrorName, parseError } from "./_err";
 
 export enum API_NAMES {
   vrchatIsReachable = "vrchat_is_reachable",
@@ -36,6 +36,7 @@ export async function invoke<T>(
     if (err.type === ErrorName.ConnectionError) {
       appState.reachable = false;
     }
-    throw e;
+    console.error("invoke error", err);
+    throw err;
   }
 }
