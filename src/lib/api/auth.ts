@@ -1,6 +1,6 @@
 import { GetMeResult, isLoginSuccess, LoginStatus } from "@/types";
 import { ApiError, ErrorName } from "./_err";
-import { API_NAMES, VRChatClient } from "./_base";
+import { VRChatClient } from "./_base";
 import { me } from "@/state/auth";
 
 declare module "./_base" {
@@ -16,7 +16,7 @@ VRChatClient.prototype.getMe = async function () {
   const auth = this.auth;
 
   try {
-    const info: GetMeResult = await this.invoke(API_NAMES.vrchatGetMe, {
+    const info: GetMeResult = await this.invoke(this.apis.vrchatGetMe, {
       username: this.username,
     });
 
@@ -60,21 +60,18 @@ VRChatClient.prototype.getMe = async function () {
 
 VRChatClient.prototype.login = async function (password: string) {
   const cred = { username: this.username, password };
-  await this.invoke(API_NAMES.vrchatLogin, cred);
+  await this.invoke(this.apis.vrchatLogin, cred);
   return await this.getMe();
 };
 
-function getVerifyUrl(status: LoginStatus) {
-  switch (status) {
-    case LoginStatus.NeedsEmailVerify:
-      return API_NAMES.vrchatVerifyEmailOtp;
-    case LoginStatus.NeedsVerify:
-      return API_NAMES.vrchatVerifyOtp;
-  }
-}
-
 VRChatClient.prototype.verify = async function (code: string) {
-  const url = getVerifyUrl(this.auth.status);
+  let url;
+  switch (this.status) {
+    case LoginStatus.NeedsEmailVerify:
+      url = this.apis.vrchatVerifyEmailOtp;
+    case LoginStatus.NeedsVerify:
+      url = this.apis.vrchatVerifyOtp;
+  }
   if (!url) return this.auth.status;
   try {
     const args = { username: this.username, code };
@@ -94,7 +91,7 @@ VRChatClient.prototype.verify = async function (code: string) {
 
 VRChatClient.prototype.logout = async function () {
   if (!this.loggedIn) return;
-  await this.invoke(API_NAMES.vrchatLogout, { username: this.username });
+  await this.invoke(this.apis.vrchatLogout, { username: this.username });
   const auth = this.auth;
   delete auth.info;
   auth.status = LoginStatus.NotLoggedIn;

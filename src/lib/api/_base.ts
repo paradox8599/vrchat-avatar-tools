@@ -24,7 +24,7 @@ export enum API_NAMES {
   vrchatGetFiles = "vrchat_get_files",
 }
 
-export async function invoke<T>(
+async function invoke<T>(
   cmd: API_NAMES,
   args?: InvokeArgs,
   options?: InvokeOptions,
@@ -43,6 +43,7 @@ export async function invoke<T>(
 }
 
 export class VRChatClient {
+  apis = API_NAMES;
   username: string;
 
   constructor(username: string) {
@@ -59,8 +60,12 @@ export class VRChatClient {
     return authState[this.username];
   }
 
+  get status() {
+    return this.auth.status;
+  }
+
   get loggedIn() {
-    return this.auth.status === LoginStatus.Success;
+    return this.status === LoginStatus.Success;
   }
 
   async invoke<T>(

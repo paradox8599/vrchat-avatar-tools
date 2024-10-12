@@ -1,6 +1,6 @@
 import vrchat from "vrchat";
 import { ApiError, ErrorName } from "./_err";
-import { API_NAMES, VRChatClient } from "./_base";
+import { VRChatClient } from "./_base";
 
 declare module "./_base" {
   export interface VRChatClient {
@@ -15,7 +15,7 @@ declare module "./_base" {
 
 VRChatClient.prototype.getAvatarInfo = async function (avatarId: string) {
   try {
-    return await this.invoke(API_NAMES.vrchatGetAvatarInfo, {
+    return await this.invoke(this.apis.vrchatGetAvatarInfo, {
       username: this.username,
       avatarId,
     });
@@ -34,7 +34,7 @@ VRChatClient.prototype.getAvatarInfo = async function (avatarId: string) {
 
 VRChatClient.prototype.getOwnAvatars = async function () {
   try {
-    return await this.invoke<vrchat.Avatar[]>(API_NAMES.vrchatGetOwnAvatars, {
+    return await this.invoke<vrchat.Avatar[]>(this.apis.vrchatGetOwnAvatars, {
       username: this.username,
     });
   } catch (e) {
@@ -52,7 +52,7 @@ VRChatClient.prototype.updateAvatar = async function (
   avatarId: string,
   data: vrchat.UpdateAvatarRequest,
 ) {
-  await this.invoke(API_NAMES.vrchatUpdateAvatar, {
+  await this.invoke(this.apis.vrchatUpdateAvatar, {
     username: this.username,
     avatarId,
     data,
