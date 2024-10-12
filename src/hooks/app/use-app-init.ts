@@ -7,6 +7,7 @@ import useSWRImmutable from "swr/immutable";
 import { track, trackName } from "@/lib/aptabase";
 import { loadAuthState } from "@/state/auth";
 import { loadSettingsState } from "@/state/settings";
+import "@/lib/api/index";
 
 export default function useAppInit() {
   const { init, updated, reachable } = useSnapshot(appState);

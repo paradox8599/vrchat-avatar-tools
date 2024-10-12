@@ -21,8 +21,7 @@ function getOutdatedAvatar() {
 
 export async function fetchAvatarInfo(avatar: AvatarRecord) {
   if (!me.username) return;
-  const client = new VRChatClient(me.username);
-  console.log(client);
+  const client = VRChatClient.new();
   if (!client.loggedIn) return;
   if (avatar.fetching) return;
   try {
