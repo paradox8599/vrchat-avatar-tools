@@ -22,6 +22,7 @@ export enum API_NAMES {
   vrchatUpdateAvatar = "vrchat_update_avatar",
   // files
   vrchatGetFiles = "vrchat_get_files",
+  vrchatShowFile = "vrchat_show_file",
 }
 
 async function invoke<T>(

@@ -1,5 +1,6 @@
 pub mod auth;
 pub mod avatar;
+pub mod file;
 
 use reqwest::StatusCode;
 use serde::Serialize;

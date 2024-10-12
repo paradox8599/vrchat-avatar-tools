@@ -14,6 +14,7 @@ use cmd::{
         vrchat_verify_otp,
     },
     avatar::{vrchat_get_avatar_info, vrchat_get_own_avatars, vrchat_update_avatar},
+    file::{vrchat_get_files, vrchat_show_file},
 };
 use cookies::ConfigCookieMap;
 use std::sync::Arc;
@@ -53,7 +54,10 @@ pub fn run() {
             // avatars
             vrchat_get_avatar_info,
             vrchat_get_own_avatars,
-            vrchat_update_avatar
+            vrchat_update_avatar,
+            // files
+            vrchat_get_files,
+            vrchat_show_file
         ])
         .setup(init)
         // close to hide
