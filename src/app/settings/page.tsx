@@ -19,7 +19,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "@/hooks/app/use-toast";
-import { clearAuths, logout, me } from "@/state/auth";
+import { VRChatClient } from "@/lib/api/_base";
+import { clearAuths, me } from "@/state/auth";
 import { clearAvatars } from "@/state/avatars";
 import { clearSettings, settingsState } from "@/state/settings";
 import React from "react";
@@ -128,12 +129,7 @@ export default function SettingsPage() {
                   <DialogFooter>
                     <Button
                       variant="outline"
-                      onClick={async () => {
-                        if (me.username) {
-                          await logout(me.username);
-                          delete me.username;
-                        }
-                      }}
+                      onClick={() => VRChatClient.new().logout()}
                     >
                       确认
                     </Button>

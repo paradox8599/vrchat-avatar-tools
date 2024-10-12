@@ -1,9 +1,6 @@
 import { LoginStatus } from "@/types";
 import { createStore, Store } from "@tauri-apps/plugin-store";
 import { proxy, subscribe } from "valtio";
-import { invoke } from "@tauri-apps/api/core";
-import { track } from "@/lib/aptabase";
-import { vrchatLogin } from "@/lib/api/auth";
 import { appState } from "./app";
 import vrchat from "vrchat";
 
@@ -12,15 +9,13 @@ const OTHERS = "others";
 
 let store: Store;
 
-type Credentials = { username: string; password: string };
 type Auth = {
   status: LoginStatus;
-  credentials?: Credentials;
   info?: vrchat.CurrentUser;
 };
 
 export type MyInfo = { username?: string };
-const initAuth = { status: LoginStatus.NotLoggedIn };
+export const initAuth = () => ({ status: LoginStatus.NotLoggedIn });
 
 ////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////
@@ -56,33 +51,6 @@ export async function loadAuthState() {
   for (const [k, v] of Object.entries(storedOthers ?? {})) {
     authState[k] = v;
   }
-
-  if (me.username) {
-    const auth = getAuth(me.username);
-    if (auth.credentials) await vrchatLogin(auth.credentials);
-  }
-}
-
-export function getAuth(username?: string) {
-  username ??= me.username ?? "_";
-  authState[username] ??= initAuth;
-  return authState[username];
-}
-
-export async function logout(username: string) {
-  track("logout", { user: username });
-  const auth = getAuth(username);
-  if (auth.credentials) invoke("vrchat_logout", { username });
-  // auth.status = LoginStatus.NotLoggedIn;
-  // authState[username] = initAuth;
-  clearAuth(username);
-}
-
-export function clearAuth(username: string) {
-  const auth = getAuth(username);
-  delete auth.info;
-  delete auth.credentials;
-  auth.status = LoginStatus.NotLoggedIn;
 }
 
 export async function clearAuths() {

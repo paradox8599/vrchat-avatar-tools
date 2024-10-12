@@ -4,7 +4,9 @@ import {
   InvokeOptions,
 } from "@tauri-apps/api/core";
 import { appState } from "@/state/app";
-import { ErrorName, parseError } from "./_err";
+import { ApiError, ErrorName, parseError } from "./_err";
+import { authState, initAuth, me } from "@/state/auth";
+import { LoginStatus } from "@/types";
 
 export enum API_NAMES {
   vrchatIsReachable = "vrchat_is_reachable",
@@ -36,7 +38,52 @@ export async function invoke<T>(
     if (err.type === ErrorName.ConnectionError) {
       appState.reachable = false;
     }
-    console.error("invoke error", err);
     throw err;
   }
+}
+
+export class VRChatClient {
+  username: string;
+
+  constructor(username: string) {
+    this.username = username;
+  }
+
+  static new(username?: string) {
+    username ??= me.username ?? "_";
+    return new VRChatClient(username);
+  }
+
+  get auth() {
+    authState[this.username] ??= initAuth();
+    return authState[this.username];
+  }
+
+  get loggedIn() {
+    return this.auth.status === LoginStatus.Success;
+  }
+
+  async invoke<T>(
+    cmd: API_NAMES,
+    args?: InvokeArgs,
+    options?: InvokeOptions,
+  ): Promise<T> {
+    try {
+      return await invoke<T>(cmd, args, options);
+    } catch (e) {
+      const err = e as ApiError;
+      switch (err.type) {
+        case ErrorName.StatusError:
+          if (err.status === 401) {
+            this.auth.status = LoginStatus.NotLoggedIn;
+          }
+          break;
+      }
+      throw e;
+    }
+  }
+}
+
+export async function vrchatIsReachable() {
+  return await invoke<boolean>(API_NAMES.vrchatIsReachable).catch(() => false);
 }

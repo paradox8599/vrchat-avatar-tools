@@ -1,23 +1,24 @@
-import { ApiError, ErrorName } from "./_err";
-import { getAuth } from "@/state/auth";
-import { API_NAMES, invoke } from "./_base";
 import vrchat from "vrchat";
+import { ApiError, ErrorName } from "./_err";
+import { API_NAMES, VRChatClient } from "./_base";
 
-// Get Avatar Info
+declare module "./_base" {
+  export interface VRChatClient {
+    getAvatarInfo(avatarId: string): Promise<vrchat.Avatar | undefined>;
+    getOwnAvatars(): Promise<vrchat.Avatar[]>;
+    updateAvatar(
+      avatarId: string,
+      data: vrchat.UpdateAvatarRequest,
+    ): Promise<void>;
+  }
+}
 
-async function vrchatGetAvatarInfo(avatarId: string) {
-  const auth = getAuth();
-  if (!auth.credentials) return;
+VRChatClient.prototype.getAvatarInfo = async function (avatarId: string) {
   try {
-    // track("avatar", { fetch: avatarId, userFetch: trackName() });
-    const avatarInfo: vrchat.Avatar = await invoke(
-      API_NAMES.vrchatGetAvatarInfo,
-      {
-        username: auth.credentials.username,
-        avatarId,
-      },
-    );
-    return avatarInfo;
+    return await this.invoke(API_NAMES.vrchatGetAvatarInfo, {
+      username: this.username,
+      avatarId,
+    });
   } catch (e) {
     const err = e as ApiError;
     switch (err.type) {
@@ -29,39 +30,31 @@ async function vrchatGetAvatarInfo(avatarId: string) {
         throw err;
     }
   }
-}
+};
 
-// Get Own Avatars
-
-async function vrchatGetOwnAvatars(username: string) {
-  const auth = getAuth(username);
-  if (!auth.credentials) return [];
+VRChatClient.prototype.getOwnAvatars = async function () {
   try {
-    const avatars = await invoke<vrchat.Avatar[]>(
-      API_NAMES.vrchatGetOwnAvatars,
-      {
-        username,
-      },
-    );
-    return avatars;
+    return await this.invoke<vrchat.Avatar[]>(API_NAMES.vrchatGetOwnAvatars, {
+      username: this.username,
+    });
   } catch (e) {
     const err = e as ApiError;
+
     switch (err.type) {
       case ErrorName.UnknownError:
         throw err;
     }
     return [];
   }
-}
+};
 
-// Update Avatar
-
-async function vrchatUpdateAvatar(
-  username: string,
+VRChatClient.prototype.updateAvatar = async function (
   avatarId: string,
   data: vrchat.UpdateAvatarRequest,
 ) {
-  await invoke(API_NAMES.vrchatUpdateAvatar, { username, avatarId, data });
-}
-
-export { vrchatGetAvatarInfo, vrchatGetOwnAvatars, vrchatUpdateAvatar };
+  await this.invoke(API_NAMES.vrchatUpdateAvatar, {
+    username: this.username,
+    avatarId,
+    data,
+  });
+};

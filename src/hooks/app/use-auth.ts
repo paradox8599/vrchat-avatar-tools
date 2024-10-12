@@ -1,16 +1,18 @@
-import { getAuth, me as _me } from "@/state/auth";
-import { LoginStatus } from "@/types";
+import { me } from "@/state/auth";
 import { useSnapshot } from "valtio";
+import { VRChatClient } from "@/lib/api/_base";
 
-export default function useAuth(username?: string) {
-  const { username: _username } = useSnapshot(_me);
-  const authMut = getAuth(username ?? _username);
-  const auth = useSnapshot(authMut);
-  const loggedIn = auth.status === LoginStatus.Success;
+export function useAuth(username?: string) {
+  const { username: myName } = useSnapshot(me);
+  username ??= myName;
+  const client = VRChatClient.new(username);
+
+  const auth = useSnapshot(client.auth);
 
   return {
     auth,
-    authMut,
-    loggedIn,
+    client,
+    authMut: client.auth,
+    loggedIn: client.loggedIn,
   };
 }

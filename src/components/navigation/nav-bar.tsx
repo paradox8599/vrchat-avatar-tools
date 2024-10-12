@@ -5,8 +5,8 @@ import { Layers3, Radar, Settings } from "lucide-react";
 import { AvatarFallback, Avatar, AvatarImage } from "@/components/ui/avatar";
 import { ROUTES } from "@/routes";
 import PageLink from "./page-link";
-import useAuth from "@/hooks/app/use-auth";
 import { usePathname } from "next/navigation";
+import { useAuth } from "@/hooks/app/use-auth";
 
 export default function NavBar() {
   usePathname();

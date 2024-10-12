@@ -1,11 +1,12 @@
-import { vrchatGetOwnAvatars } from "@/lib/api/avatar";
 import React from "react";
 import useSWRImmutable from "swr/immutable";
+import { useAuth } from "../app/use-auth";
 
 export function useUserAvatars(username?: string) {
+  const { client } = useAuth(username);
   const swr = useSWRImmutable(
     username ? ["useUserAvatars", username] : null,
-    () => vrchatGetOwnAvatars(username!),
+    () => client.getOwnAvatars(),
   );
   const avatars = React.useMemo(
     () =>

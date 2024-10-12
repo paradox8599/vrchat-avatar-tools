@@ -9,11 +9,6 @@ import {
 import { REGEXP_ONLY_DIGITS } from "input-otp";
 import React from "react";
 import { LoginStatus } from "../../types";
-import {
-  vrchatLogin,
-  vrchatVerifyEmailOtp,
-  vrchatVerifyOtp,
-} from "@/lib/api/auth";
 import { useToast } from "@/hooks/app/use-toast";
 import { LoaderCircle } from "lucide-react";
 import { appState } from "@/state/app";
@@ -22,7 +17,7 @@ import { ThemeToggleIcon } from "@/components/settings/theme-toggle";
 import { useSnapshot } from "valtio";
 import { clearAuths, me } from "@/state/auth";
 import { clearSettings } from "@/state/settings";
-import useAuth from "@/hooks/app/use-auth";
+import { useAuth } from "@/hooks/app/use-auth";
 
 export default function LoginPage() {
   const [loginResult, setLoginResult] = React.useState<LoginStatus>(
@@ -32,17 +27,14 @@ export default function LoginPage() {
   const [otpCode, setOtpCode] = React.useState("");
   const { toast } = useToast();
   const { version } = useSnapshot(appState);
-  const { auth, authMut } = useAuth();
+  const { auth, client } = useAuth();
 
   async function onLogin(formData: FormData) {
     setIsLoading(true);
     try {
-      authMut.credentials = {
-        username: formData.get("username") as string,
-        password: formData.get("password") as string,
-      };
-      const result = await vrchatLogin(authMut.credentials);
-      me.username = authMut.credentials.username;
+      const password = formData.get("password") as string;
+      const result = await client.login(password);
+
       switch (result) {
         case LoginStatus.Success:
           // toast({ title: "登录成功" });
@@ -66,29 +58,9 @@ export default function LoginPage() {
 
     setIsLoading(true);
     try {
-      if (!auth.credentials) throw "未登录";
-      let result: LoginStatus;
-      switch (auth.status) {
-        case LoginStatus.NeedsVerify:
-          result = await vrchatVerifyOtp({
-            username: auth.credentials.username,
-            code,
-          });
-          break;
-        case LoginStatus.NeedsEmailVerify:
-          result = await vrchatVerifyEmailOtp({
-            username: auth.credentials.username,
-            code,
-          });
-          break;
-        case LoginStatus.NotLoggedIn:
-          throw "未登录";
-        case LoginStatus.Success:
-          result = LoginStatus.Success;
-      }
+      const result = await client.verify(code);
       switch (result) {
         case LoginStatus.Success:
-          me.username = auth.credentials.username;
           // toast({ title: "登录成功" });
           break;
         case LoginStatus.NotLoggedIn:
@@ -124,16 +96,16 @@ export default function LoginPage() {
             required
             readOnly={isLoading}
             disabled={isLoading}
-            defaultValue={auth.credentials?.username}
+            defaultValue={me.username}
             name="username"
             type="text"
             placeholder="用户名"
+            onChange={(e) => (me.username = e.target.value)}
           />
           <Input
             required
             readOnly={isLoading}
             disabled={isLoading}
-            defaultValue={auth.credentials?.password}
             name="password"
             type="password"
             placeholder="密码"

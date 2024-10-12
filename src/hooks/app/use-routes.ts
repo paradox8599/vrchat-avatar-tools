@@ -3,7 +3,7 @@ import { appState } from "@/state/app";
 import { usePathname, useRouter } from "next/navigation";
 import React from "react";
 import { useSnapshot } from "valtio";
-import useAuth from "./use-auth";
+import { useAuth } from "./use-auth";
 
 export default function useRoutes() {
   const path = usePathname();
