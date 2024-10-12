@@ -18,11 +18,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { toast } from "@/hooks/app/use-toast";
 import { VRChatClient } from "@/lib/api/_base";
-import { clearAuths, me } from "@/state/auth";
-import { clearAvatars } from "@/state/avatars";
-import { clearSettings, settingsState } from "@/state/settings";
+import { settingsState } from "@/state/settings";
 import React from "react";
 import { useSnapshot } from "valtio";
 
@@ -75,45 +72,6 @@ export default function SettingsPage() {
                 }}
               />
             </div>
-
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button variant="destructive" className="w-full">
-                  清空数据
-                </Button>
-              </DialogTrigger>
-
-              <DialogContent className="bg-secondary">
-                <DialogHeader>
-                  <DialogTitle>清空数据</DialogTitle>
-
-                  <DialogDescription className="py-4">
-                    确定要清空数据？这将清空所有添加的模型ID，App
-                    设置，和登录的所有账号。
-                  </DialogDescription>
-
-                  <DialogFooter>
-                    <DialogClose asChild>
-                      <Button
-                        variant="outline"
-                        onClick={() => {
-                          clearAvatars();
-                          clearSettings();
-                          clearAuths();
-                          delete me.username;
-                          toast({ title: "已清空数据" });
-                        }}
-                      >
-                        确认
-                      </Button>
-                    </DialogClose>
-                    <DialogClose asChild>
-                      <Button variant="default">取消</Button>
-                    </DialogClose>
-                  </DialogFooter>
-                </DialogHeader>
-              </DialogContent>
-            </Dialog>
 
             {/* Logout button */}
             <Dialog>

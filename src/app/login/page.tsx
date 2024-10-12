@@ -12,11 +12,9 @@ import { LoginStatus } from "../../types";
 import { useToast } from "@/hooks/app/use-toast";
 import { LoaderCircle } from "lucide-react";
 import { appState } from "@/state/app";
-import { clearAvatars } from "@/state/avatars";
 import { ThemeToggleIcon } from "@/components/settings/theme-toggle";
 import { useSnapshot } from "valtio";
-import { clearAuths, me } from "@/state/auth";
-import { clearSettings } from "@/state/settings";
+import { me } from "@/state/auth";
 import { useAuth } from "@/hooks/app/use-auth";
 
 export default function LoginPage() {
@@ -158,22 +156,9 @@ export default function LoginPage() {
         <div className="flex flex-row justify-between items-center px-4">
           <ThemeToggleIcon />
 
-          <div className="absolute left-0 right-0 text-center text-sm">
+          <div className="absolute left-0 right-0 text-center text-sm z-[-1]">
             {version}
           </div>
-
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => {
-              clearAvatars();
-              clearSettings();
-              clearAuths();
-              toast({ title: "已清空数据" });
-            }}
-          >
-            清空数据
-          </Button>
         </div>
       </div>
     </main>

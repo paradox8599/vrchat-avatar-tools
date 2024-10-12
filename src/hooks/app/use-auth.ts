@@ -1,6 +1,7 @@
 import { me } from "@/state/auth";
 import { useSnapshot } from "valtio";
 import { VRChatClient } from "@/lib/api/_base";
+import { LoginStatus } from "@/types";
 
 export function useAuth(username?: string) {
   const { username: myName } = useSnapshot(me);
@@ -10,9 +11,11 @@ export function useAuth(username?: string) {
   const auth = useSnapshot(client.auth);
 
   return {
-    auth,
     client,
     authMut: client.auth,
-    loggedIn: client.loggedIn,
+
+    // reactive
+    auth,
+    loggedIn: auth.status === LoginStatus.Success,
   };
 }

@@ -52,7 +52,3 @@ export async function loadAuthState() {
     authState[k] = v;
   }
 }
-
-export async function clearAuths() {
-  Object.assign(authState, {});
-}
