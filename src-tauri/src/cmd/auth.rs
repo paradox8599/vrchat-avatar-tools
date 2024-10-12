@@ -2,7 +2,7 @@ use serde_json::json;
 use tauri::command;
 use vrchatapi::{
     apis::authentication_api::{
-        CheckUserExistsError, GetCurrentUserError, LogoutError, Verify2FaEmailCodeError,
+        self, CheckUserExistsError, GetCurrentUserError, LogoutError, Verify2FaEmailCodeError,
         Verify2FaError,
     },
     models::EitherUserOrTwoFactor,
@@ -32,24 +32,18 @@ pub async fn vrchat_is_reachable(
     let cc = ccmap.get("default").await;
 
     let config = cc.config.write().await;
-    vrchatapi::apis::authentication_api::check_user_exists(
-        &config,
-        None,
-        None,
-        Some("username"),
-        None,
-    )
-    .await
-    .map_err(|e| {
-        handle_api_error(
-            e,
-            |e| match e {
-                CheckUserExistsError::Status400(_) => unreachable!(),
-                CheckUserExistsError::UnknownValue(v) => AppError::Unknown(v.to_string()),
-            },
-            |_| {},
-        )
-    })?;
+    authentication_api::check_user_exists(&config, None, None, Some("username"), None)
+        .await
+        .map_err(|e| {
+            handle_api_error(
+                e,
+                |e| match e {
+                    CheckUserExistsError::Status400(_) => unreachable!(),
+                    CheckUserExistsError::UnknownValue(v) => AppError::Unknown(v.to_string()),
+                },
+                |_| {},
+            )
+        })?;
 
     Ok(true)
 }
@@ -61,7 +55,7 @@ pub async fn vrchat_get_me(
 ) -> Result<EitherUserOrTwoFactor, AppError> {
     let cc = ccmap.get(&username).await;
     let config = cc.config.write().await;
-    let me = vrchatapi::apis::authentication_api::get_current_user(&config).await;
+    let me = authentication_api::get_current_user(&config).await;
 
     cc.save();
 
@@ -88,7 +82,7 @@ pub async fn vrchat_verify_emailotp(
 ) -> Result<bool, AppError> {
     let cc = ccmap.get(&username).await;
     let config = cc.config.write().await;
-    let verify_result = vrchatapi::apis::authentication_api::verify2_fa_email_code(
+    let verify_result = authentication_api::verify2_fa_email_code(
         &config,
         vrchatapi::models::TwoFactorEmailCode { code },
     )
@@ -120,11 +114,9 @@ pub async fn vrchat_verify_otp(
 ) -> Result<bool, AppError> {
     let cc = ccmap.get(&username).await;
     let config = cc.config.write().await;
-    let verify_result = vrchatapi::apis::authentication_api::verify2_fa(
-        &config,
-        vrchatapi::models::TwoFactorAuthCode { code },
-    )
-    .await;
+    let verify_result =
+        authentication_api::verify2_fa(&config, vrchatapi::models::TwoFactorAuthCode { code })
+            .await;
 
     cc.save();
 
@@ -153,22 +145,20 @@ pub async fn vrchat_logout(
     let cc = ccmap.delete(&username).await;
     if let Some(cc) = cc {
         let config = cc.config.write().await;
-        vrchatapi::apis::authentication_api::logout(&config)
-            .await
-            .map_err(|e| {
-                handle_api_error(
-                    e,
-                    |e| match e {
-                        LogoutError::Status401(_) => AppError::UnsuccessfulStatus(
-                            401,
-                            json!({ "error": { "status": 401, "message": "unauthorized" } })
-                                .to_string(),
-                        ),
-                        LogoutError::UnknownValue(v) => AppError::Unknown(v.to_string()),
-                    },
-                    |_| {},
-                )
-            })?;
+        authentication_api::logout(&config).await.map_err(|e| {
+            handle_api_error(
+                e,
+                |e| match e {
+                    LogoutError::Status401(_) => AppError::UnsuccessfulStatus(
+                        401,
+                        json!({ "error": { "status": 401, "message": "unauthorized" } })
+                            .to_string(),
+                    ),
+                    LogoutError::UnknownValue(v) => AppError::Unknown(v.to_string()),
+                },
+                |_| {},
+            )
+        })?;
         cc.delete();
     }
     Ok(())

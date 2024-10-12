@@ -1,6 +1,6 @@
 use tauri::command;
 use vrchatapi::{
-    apis::avatars_api::{GetAvatarError, SearchAvatarsError, UpdateAvatarError},
+    apis::avatars_api::{self, GetAvatarError, SearchAvatarsError, UpdateAvatarError},
     models::{release_status::ReleaseStatus, Avatar, SortOption, UpdateAvatarRequest},
 };
 
@@ -16,7 +16,7 @@ pub async fn vrchat_get_avatar_info(
 ) -> Result<Avatar, AppError> {
     let cc = ccmap.get(&username).await;
     let config = cc.config.write().await;
-    let avatar: Avatar = vrchatapi::apis::avatars_api::get_avatar(&config, &avatar_id)
+    let avatar: Avatar = avatars_api::get_avatar(&config, &avatar_id)
         .await
         .map_err(|e| {
             cc.save();
@@ -45,7 +45,7 @@ pub async fn vrchat_get_own_avatars(
     let mut offset = 0;
     let n = 100;
     loop {
-        let page = vrchatapi::apis::avatars_api::search_avatars(
+        let page = avatars_api::search_avatars(
             &config,                     //     configuration: &configuration::Configuration,
             None,                        //     featured: Option<bool>,
             Some(SortOption::UpdatedAt), //     sort: Option<models::SortOption>,
@@ -94,7 +94,7 @@ pub async fn vrchat_update_avatar(
 ) -> Result<(), AppError> {
     let cc = ccmap.get(&username).await;
     let config = cc.config.write().await;
-    vrchatapi::apis::avatars_api::update_avatar(&config, &avatar_id, Some(data))
+    avatars_api::update_avatar(&config, &avatar_id, Some(data))
         .await
         .map_err(|e| {
             cc.save();
