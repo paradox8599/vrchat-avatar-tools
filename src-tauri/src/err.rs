@@ -3,10 +3,10 @@ use thiserror::Error;
 
 #[derive(Error, Debug, Serialize, Deserialize)]
 pub enum AppError {
-    #[error("Status {0}: {1}")]
+    #[error("status {0}: {1}")]
     UnsuccessfulStatus(u16, String),
 
-    #[error("Connection error: {0}")]
+    #[error("connection error: {0}")]
     NoConnection(String),
 
     #[error("unknown error {0}")]
@@ -14,4 +14,28 @@ pub enum AppError {
 
     #[error("false positive: {0}")]
     FalsePositive(String),
+
+    #[error("app file error: {0}")]
+    File(#[from] AppFileError),
+}
+
+#[derive(Error, Debug, Serialize, Deserialize)]
+pub enum AppFileError {
+    #[error("file path error {0}")]
+    Path(String),
+
+    #[error("open file error {0}")]
+    Open(String),
+
+    #[error("read file error {0}")]
+    Read(String),
+
+    #[error("create file error {0}")]
+    Create(String),
+
+    #[error("delete {0}")]
+    Delete(String),
+
+    #[error("write {0}")]
+    Write(String),
 }

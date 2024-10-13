@@ -1,4 +1,4 @@
-use tauri::command;
+use tauri::{command, path::BaseDirectory};
 use vrchatapi::{
     apis::{
         configuration::Configuration,
@@ -8,7 +8,9 @@ use vrchatapi::{
     models::{CreateFileRequest, File},
 };
 
-use crate::{err::AppError, stores::cookies::ConfigCookieMap};
+use crate::{
+    constants::CACHE_FILES_DIR, err::AppError, files::AppFiles, stores::cookies::ConfigCookieMap,
+};
 
 use super::handle_api_error;
 
@@ -142,6 +144,7 @@ pub async fn download_file_version(
 
 #[command]
 pub async fn vrchat_download_file(
+    app: tauri::AppHandle,
     ccmap: tauri::State<'_, ConfigCookieMap>,
     username: String,
     file_id: String,
@@ -149,7 +152,7 @@ pub async fn vrchat_download_file(
 ) -> Result<(), AppError> {
     let cc = ccmap.get(&username).await;
     let config = cc.config.write().await;
-    let _bytes = download_file_version(&config, &file_id, version_id)
+    let bytes = download_file_version(&config, &file_id, version_id)
         .await
         .map_err(|e| {
             cc.save();
@@ -169,6 +172,9 @@ pub async fn vrchat_download_file(
                 |_| {},
             )
         })?;
+
+    let cache = AppFiles::new(&app, BaseDirectory::AppCache, Some(CACHE_FILES_DIR));
+    cache.write(&file_id, bytes)?;
 
     Ok(())
 }

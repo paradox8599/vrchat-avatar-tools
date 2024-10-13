@@ -1,6 +1,7 @@
 mod cmd;
 mod constants;
 mod err;
+mod files;
 mod stores;
 
 #[cfg(desktop)]
