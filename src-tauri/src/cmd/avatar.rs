@@ -6,7 +6,7 @@ use vrchatapi::{
     models::{release_status::ReleaseStatus, Avatar, SortOption, UpdateAvatarRequest},
 };
 
-use crate::{cookies::ConfigCookieMap, err::AppError};
+use crate::{err::AppError, stores::cookies::ConfigCookieMap};
 
 use super::handle_api_error;
 

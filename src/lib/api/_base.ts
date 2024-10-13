@@ -24,6 +24,7 @@ export enum API_NAMES {
   // files
   vrchatGetFiles = "vrchat_get_files",
   vrchatShowFile = "vrchat_show_file",
+  vrchatDownloadFile = "vrchat_download_file",
 }
 
 async function invoke<T>(
@@ -36,6 +37,7 @@ async function invoke<T>(
     appState.reachable = true;
     return result;
   } catch (e) {
+    console.warn("invoke", e);
     const err = parseError(e);
     if (err.type === ErrorName.ConnectionError) {
       appState.reachable = false;

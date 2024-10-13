@@ -1,7 +1,7 @@
 mod cmd;
 mod constants;
-mod cookies;
 mod err;
+mod stores;
 
 #[cfg(desktop)]
 mod tray;
@@ -16,10 +16,10 @@ use cmd::{
     avatar::{
         vrchat_delete_avatar, vrchat_get_avatar_info, vrchat_get_own_avatars, vrchat_update_avatar,
     },
-    file::{vrchat_get_files, vrchat_show_file},
+    file::{vrchat_create_file, vrchat_download_file, vrchat_get_files, vrchat_show_file},
 };
-use cookies::ConfigCookieMap;
 use std::sync::Arc;
+use stores::cookies::ConfigCookieMap;
 use tauri::Manager;
 use tauri_plugin_cli::CliExt;
 use tokio::sync::RwLock;
@@ -38,6 +38,7 @@ pub fn run() {
     }
 
     tauri::Builder::default()
+        .plugin(tauri_plugin_fs::init())
         .plugin(aptabase.build())
         .plugin(prevent_default())
         .plugin(tauri_plugin_shell::init())
@@ -60,7 +61,9 @@ pub fn run() {
             vrchat_delete_avatar,
             // files
             vrchat_get_files,
-            vrchat_show_file
+            vrchat_show_file,
+            vrchat_create_file,
+            vrchat_download_file
         ])
         .setup(init)
         // close to hide

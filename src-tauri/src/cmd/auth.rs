@@ -8,7 +8,7 @@ use vrchatapi::{
     models::EitherUserOrTwoFactor,
 };
 
-use crate::{cookies::ConfigCookieMap, err::AppError};
+use crate::{err::AppError, stores::cookies::ConfigCookieMap};
 
 use super::handle_api_error;
 

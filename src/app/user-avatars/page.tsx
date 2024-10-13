@@ -45,18 +45,20 @@ export default function UserAvatarPage() {
   return (
     <main className="px-4 h-full flex flex-col items-center">
       {/* Test */}
-      {/* <div> */}
-      {/*   <Button */}
-      {/*     onClick={async () => { */}
-      {/*       const files = await client.getFiles(); */}
-      {/*       console.log("get files", files); */}
-      {/*       const file = await client.showFile(files[0].id); */}
-      {/*       console.log("show file", file); */}
-      {/*     }} */}
-      {/*   > */}
-      {/*     Get Files */}
-      {/*   </Button> */}
-      {/* </div> */}
+
+      <div>
+        <Button
+          onClick={async () => {
+            const files = await client.getFiles();
+            console.log("get files", files);
+            const file = await client.showFile(files[11].id);
+            console.log("show file", file);
+            await client.downloadFile(file.id, 1);
+          }}
+        >
+          Get Files
+        </Button>
+      </div>
 
       <div className="w-full h-full">
         <PageHeader title="模型管理">
