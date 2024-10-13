@@ -11,7 +11,7 @@ pub struct AppFiles {
 
 impl AppFiles {
     pub fn new(app: &tauri::AppHandle, base_dir: BaseDirectory, prefix: Option<&str>) -> Self {
-        let prefix = prefix.unwrap_or("/");
+        let prefix = prefix.unwrap_or("files");
 
         Self {
             app: app.clone(),
