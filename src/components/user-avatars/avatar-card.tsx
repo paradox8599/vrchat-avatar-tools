@@ -19,6 +19,7 @@ import { Copy, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { writeText } from "@tauri-apps/plugin-clipboard-manager";
 import { toast } from "@/hooks/app/use-toast";
+import _ from "lodash";
 
 export default function AvatarCard({
   avatar,
@@ -29,6 +30,14 @@ export default function AvatarCard({
 }): React.ReactNode {
   const [updateInfo, setUpdateInfo] =
     React.useState<vrchat.UpdateAvatarRequest>({});
+
+  function addUpdateInfo(value: vrchat.UpdateAvatarRequest) {
+    setUpdateInfo((prev) =>
+      _({ ...prev, ...value })
+        .omitBy(_.isUndefined)
+        .value(),
+    );
+  }
 
   return (
     <Card className="w-full">
@@ -87,9 +96,12 @@ export default function AvatarCard({
             <span className="whitespace-nowrap">名字</span>
             <Input
               value={updateInfo.name ?? avatar.name}
-              onChange={(e) =>
-                setUpdateInfo((prev) => ({ ...prev, name: e.target.value }))
-              }
+              onChange={(e) => {
+                addUpdateInfo({
+                  name:
+                    e.target.value === avatar.name ? undefined : e.target.value,
+                });
+              }}
             />
           </Label>
 
@@ -100,10 +112,11 @@ export default function AvatarCard({
                 (updateInfo.releaseStatus ?? avatar.releaseStatus) === "public"
               }
               onCheckedChange={(checked) => {
-                setUpdateInfo((prev) => ({
-                  ...prev,
-                  releaseStatus: checked ? "public" : "private",
-                }));
+                const state = checked ? "public" : "private";
+                addUpdateInfo({
+                  releaseStatus:
+                    state === avatar.releaseStatus ? undefined : state,
+                });
               }}
             />
           </Label>
@@ -113,25 +126,41 @@ export default function AvatarCard({
           <span className="whitespace-nowrap py-3">描述</span>
           <Textarea
             value={updateInfo.description ?? avatar.description}
-            onChange={(e) =>
-              setUpdateInfo((prev) => ({
-                ...prev,
-                description: e.target.value,
-              }))
-            }
+            onChange={(e) => {
+              addUpdateInfo({
+                description:
+                  e.target.value === avatar.description
+                    ? undefined
+                    : e.target.value,
+              });
+            }}
           />
         </Label>
 
-        <Button
-          size="sm"
-          onClick={async () => {
-            await client.updateAvatar(avatar.id, updateInfo);
-            avatar.name = updateInfo.name ?? avatar.name;
-            setUpdateInfo({});
-          }}
-        >
-          保存
-        </Button>
+        {Object.keys(updateInfo).length > 0 && (
+          <div className="flex gap-2">
+            <Button
+              size="sm"
+              variant="outline"
+              className="flex-1"
+              onClick={() => setUpdateInfo({})}
+            >
+              重置
+            </Button>
+            <Button
+              size="sm"
+              variant="default"
+              className="flex-1"
+              onClick={async () => {
+                await client.updateAvatar(avatar.id, updateInfo);
+                avatar.name = updateInfo.name ?? avatar.name;
+                setUpdateInfo({});
+              }}
+            >
+              保存
+            </Button>
+          </div>
+        )}
       </CardContent>
     </Card>
   );
