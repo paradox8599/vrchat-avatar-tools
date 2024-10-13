@@ -15,6 +15,9 @@ pub enum AppError {
     #[error("false positive: {0}")]
     FalsePositive(String),
 
+    #[error("request error: {0}")]
+    Request(String),
+
     #[error("app file error: {0}")]
     File(#[from] AppFileError),
 }

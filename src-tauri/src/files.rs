@@ -1,4 +1,7 @@
-use crate::err::{AppError, AppFileError};
+use crate::{
+    constants::CACHE_FILES_DIR,
+    err::{AppError, AppFileError},
+};
 use bytes::Bytes;
 use std::path::{Path, PathBuf};
 use tauri::{path::BaseDirectory, Manager};
@@ -18,6 +21,10 @@ impl AppFiles {
             base_dir,
             path: PathBuf::from(prefix),
         }
+    }
+
+    pub fn cache(app: &tauri::AppHandle) -> Self {
+        AppFiles::new(&app, BaseDirectory::AppCache, Some(CACHE_FILES_DIR))
     }
 
     pub fn exists(file_path: &Path) -> Result<bool, AppError> {

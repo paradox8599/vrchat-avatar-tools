@@ -2,10 +2,14 @@ use tauri::{command, path::BaseDirectory};
 use vrchatapi::{
     apis::{
         configuration::Configuration,
-        files_api::{self, CreateFileError, DownloadFileVersionError, GetFileError, GetFilesError},
+        files_api::{
+            self, CreateFileError, CreateFileVersionError, DeleteFileVersionError,
+            DownloadFileVersionError, FinishFileDataUploadError, GetFileError, GetFilesError,
+            StartFileDataUploadError,
+        },
         Error, ResponseContent,
     },
-    models::{CreateFileRequest, File},
+    models::{CreateFileRequest, CreateFileVersionRequest, File, FileUploadUrl},
 };
 
 use crate::{
@@ -98,7 +102,7 @@ pub async fn vrchat_create_file(
     Ok(file)
 }
 
-pub async fn download_file_version(
+async fn download_file_version(
     configuration: &Configuration,
     file_id: &str,
     version_id: i32,
@@ -173,8 +177,165 @@ pub async fn vrchat_download_file(
             )
         })?;
 
-    let cache = AppFiles::new(&app, BaseDirectory::AppCache, Some(CACHE_FILES_DIR));
-    cache.write(&file_id, bytes)?;
+    AppFiles::cache(&app).write(&file_id, bytes)?;
+
+    Ok(())
+}
+
+#[command]
+pub async fn vrchat_create_file_version(
+    ccmap: tauri::State<'_, ConfigCookieMap>,
+    username: String,
+    file_id: String,
+    create_file_version_request: Option<CreateFileVersionRequest>,
+) -> Result<File, AppError> {
+    let cc = ccmap.get(&username).await;
+    let config = cc.config.write().await;
+    let file = files_api::create_file_version(&config, &file_id, create_file_version_request)
+        .await
+        .map_err(|e| {
+            cc.save();
+            handle_api_error(
+                e,
+                |e| {
+                    println!("{e:?}");
+                    match e {
+                        CreateFileVersionError::UnknownValue(v) => AppError::Unknown(v.to_string()),
+                    }
+                },
+                |_| {},
+            )
+        })?;
+    Ok(file)
+}
+
+#[command]
+pub async fn vrchat_delete_file_version(
+    ccmap: tauri::State<'_, ConfigCookieMap>,
+    username: String,
+    file_id: String,
+    version_id: i32,
+) -> Result<File, AppError> {
+    let cc = ccmap.get(&username).await;
+    let config = cc.config.write().await;
+    let file = files_api::delete_file_version(&config, &file_id, version_id)
+        .await
+        .map_err(|e| {
+            cc.save();
+            handle_api_error(
+                e,
+                |e| {
+                    println!("{e:?}");
+                    match e {
+                        DeleteFileVersionError::Status400(e) => {
+                            AppError::UnsuccessfulStatus(400, format!("{e:?}"))
+                        }
+                        DeleteFileVersionError::Status500(e) => {
+                            AppError::UnsuccessfulStatus(500, format!("{e:?}"))
+                        }
+                        DeleteFileVersionError::UnknownValue(e) => AppError::Unknown(e.to_string()),
+                    }
+                },
+                |_| {},
+            )
+        })?;
+    Ok(file)
+}
+
+async fn start_upload(
+    config: &Configuration,
+    file_id: &str,
+    file_type: &str,
+    version_id: i32,
+) -> Result<FileUploadUrl, AppError> {
+    let url = files_api::start_file_data_upload(config, file_id, version_id, file_type, None)
+        .await
+        .map_err(|e| {
+            handle_api_error(
+                e,
+                |e| {
+                    println!("{e:?}");
+                    match e {
+                        StartFileDataUploadError::Status400(e) => {
+                            AppError::UnsuccessfulStatus(400, format!("{e:?}"))
+                        }
+                        StartFileDataUploadError::UnknownValue(e) => {
+                            AppError::Unknown(e.to_string())
+                        }
+                    }
+                },
+                |_| {},
+            )
+        })?;
+    Ok(url)
+}
+
+async fn finish_upload(
+    config: &Configuration,
+    file_id: &str,
+    file_type: &str,
+    version_id: i32,
+) -> Result<File, AppError> {
+    let file = files_api::finish_file_data_upload(config, file_id, version_id, file_type, None)
+        .await
+        .map_err(|e| {
+            handle_api_error(
+                e,
+                |e| {
+                    println!("{e:?}");
+                    match e {
+                        FinishFileDataUploadError::UnknownValue(e) => {
+                            AppError::Unknown(e.to_string())
+                        }
+                    }
+                },
+                |_| {},
+            )
+        })?;
+    Ok(file)
+}
+
+#[command]
+async fn vrchat_upload_file(
+    app: tauri::AppHandle,
+    ccmap: tauri::State<'_, ConfigCookieMap>,
+    username: String,
+    file_id: String,
+    file_type: String,
+    content_type: String,
+    version_id: i32,
+) -> Result<(), AppError> {
+    let cache = AppFiles::cache(&app);
+    let file = cache.read(&file_id)?;
+    if file.is_none() {
+        return Err(AppError::UnsuccessfulStatus(404, "File not found".to_owned()).into());
+    }
+    let file = file.unwrap();
+
+    let cc = ccmap.get(&username).await;
+    let config = cc.config.write().await;
+
+    let url = start_upload(&config, &file_id, &file_type, version_id).await?;
+
+    let client = reqwest::Client::builder()
+        .cookie_provider(cc.cookies.clone())
+        .build()
+        .expect("failed to create reqwest client");
+
+    let resp = client
+        .put(url.url)
+        .header("Content-Type", content_type)
+        .send()
+        .await;
+
+    match resp {
+        Ok(resp) => {
+            finish_upload(&config, &file_id, &file_type, version_id).await?;
+        }
+        Err(e) => {
+            // TODO: handle error
+        }
+    }
 
     Ok(())
 }

@@ -17,7 +17,10 @@ use cmd::{
     avatar::{
         vrchat_delete_avatar, vrchat_get_avatar_info, vrchat_get_own_avatars, vrchat_update_avatar,
     },
-    file::{vrchat_create_file, vrchat_download_file, vrchat_get_files, vrchat_show_file},
+    file::{
+        vrchat_create_file, vrchat_create_file_version, vrchat_delete_file_version,
+        vrchat_download_file, vrchat_get_files, vrchat_show_file,
+    },
 };
 use std::sync::Arc;
 use stores::cookies::ConfigCookieMap;
@@ -64,7 +67,9 @@ pub fn run() {
             vrchat_get_files,
             vrchat_show_file,
             vrchat_create_file,
-            vrchat_download_file
+            vrchat_download_file,
+            vrchat_create_file_version,
+            vrchat_delete_file_version
         ])
         .setup(init)
         // close to hide
