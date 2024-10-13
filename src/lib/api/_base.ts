@@ -20,6 +20,7 @@ export enum API_NAMES {
   vrchatGetAvatarInfo = "vrchat_get_avatar_info",
   vrchatGetOwnAvatars = "vrchat_get_own_avatars",
   vrchatUpdateAvatar = "vrchat_update_avatar",
+  vrchatDeleteAvatar = "vrchat_delete_avatar",
   // files
   vrchatGetFiles = "vrchat_get_files",
   vrchatShowFile = "vrchat_show_file",
@@ -88,7 +89,13 @@ export class VRChatClient {
       throw e;
     }
   }
+
+  cacheKey(key: CacheKey) {
+    return [key, this.username];
+  }
 }
+
+export type CacheKey = "avatars";
 
 export async function vrchatIsReachable() {
   return await invoke<boolean>(API_NAMES.vrchatIsReachable).catch(() => false);

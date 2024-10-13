@@ -1,6 +1,8 @@
 use tauri::command;
 use vrchatapi::{
-    apis::avatars_api::{self, GetAvatarError, SearchAvatarsError, UpdateAvatarError},
+    apis::avatars_api::{
+        self, DeleteAvatarError, GetAvatarError, SearchAvatarsError, UpdateAvatarError,
+    },
     models::{release_status::ReleaseStatus, Avatar, SortOption, UpdateAvatarRequest},
 };
 
@@ -106,6 +108,33 @@ pub async fn vrchat_update_avatar(
                         AppError::UnsuccessfulStatus(404, "Avatar not found".to_string())
                     }
                     UpdateAvatarError::UnknownValue(v) => AppError::Unknown(v.to_string()),
+                },
+                |_| {},
+            )
+        })?;
+    Ok(())
+}
+
+#[command]
+pub async fn vrchat_delete_avatar(
+    ccmap: tauri::State<'_, ConfigCookieMap>,
+    username: String,
+    avatar_id: String,
+) -> Result<(), AppError> {
+    let cc = ccmap.get(&username).await;
+    let config = cc.config.write().await;
+    avatars_api::delete_avatar(&config, &avatar_id)
+        .await
+        .map_err(|e| {
+            cc.save();
+            handle_api_error(
+                e,
+                |e| match e {
+                    DeleteAvatarError::Status401(_) => unreachable!(),
+                    DeleteAvatarError::Status404(_) => {
+                        AppError::UnsuccessfulStatus(404, "Avatar not found".to_string())
+                    }
+                    DeleteAvatarError::UnknownValue(v) => AppError::Unknown(v.to_string()),
                 },
                 |_| {},
             )

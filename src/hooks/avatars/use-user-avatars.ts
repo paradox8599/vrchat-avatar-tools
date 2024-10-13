@@ -5,7 +5,7 @@ import { useAuth } from "../app/use-auth";
 export function useUserAvatars(username?: string) {
   const { client } = useAuth(username);
   const swr = useSWRImmutable(
-    username ? ["useUserAvatars", username] : null,
+    username ? client.cacheKey("avatars") : null,
     () => client.getOwnAvatars(),
   );
   const avatars = React.useMemo(

@@ -11,4 +11,7 @@ pub enum AppError {
 
     #[error("unknown error {0}")]
     Unknown(String),
+
+    #[error("false positive: {0}")]
+    FalsePositive(String),
 }

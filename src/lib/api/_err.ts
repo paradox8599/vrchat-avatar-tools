@@ -2,6 +2,7 @@ export enum ErrorName {
   StatusError = "UnsuccessfulStatus",
   ConnectionError = "NoConnection",
   UnknownError = "Unknown",
+  FalsePositive = "FalsePositive",
 }
 // export type ErrorName = "UnsuccessfulStatus" | "NoConnection" | "Unknown";
 type ErrorMessage = Record<ErrorName, unknown>;
@@ -22,7 +23,16 @@ export type UnknownError = {
   message: string;
 };
 
-export type ApiError = StatusError | NoConnectionError | UnknownError;
+export type FalsePositive = {
+  type: ErrorName.FalsePositive;
+  message: string;
+};
+
+export type ApiError =
+  | StatusError
+  | NoConnectionError
+  | UnknownError
+  | FalsePositive;
 
 export function parseError(err: unknown): ApiError {
   const [name, value] = Object.entries(err as ErrorMessage)[0];
@@ -48,6 +58,11 @@ export function parseError(err: unknown): ApiError {
     case ErrorName.UnknownError:
       return {
         type: ErrorName.UnknownError,
+        message: value as string,
+      };
+    case ErrorName.FalsePositive:
+      return {
+        type: ErrorName.FalsePositive,
         message: value as string,
       };
   }

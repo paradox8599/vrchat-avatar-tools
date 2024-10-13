@@ -55,8 +55,14 @@ where
             eprintln!("unknown error in handler: {:?}", e);
             AppError::NoConnection(error.to_string())
         }
-        e => AppError::Unknown(e.to_string()),
-        // Error::Serde(error) => todo!(),
+        Error::Serde(e) => {
+            let msg = e.to_string();
+            if msg.starts_with("missing field `created_at`") {
+                return AppError::FalsePositive(e.to_string());
+            }
+            AppError::Unknown(e.to_string())
+        }
         // Error::Io(error) => todo!(),
+        e => AppError::Unknown(e.to_string()),
     }
 }

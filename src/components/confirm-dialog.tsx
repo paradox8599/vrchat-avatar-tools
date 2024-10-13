@@ -35,7 +35,7 @@ export default function ConfirmDialog({
           <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
         <DialogFooter>
-          <DialogClose>
+          <DialogClose asChild>
             <Button variant="outline">{cancelText}</Button>
           </DialogClose>
           <Button onClick={() => onConfirm?.().then(() => setOpen(false))}>

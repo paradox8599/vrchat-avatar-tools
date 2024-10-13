@@ -15,11 +15,12 @@ import { Label } from "../ui/label";
 import { Switch } from "../ui/switch";
 import { Textarea } from "../ui/textarea";
 import ConfirmDialog from "../confirm-dialog";
-import { Copy, Trash2 } from "lucide-react";
+import { Copy } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { writeText } from "@tauri-apps/plugin-clipboard-manager";
 import { toast } from "@/hooks/app/use-toast";
 import _ from "lodash";
+import { mutate } from "swr";
 
 export default function AvatarCard({
   avatar,
@@ -51,7 +52,7 @@ export default function AvatarCard({
           <CardTitle>{avatar.name}</CardTitle>
 
           <CardDescription>
-            <div className="w-full flex items-start justify-center">
+            <span className="w-full flex items-start justify-center">
               <Button
                 className={cn(
                   "w-full",
@@ -72,20 +73,20 @@ export default function AvatarCard({
                 {avatar.id}
                 <Copy size={16} />
               </Button>
-            </div>
+            </span>
           </CardDescription>
         </div>
 
         <ConfirmDialog
           title="删除"
-          description="确定要删除这个模型吗？"
+          description={`${avatar.name}: 确定要删除这个模型吗？`}
           onConfirm={async () => {
-            // TODO: delete avatar
-            alert("delete");
+            await client.deleteAvatar(avatar.id);
+            await mutate(client.cacheKey("avatars"));
           }}
         >
-          <Button size="icon" variant="destructive">
-            <Trash2 />
+          <Button size="sm" variant="outline">
+            删除
           </Button>
         </ConfirmDialog>
       </CardHeader>

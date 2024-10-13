@@ -10,6 +10,7 @@ declare module "./_base" {
       avatarId: string,
       data: vrchat.UpdateAvatarRequest,
     ): Promise<void>;
+    deleteAvatar(avatarId: string): Promise<void>;
   }
 }
 
@@ -57,4 +58,19 @@ VRChatClient.prototype.updateAvatar = async function (
     avatarId,
     data,
   });
+};
+
+VRChatClient.prototype.deleteAvatar = async function (avatarId: string) {
+  try {
+    await this.invoke(this.apis.vrchatDeleteAvatar, {
+      username: this.username,
+      avatarId,
+    });
+  } catch (e) {
+    const err = e as ApiError;
+    if (err.type === ErrorName.FalsePositive) {
+      return;
+    }
+    throw err;
+  }
 };
