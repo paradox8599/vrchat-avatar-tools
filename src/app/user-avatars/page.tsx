@@ -1,6 +1,7 @@
 "use client";
 import PageHeader from "@/components/page-header";
 import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import AvatarCard from "@/components/user-avatars/avatar-card";
 import { useAuth } from "@/hooks/app/use-auth";
 import { useUserAvatars } from "@/hooks/avatars/use-user-avatars";
@@ -44,27 +45,33 @@ export default function UserAvatarPage() {
   return (
     <main className="px-4 h-full flex flex-col items-center">
       {/* Test */}
-      <div>
-        <Button
-          onClick={async () => {
-            const files = await client.getFiles();
-            console.log("get files", files);
-            const file = await client.showFile(files[0].id);
-            console.log("show file", file);
-          }}
-        >
-          Get Files
-        </Button>
-      </div>
+      {/* <div> */}
+      {/*   <Button */}
+      {/*     onClick={async () => { */}
+      {/*       const files = await client.getFiles(); */}
+      {/*       console.log("get files", files); */}
+      {/*       const file = await client.showFile(files[0].id); */}
+      {/*       console.log("show file", file); */}
+      {/*     }} */}
+      {/*   > */}
+      {/*     Get Files */}
+      {/*   </Button> */}
+      {/* </div> */}
 
-      <div className="max-w-4xl w-full">
+      <div className="w-full h-full">
         <PageHeader title="模型管理">
           <RefreshButton />
         </PageHeader>
 
-        <div className="flex flex-col items-center gap-2 w-full">
-          {avatars.map(AvatarCard)}
-        </div>
+        <ScrollArea className="h-full">
+          <div className="flex flex-col items-center">
+            <div className="w-full max-w-4xl flex flex-col items-center gap-2">
+              {avatars.map((avatar) => (
+                <AvatarCard key={avatar.id} avatar={avatar} client={client} />
+              ))}
+            </div>
+          </div>
+        </ScrollArea>
       </div>
     </main>
   );
