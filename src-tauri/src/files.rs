@@ -1,5 +1,5 @@
 use crate::{
-    constants::CACHE_FILES_DIR,
+    constants::{CACHE_FILES_DIR, LOCAL_FILES_DIR},
     err::{AppError, AppFileError},
 };
 use bytes::Bytes;
@@ -13,18 +13,22 @@ pub struct AppFiles {
 }
 
 impl AppFiles {
-    pub fn new(app: &tauri::AppHandle, base_dir: BaseDirectory, prefix: Option<&str>) -> Self {
-        let prefix = prefix.unwrap_or("files");
+    pub fn new(app: &tauri::AppHandle, base_dir: BaseDirectory, path: Option<PathBuf>) -> Self {
+        let path = path.unwrap_or(PathBuf::from(LOCAL_FILES_DIR));
 
         Self {
             app: app.clone(),
             base_dir,
-            path: PathBuf::from(prefix),
+            path,
         }
     }
 
-    pub fn cache(app: &tauri::AppHandle) -> Self {
-        AppFiles::new(&app, BaseDirectory::AppCache, Some(CACHE_FILES_DIR))
+    pub fn cache(app: &tauri::AppHandle, path: Option<PathBuf>) -> Self {
+        let mut _path = PathBuf::from(CACHE_FILES_DIR);
+        if let Some(path) = path {
+            _path = _path.join(path);
+        }
+        AppFiles::new(app, BaseDirectory::AppCache, Some(_path))
     }
 
     pub fn exists(file_path: &Path) -> Result<bool, AppError> {

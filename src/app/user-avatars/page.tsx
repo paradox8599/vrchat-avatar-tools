@@ -49,11 +49,30 @@ export default function UserAvatarPage() {
       <div>
         <Button
           onClick={async () => {
-            const files = await client.getFiles();
-            console.log("get files", files);
-            const file = await client.showFile(files[11].id);
-            console.log("show file", file);
-            await client.downloadFile(file.id, 1);
+            // let files = await client.getFiles();
+            // console.log("get files", files);
+
+            const of = await client.showFile(
+              "file_01cb81b7-0182-4b79-ac9f-f340b59c8ba1",
+            );
+            const v = [...of.versions].pop()!;
+            await client.downloadFile(of.id, v.version, "file");
+            await client.downloadFile(of.id, v.version, "signature");
+            // const nf = await client.showFile(
+            //   "file_8427dcbb-7264-4bef-997e-40b74e884f47",
+            // );
+            console.log("old", of);
+            // console.log("new", nf);
+
+            // const nf = await client.createFile({
+            //   name: "test_upload",
+            //   mimeType: file.mimeType,
+            //   extension: file.extension,
+            // });
+            // console.log("new file created", nf.id);
+
+            // files = await client.getFiles();
+            // console.log("get files", files);
           }}
         >
           Get Files

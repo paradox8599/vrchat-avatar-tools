@@ -19,7 +19,7 @@ use cmd::{
     },
     file::{
         vrchat_create_file, vrchat_create_file_version, vrchat_delete_file_version,
-        vrchat_download_file, vrchat_get_files, vrchat_show_file,
+        vrchat_download_file, vrchat_get_files, vrchat_show_file, vrchat_upload_file,
     },
 };
 use std::sync::Arc;
@@ -69,7 +69,8 @@ pub fn run() {
             vrchat_create_file,
             vrchat_download_file,
             vrchat_create_file_version,
-            vrchat_delete_file_version
+            vrchat_delete_file_version,
+            vrchat_upload_file
         ])
         .setup(init)
         // close to hide

@@ -7,4 +7,5 @@ pub const ENV_APTABASE_HOST_MATCH: &str = "APTABASE_HOST";
 
 pub const STORE_COOKIES_KEY: &str = "cookies";
 
+pub const LOCAL_FILES_DIR: &str = "files";
 pub const CACHE_FILES_DIR: &str = "cache";

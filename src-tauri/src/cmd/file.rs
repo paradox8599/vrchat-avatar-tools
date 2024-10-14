@@ -1,4 +1,7 @@
-use tauri::{command, path::BaseDirectory};
+use std::path::PathBuf;
+
+use serde::{Deserialize, Serialize};
+use tauri::command;
 use vrchatapi::{
     apis::{
         configuration::Configuration,
@@ -12,9 +15,7 @@ use vrchatapi::{
     models::{CreateFileRequest, CreateFileVersionRequest, File, FileUploadUrl},
 };
 
-use crate::{
-    constants::CACHE_FILES_DIR, err::AppError, files::AppFiles, stores::cookies::ConfigCookieMap,
-};
+use crate::{err::AppError, files::AppFiles, stores::cookies::ConfigCookieMap};
 
 use super::handle_api_error;
 
@@ -102,20 +103,43 @@ pub async fn vrchat_create_file(
     Ok(file)
 }
 
+#[derive(Serialize, Deserialize, Debug)]
+pub enum FileType {
+    #[serde(rename = "file")]
+    File,
+    #[serde(rename = "signature")]
+    Signagure,
+    #[serde(rename = "delta")]
+    Delta,
+}
+
+impl std::fmt::Display for FileType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let name = match self {
+            Self::File => "file",
+            Self::Signagure => "signature",
+            Self::Delta => "delta",
+        };
+        write!(f, "{name}")
+    }
+}
+
 async fn download_file_version(
     configuration: &Configuration,
     file_id: &str,
     version_id: i32,
+    file_type: &FileType,
 ) -> Result<bytes::Bytes, Error<DownloadFileVersionError>> {
     let local_var_configuration = configuration;
 
     let local_var_client = &local_var_configuration.client;
 
     let local_var_uri_str = format!(
-        "{}/file/{fileId}/{versionId}",
+        "{}/file/{fileId}/{versionId}/{fileType}",
         local_var_configuration.base_path,
         fileId = vrchatapi::apis::urlencode(file_id),
-        versionId = version_id
+        versionId = version_id,
+        fileType = file_type
     );
     let mut local_var_req_builder =
         local_var_client.request(reqwest::Method::GET, local_var_uri_str.as_str());
@@ -153,10 +177,11 @@ pub async fn vrchat_download_file(
     username: String,
     file_id: String,
     version_id: i32,
+    file_type: FileType,
 ) -> Result<(), AppError> {
     let cc = ccmap.get(&username).await;
     let config = cc.config.write().await;
-    let bytes = download_file_version(&config, &file_id, version_id)
+    let bytes = download_file_version(&config, &file_id, version_id, &file_type)
         .await
         .map_err(|e| {
             cc.save();
@@ -177,7 +202,8 @@ pub async fn vrchat_download_file(
             )
         })?;
 
-    AppFiles::cache(&app).write(&file_id, bytes)?;
+    let path = PathBuf::from(&file_type.to_string());
+    AppFiles::cache(&app, Some(path)).write(&file_id, bytes)?;
 
     Ok(())
 }
@@ -296,7 +322,7 @@ async fn finish_upload(
 }
 
 #[command]
-async fn vrchat_upload_file(
+pub async fn vrchat_upload_file(
     app: tauri::AppHandle,
     ccmap: tauri::State<'_, ConfigCookieMap>,
     username: String,
@@ -305,15 +331,19 @@ async fn vrchat_upload_file(
     content_type: String,
     version_id: i32,
 ) -> Result<(), AppError> {
-    let cache = AppFiles::cache(&app);
-    let file = cache.read(&file_id)?;
-    if file.is_none() {
-        return Err(AppError::UnsuccessfulStatus(404, "File not found".to_owned()).into());
+    // TODO: read file and signature
+    let cache = AppFiles::cache(&app, None);
+    let bytes = cache.read(&file_id)?;
+    if bytes.is_none() {
+        let app_err = AppError::UnsuccessfulStatus(404, "File not found".to_owned());
+        return Err(app_err);
     }
-    let file = file.unwrap();
+    let bytes = bytes.unwrap();
 
     let cc = ccmap.get(&username).await;
     let config = cc.config.write().await;
+
+    // start upload
 
     let url = start_upload(&config, &file_id, &file_type, version_id).await?;
 
@@ -325,14 +355,16 @@ async fn vrchat_upload_file(
     let resp = client
         .put(url.url)
         .header("Content-Type", content_type)
+        .body(bytes)
         .send()
         .await;
 
     match resp {
-        Ok(resp) => {
+        Ok(_) => {
             finish_upload(&config, &file_id, &file_type, version_id).await?;
         }
         Err(e) => {
+            eprintln!("{e:?}");
             // TODO: handle error
         }
     }

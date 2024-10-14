@@ -24,7 +24,11 @@ export enum API_NAMES {
   // files
   vrchatGetFiles = "vrchat_get_files",
   vrchatShowFile = "vrchat_show_file",
+  vrchatCreateFile = "vrchat_create_file",
   vrchatDownloadFile = "vrchat_download_file",
+  vrchatCreateFileVersion = "vrchat_create_file_version",
+  vrchatDeleteFileVersion = "vrchat_delete_file_version",
+  vrchatUploadFile = "vrchat_upload_file",
 }
 
 async function invoke<T>(
