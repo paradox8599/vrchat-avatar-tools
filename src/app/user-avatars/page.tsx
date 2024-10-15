@@ -46,36 +46,77 @@ export default function UserAvatarPage() {
     <main className="px-4 h-full flex flex-col items-center">
       {/* Test */}
 
-      <div>
+      <div className="flex gap-2">
         <Button
           onClick={async () => {
-            // let files = await client.getFiles();
-            // console.log("get files", files);
-
+            let files = await client.getFiles();
+            files = files.toReversed();
+            files = [files[0], files[1]];
+            console.log("get files", files);
+          }}
+        >
+          Get
+        </Button>
+        <Button
+          onClick={async () => {
+            const nf = await client.showFile(
+              "file_8427dcbb-7264-4bef-997e-40b74e884f47",
+            );
+            const nfvv = [...nf.versions].pop()!.version;
+            await client.deleteFileVersion(nf.id, nfvv);
+          }}
+        >
+          Delete
+        </Button>
+        <Button
+          onClick={async () => {
             const of = await client.showFile(
               "file_01cb81b7-0182-4b79-ac9f-f340b59c8ba1",
             );
-            const v = [...of.versions].pop()!;
-            await client.downloadFile(of.id, v.version, "file");
-            await client.downloadFile(of.id, v.version, "signature");
-            // const nf = await client.showFile(
-            //   "file_8427dcbb-7264-4bef-997e-40b74e884f47",
-            // );
             console.log("old", of);
-            // console.log("new", nf);
 
-            // const nf = await client.createFile({
-            //   name: "test_upload",
-            //   mimeType: file.mimeType,
-            //   extension: file.extension,
-            // });
-            // console.log("new file created", nf.id);
+            const ofv = [...of.versions].pop()!;
+            await client.downloadFile(of.id, ofv.version, "file");
+            await client.downloadFile(of.id, ofv.version, "signature");
 
-            // files = await client.getFiles();
-            // console.log("get files", files);
+            const nf = await client.showFile(
+              "file_8427dcbb-7264-4bef-997e-40b74e884f47",
+            );
+            console.log("new", nf);
+
+            let nfvv = null;
+            try {
+              const sig = ofv.signature!;
+              const f = ofv.file!;
+              const file = await client.createFileVersion(nf.id, {
+                signatureMd5: sig.md5!,
+                signatureSizeInBytes: sig.sizeInBytes,
+                fileMd5: f.md5!,
+                fileSizeInBytes: f.sizeInBytes,
+              });
+              console.log("new version created", file);
+              const nfv = [...file.versions].pop()!;
+              nfvv = nfv.version;
+              console.log("new version", nfvv);
+              await client.uploadFile({
+                mimeType: of.mimeType,
+                from: { id: of.id, version: ofv.version },
+                to: { id: nf.id, version: nfv.version },
+              });
+              console.log("uploaded");
+            } catch (e) {
+              if (nfvv !== null) {
+                await client.deleteFileVersion(nf.id, nfvv);
+              }
+            }
+
+            const nvf = await client.showFile(
+              "file_8427dcbb-7264-4bef-997e-40b74e884f47",
+            );
+            console.log("new", nvf);
           }}
         >
-          Get Files
+          Create & Upload
         </Button>
       </div>
 

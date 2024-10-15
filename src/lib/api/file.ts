@@ -1,14 +1,12 @@
 import vrchat from "vrchat";
 import { VRChatClient } from "./_base";
 
-type UploadFileRequest = {
-  fileId: string;
-  fileType: string;
-  contentType: string;
-  versionId: number;
-};
-
 export type FileType = "file" | "signature" | "delta";
+
+export type UploadFileInfo = {
+  id: string;
+  version: number;
+};
 
 declare module "./_base" {
   export interface VRChatClient {
@@ -36,7 +34,11 @@ declare module "./_base" {
       versionId: number,
     ): Promise<vrchat.ModelFile>;
 
-    uploadFile(uploadFileRequest: UploadFileRequest): Promise<void>;
+    uploadFile(props: {
+      mimeType: vrchat.MIMEType;
+      from: UploadFileInfo;
+      to: UploadFileInfo;
+    }): Promise<void>;
   }
 }
 
@@ -95,14 +97,19 @@ VRChatClient.prototype.deleteFileVersion = async function (
   versionId: number,
 ) {
   const file = await this.invoke<vrchat.ModelFile>(
-    this.apis.vrchatCreateFileVersion,
+    this.apis.vrchatDeleteFileVersion,
     { username: this.username, fileId, versionId },
   );
   return file;
 };
 
-VRChatClient.prototype.uploadFile = async function (
-  uploadFileRequest: UploadFileRequest,
-) {
-  await this.invoke(this.apis.vrchatUploadFile, uploadFileRequest);
+VRChatClient.prototype.uploadFile = async function (props: {
+  mimeType: vrchat.MIMEType;
+  from: UploadFileInfo;
+  to: UploadFileInfo;
+}) {
+  await this.invoke(this.apis.vrchatUploadFile, {
+    username: this.username,
+    ...props,
+  });
 };

@@ -2649,6 +2649,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "md5"
+version = "0.7.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "490cc448043f947bae3cbee9c203358d62dbee0db12107a74be5c30ccfd09771"
+
+[[package]]
 name = "memchr"
 version = "2.7.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -5692,7 +5698,9 @@ checksum = "0b928f33d975fc6ad9f86c8f283853ad26bdd5b10b7f1542aa2fa15e2289105a"
 name = "vrchat-avatar-tools"
 version = "0.1.32"
 dependencies = [
+ "base64 0.22.1",
  "bytes",
+ "md5",
  "reqwest 0.12.8",
  "reqwest_cookie_store",
  "serde",
