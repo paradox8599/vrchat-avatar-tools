@@ -25,6 +25,7 @@ export enum API_NAMES {
   vrchatGetFiles = "vrchat_get_files",
   vrchatShowFile = "vrchat_show_file",
   vrchatCreateFile = "vrchat_create_file",
+  vrchatDeleteFile = "vrchat_delete_file",
   vrchatDownloadFile = "vrchat_download_file",
   vrchatCreateFileVersion = "vrchat_create_file_version",
   vrchatDeleteFileVersion = "vrchat_delete_file_version",

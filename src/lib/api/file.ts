@@ -21,8 +21,10 @@ declare module "./_base" {
     ): Promise<unknown>;
 
     createFile(
-      createFileRequest: vrchat.CreateFileRequest,
+      createFileRequest?: vrchat.CreateFileRequest,
     ): Promise<vrchat.ModelFile>;
+
+    deleteFile(fileId: string): Promise<vrchat.ModelFile>;
 
     createFileVersion(
       fileId: string,
@@ -72,11 +74,19 @@ VRChatClient.prototype.downloadFile = async function (
 };
 
 VRChatClient.prototype.createFile = async function (
-  createFileRequest: vrchat.CreateFileRequest,
+  createFileRequest?: vrchat.CreateFileRequest,
 ) {
   const file = await this.invoke<vrchat.ModelFile>(this.apis.vrchatCreateFile, {
     username: this.username,
     createFileRequest,
+  });
+  return file;
+};
+
+VRChatClient.prototype.deleteFile = async function (fileId: string) {
+  const file = await this.invoke<vrchat.ModelFile>(this.apis.vrchatDeleteFile, {
+    username: this.username,
+    fileId,
   });
   return file;
 };

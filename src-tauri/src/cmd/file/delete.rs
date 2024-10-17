@@ -1,6 +1,6 @@
 use tauri::command;
 use vrchatapi::{
-    apis::files_api::{self, DeleteFileVersionError},
+    apis::files_api::{self, DeleteFileError, DeleteFileVersionError},
     models::File,
 };
 
@@ -33,6 +33,35 @@ pub async fn vrchat_delete_file_version(
                             AppError::UnsuccessfulStatus(500, format!("{e:?}"))
                         }
                         DeleteFileVersionError::UnknownValue(e) => AppError::Unknown(e.to_string()),
+                    }
+                },
+                |_| {},
+            )
+        })?;
+    Ok(file)
+}
+
+#[command]
+pub async fn vrchat_delete_file(
+    ccmap: tauri::State<'_, ConfigCookieMap>,
+    username: String,
+    file_id: String,
+) -> Result<File, AppError> {
+    let cc = ccmap.get(&username).await;
+    let config = cc.config.write().await;
+    let file = files_api::delete_file(&config, &file_id)
+        .await
+        .map_err(|e| {
+            cc.save();
+            handle_api_error(
+                e,
+                |e| {
+                    println!("{e:?}");
+                    match e {
+                        DeleteFileError::Status404(e) => {
+                            AppError::UnsuccessfulStatus(404, format!("{e:?}"))
+                        }
+                        DeleteFileError::UnknownValue(e) => AppError::Unknown(e.to_string()),
                     }
                 },
                 |_| {},

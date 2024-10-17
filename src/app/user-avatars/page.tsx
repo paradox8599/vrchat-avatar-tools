@@ -49,9 +49,27 @@ export default function UserAvatarPage() {
       <div className="flex gap-2">
         <Button
           onClick={async () => {
-            let files = await client.getFiles();
-            files = files.toReversed();
-            files = [files[0], files[1]];
+            const file = await client.createFile();
+            console.log("created", file);
+          }}
+        >
+          Create
+        </Button>
+        <Button
+          onClick={async () => {
+            const file = await client.deleteFile(
+              "file_8427dcbb-7264-4bef-997e-40b74e884f47",
+            );
+            console.log("deleted", file);
+          }}
+        >
+          Delete
+        </Button>
+        <Button
+          onClick={async () => {
+            const files = await client.getFiles();
+            // files = files.toReversed();
+            // files = [files[0], files[1]];
             console.log("get files", files);
           }}
         >
@@ -59,9 +77,7 @@ export default function UserAvatarPage() {
         </Button>
         <Button
           onClick={async () => {
-            const nf = await client.showFile(
-              "file_8427dcbb-7264-4bef-997e-40b74e884f47",
-            );
+            const nf = await client.showFile("");
             const nfvv = [...nf.versions].pop()!.version;
             await client.deleteFileVersion(nf.id, nfvv);
           }}
@@ -79,9 +95,7 @@ export default function UserAvatarPage() {
             await client.downloadFile(of.id, ofv.version, "file");
             await client.downloadFile(of.id, ofv.version, "signature");
 
-            const nf = await client.showFile(
-              "file_8427dcbb-7264-4bef-997e-40b74e884f47",
-            );
+            const nf = await client.showFile("");
             console.log("new", nf);
 
             let nfvv = null;
