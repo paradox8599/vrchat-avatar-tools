@@ -88,10 +88,11 @@ impl ConfigCookieMap {
         let store = app
             .store_builder(STORE_COOKIES_KEY)
             // .auto_save(std::time::Duration::from_millis(300))
-            .build();
+            .build()
+            .expect("Failed to create store");
         Self {
             map: RwLock::new(std::collections::HashMap::new()),
-            store: Arc::new(store),
+            store,
         }
     }
 

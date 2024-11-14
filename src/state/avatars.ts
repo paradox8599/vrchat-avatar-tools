@@ -1,6 +1,6 @@
 import { track, trackName } from "@/lib/aptabase";
 import { AvatarRecord } from "@/types";
-import { createStore, Store } from "@tauri-apps/plugin-store";
+import { load, Store } from "@tauri-apps/plugin-store";
 import { proxy, subscribe } from "valtio";
 import { proxyMap } from "valtio/utils";
 
@@ -16,7 +16,7 @@ subscribe(avatarMapState, async () => {
 });
 
 export async function loadAvatarState() {
-  store = await createStore("avatars");
+  store = await load("avatars");
 
   const storedAvatars =
     await store.get<Record<string, AvatarRecord>>(AVATAR_STORE_KEY);

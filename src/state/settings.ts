@@ -1,4 +1,4 @@
-import { createStore, type Store } from "@tauri-apps/plugin-store";
+import { load, type Store } from "@tauri-apps/plugin-store";
 import { proxy, subscribe } from "valtio";
 import { appState } from "./app";
 import { isEnabled } from "@tauri-apps/plugin-autostart";
@@ -30,7 +30,7 @@ subscribe(settingsState, async () => {
 });
 
 export async function loadSettingsState() {
-  store = await createStore("app");
+  store = await load("app");
   const stored = await store.get<SettingsState>(SETTINGS_STORE_KEY);
   if (!stored) return;
   Object.assign(settingsState, stored);

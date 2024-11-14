@@ -1,5 +1,5 @@
 import { LoginStatus } from "@/types";
-import { createStore, Store } from "@tauri-apps/plugin-store";
+import { load, Store } from "@tauri-apps/plugin-store";
 import { proxy, subscribe } from "valtio";
 import { appState } from "./app";
 import vrchat from "vrchat";
@@ -42,7 +42,7 @@ subscribe(authState, async () => {
 ////////////////////////////////////////////////////////////////
 
 export async function loadAuthState() {
-  store = await createStore("auth");
+  store = await load("auth");
 
   const storedMe = await store.get<MyInfo>(ME);
   me.username = storedMe?.username;
