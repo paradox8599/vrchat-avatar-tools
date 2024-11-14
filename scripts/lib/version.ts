@@ -30,7 +30,7 @@ export function readCargo(root: string = "./") {
 export function readCargoVersion(cargo: string) {
   const cargoVerFileRe = /^\s*version\s*=\s*"(\d+\.\d+\.\d+-?\d*)"/gm;
   const cargoVerRe = /^(\s*version\s*=\s*)"(\d+\.\d+\.\d+-?\d*)"/;
-  let cargoVerStr = cargo.match(cargoVerFileRe)![0].match(cargoVerRe)![2];
+  const cargoVerStr = cargo.match(cargoVerFileRe)![0].match(cargoVerRe)![2];
   return semver.parse(cargoVerStr)!;
 }
 
