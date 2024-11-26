@@ -7,4 +7,4 @@ export enum ROUTES {
   userAvatars = "/user-avatars",
 }
 
-export const ROUTE_HOME = ROUTES.userAvatars;
+export const ROUTE_HOME = ROUTES.publicCheck;

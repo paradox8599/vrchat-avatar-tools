@@ -1,6 +1,6 @@
 {
   "productName": "VRChat 模型工具",
-  "version": "0.1.32",
+  "version": "0.2.0",
   "identifier": "io.paradox8599.vrchat-avatar-tools",
   "build": {
     "frontendDist": "../out",

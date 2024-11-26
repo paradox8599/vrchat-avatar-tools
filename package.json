@@ -1,6 +1,6 @@
 {
   "name": "vrchat_avatar_tools",
-  "version": "0.1.32",
+  "version": "0.2.0",
   "private": true,
   "scripts": {
     "postinstall": "git config core.hooksPath .git-hooks",
