@@ -30,7 +30,7 @@ export default function AvatarGrid() {
 
   return (
     <ScrollArea className="h-full">
-      <div className="flex justify-center">
+      <div>
         <div
           className={cn(
             "flex flex-col items-center justify-start gap-2 h-fit",
@@ -204,7 +204,7 @@ export default function AvatarGrid() {
               );
             })}
         </div>
-        <div>共 {sortedAvatars.length}</div>
+        <div className="text-center">共 {sortedAvatars.length} 个模型</div>
       </div>
     </ScrollArea>
   );
