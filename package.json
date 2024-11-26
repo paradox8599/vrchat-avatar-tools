@@ -10,15 +10,15 @@
     "start:next": "next start",
     "lint": "next lint",
     "tauri:build": "tauri build",
-    "dev": "cd $(git rev-parse --show-toplevel) && pwsh scripts/dev.ps1",
-    "ver": "cd $(git rev-parse --show-toplevel) && bun run scripts/ver.ts",
-    "build": "cd $(git rev-parse --show-toplevel) && bun run lint && pwsh scripts/build.ps1",
+    "dev": "pwsh scripts/dev.ps1",
+    "ver": "bun run scripts/ver.ts",
+    "build": "bun run lint && pwsh scripts/build.ps1",
     "b": "bun run build",
     "_root": "git rev-parse --show-toplevel",
-    "env": "cd $(git rev-parse --show-toplevel) && bun run scripts/env.ts",
-    "push": "cd $(git rev-parse --show-toplevel) && bun run scripts/push.ts",
-    "deploy": "cd $(git rev-parse --show-toplevel) && bun run build && bun run push",
-    "release": "cd $(git rev-parse --show-toplevel) && bun run lint && bun run ver patch && bun run deploy"
+    "env": "bun run scripts/env.ts",
+    "push": "bun run scripts/push.ts",
+    "deploy": "bun run build && bun run push",
+    "release": "bun run lint && bun run ver patch && bun run deploy"
   },
   "dependencies": {
     "@aptabase/tauri": "https://github.com/aptabase/tauri-plugin-aptabase#v2",
