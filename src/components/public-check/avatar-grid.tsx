@@ -204,6 +204,7 @@ export default function AvatarGrid() {
               );
             })}
         </div>
+        <div>共 {sortedAvatars.length}</div>
       </div>
     </ScrollArea>
   );
